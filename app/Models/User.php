@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements JWTSubject, AuthenticatableContract, AuthorizableContract
 {
-    // protected $table = 'client';
+    protected $table = 'client';
 
     use Authenticatable, Authorizable;
 
