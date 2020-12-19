@@ -47,4 +47,37 @@ class AuthController extends Controller
         return $this->jwt->user();
         // return response()->json(compact('token'));
     }
+
+    public function postBsn(Request $request)
+    {
+        $login = $this->validate($request, [
+            'email'    => 'required|email|max:255',
+            'password' => 'required',
+        ]);
+
+        try {
+
+            if (!$this->jwt->attempt($request->only('email', 'password'))) {
+                return response()->json(['success' => false, 'message' => 'user_not_found'], 404);
+            }
+
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+            return response()->json(['success' => false, 'message' => 'token_expired'], 500);
+
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+
+            return response()->json(['success' => false, 'message' => 'token_invalid'], 500);
+
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+
+            return response()->json(['success' => false, 'message' => 'token_absent: ' . $e->getMessage()], 500);
+
+        }
+        
+        return response()->json(['success' => true, 'results' => $this->jwt->user()]);
+
+        /* return $this->jwt->user(); */
+        // return response()->json(compact('token'));
+    }
 }

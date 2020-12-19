@@ -42,4 +42,14 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     {
         return [];
     }
+
+    public function appointments()
+    {
+        return $this->hasMany('App\Models\Calendar', 'Client', 'BSN');
+    }
+
+    public function debts()
+    {
+        return $this->hasMany('App\Models\Debt', 'Client', 'BSN');
+    }
 }
