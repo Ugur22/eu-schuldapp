@@ -18,3 +18,12 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('index','ClientController@index');
+$router->post('/auth/login','AuthController@postLogin');
+
+// $router->options('/auth/login', ['middleware' => 'cors', '']);
+
+
+// $router->post('/auth/login',['middleware' => 'cors', 'uses' => 'AuthController@postLogin']);
+
+
+
