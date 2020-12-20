@@ -1,0 +1,131 @@
+<template>
+  <nb-container>
+    <user-start v-if="!loggedIn"></user-start>
+    <root v-if="loggedIn">
+        <app-loading v-if="!isAppReady"> </app-loading>
+       <app-navigator v-if="isAppReady"></app-navigator>
+    </root>
+  </nb-container>
+</template>
+
+<script>
+  import Vue from "vue-native-core";
+  import { Ionicons } from "@expo/vector-icons";
+  import { Root, VueNativeBase } from "native-base";
+  import * as Font from 'expo-font';
+  import * as Localization from 'expo-localization';
+  import i18n from 'i18n-js';
+
+  i18n.translations = {
+    en: require('./locales/en.json'),
+    nl: require('./locales/nl.json'),
+    tr: require('./locales/tr.json'),
+  };
+  i18n.locale = Localization.locale;
+  i18n.fallbacks = true;
+
+  Vue.component("ionicons", Ionicons);
+  Vue.use(VueNativeBase);
+
+  import {
+    createAppContainer,
+    createStackNavigator,
+  } from "vue-native-router";
+
+  import UserStart from "./pages/Login.vue";
+  import HomeScreen from "./pages/Home.vue";
+  import AccountScreen from "./pages/Account.vue";
+  import AppointmentsScreen from "./pages/Appointments.vue";
+  import AppointmentScreen from "./pages/Appointment.vue";
+  import DateScreen from "./pages/MakeAppointment.vue";
+  import DocumentsScreen from "./pages/Documents.vue";
+  import DebtsScreen from "./pages/Debts.vue";
+  import FormsScreen from "./pages/Forms.vue";
+  import CollectorDocsScreen from "./pages/Collector.vue";
+  import OtherDocsScreen from "./pages/OtherDocs.vue";
+  import HelpScreen from "./pages/Help.vue";
+
+  const StackNavigator = createStackNavigator(
+    {
+      Home: {
+        screen: HomeScreen
+      },
+      Account: {
+        screen: AccountScreen
+      },
+      Appointments: {
+        screen: AppointmentsScreen
+      },
+      Appointment: {
+        screen: AppointmentScreen
+      },
+      MakeAppointment: {
+        screen: DateScreen
+      },
+      Documents: {
+        screen: DocumentsScreen
+      },
+      DebtList: {
+        screen: DebtsScreen
+      },
+      FormList: {
+        screen: FormsScreen
+      },
+      DocsCollector: {
+        screen: CollectorDocsScreen
+      },
+      DocsOthers: {
+        screen: OtherDocsScreen
+      },
+      Help: {
+        screen: HelpScreen
+      }
+    },
+    {
+      initialRouteName: 'Home',
+      headerMode: 'none'
+    }
+  );
+
+  const AppNavigator = createAppContainer(StackNavigator);
+
+  export default {
+    data() {
+      return {
+        lang: i18n,
+        loggedIn: false
+      };
+    },
+    components: { Root, AppNavigator, Ionicons, UserStart },
+    created() {
+      this.loadFonts();
+    },
+    methods: {
+       loadFonts: async function () {
+        try {
+          this.isAppReady = false;
+          await Font.loadAsync({
+            Roboto: require('native-base/Fonts/Roboto.ttf'),
+            Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+            ...Ionicons.font,
+          });
+          this.isAppReady = true;
+        } catch (error) {
+          console.log("some error occured", error);
+        }
+      },
+    }
+  }
+</script>
+
+<style>
+.container {
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.text-color-primary {
+  color: #0078ae;
+}
+</style>

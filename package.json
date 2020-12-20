@@ -1,0 +1,44 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "github:react-native-community/async-storage",
+    "@react-native-community/datetimepicker": "^3.0.8",
+    "expo": "~39.0.2",
+    "expo-camera": "^9.1.1",
+    "expo-device": "~2.3.0",
+    "expo-font": "~8.3.0",
+    "expo-localization": "~9.0.0",
+    "expo-sqlite": "~8.4.0",
+    "expo-status-bar": "~1.0.2",
+    "i18n-js": "^3.8.0",
+    "native-base": "^2.13.14",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
+    "react-native-gesture-handler": "^1.9.0",
+    "react-native-modal": "^11.5.6",
+    "react-native-paper": "^4.4.1",
+    "react-native-reanimated": "^1.13.2",
+    "react-native-screens": "^2.15.0",
+    "react-native-swipe-list-view": "^3.2.5",
+    "react-native-web": "~0.13.12",
+    "vue-native-core": "^0.1.4",
+    "vue-native-helper": "^0.1.4",
+    "vue-native-i18n": "0.0.1",
+    "vue-native-router": "^0.2.0",
+    "vuelidate": "^0.7.6",
+    "vuex": "^3.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "vue-native-scripts": "^0.1.4"
+  },
+  "private": true
+}
