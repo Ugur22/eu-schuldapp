@@ -1,7 +1,7 @@
 <template>
   <nb-container>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
-      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{userData.profileData.Voornamen}} {{userData.profileData.Achternaam}} </nb-text>
+      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} </nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Account')">
           <nb-text class="text-btn">{{ $root.lang.t('my_account') }}</nb-text>
         </nb-button>
@@ -14,9 +14,9 @@
         <nb-button full info class="btns" :on-press="() => goToPage('Help')">
           <nb-text class="text-btn">{{ $root.lang.t('contact') }}</nb-text>
         </nb-button>
-        <nb-list-item>
-          <!-- <nb-text :on-press="logout">Logout</nb-text> -->
-        </nb-list-item>
+        <nb-button full info class="btns" :on-press="logout">
+          <nb-text class="text-btn">Logout</nb-text>
+        </nb-button>
     </view>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
       <image :source="require('../assets/images/logo.png')" />
@@ -26,8 +26,8 @@
 
 <script>
 
-import store from '../store';
 import { NavigationActions } from 'vue-native-router';
+import { AsyncStorage } from "react-native";
 
 
 export default {
@@ -42,9 +42,6 @@ export default {
     };
   },
     computed: {
-    userData () {
-      return store.state.userObj;
-    }
   },
   created() {
   },
@@ -52,9 +49,10 @@ export default {
     goToPage: function (page) {
       this.navigation.navigate(page);
     },
-    // logout() {
-    //   store.dispatch('LOGOUT', () =>  this.navigation.navigate('Login'))
-    // }
+          logout() {
+              AsyncStorage.removeItem('login');
+               this.$root.loggedIn = false;
+        }
   },
 };
 </script>

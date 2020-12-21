@@ -10,7 +10,7 @@
     </nb-button>
     <nb-button :active="activeBtn == 'appointments'" :on-press="() => goToPage('Appointments')">
       <nb-icon :active="activeBtn == 'appointments'" name="calendar" />
-      <nb-text>{{ $root.lang.t('appointment') }}</nb-text>
+      <nb-text>{{ $root.lang.t('calendar') }}</nb-text>
     </nb-button>
     <nb-button :active="activeBtn == 'docs'" :on-press="() => goToPage('Documents')">
       <nb-icon :active="activeBtn == 'docs'" name="laptop" />

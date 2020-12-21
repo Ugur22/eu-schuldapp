@@ -1,27 +1,46 @@
 <template>
   <nb-container>
-    <nb-content :style="{ marginTop:80 }">
-      <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
+    <nb-content :style="{ marginTop: 80 }">
+      <view
+        :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }"
+      >
         <image :source="require('../assets/images/logo.png')" />
       </view>
-      <nb-form v-if="!registration" :style="{ paddingLeft: 20, paddingRight: 20 }">
+      <nb-form
+        v-if="!registration"
+        :style="{ paddingLeft: 20, paddingRight: 20 }"
+      >
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('email') }}</nb-label>
           <nb-input v-model="email" />
         </nb-item>
         <nb-item floatingLabel last>
           <nb-label>{{ $root.lang.t('password') }}</nb-label>
-          <nb-input  v-model="password" secure-text-entry />
+          <nb-input v-model="password" secure-text-entry />
         </nb-item>
-        <nb-button class="btn" block info :style="{marginTop:20}" :on-press="login">
-           <nb-spinner v-if="logging_in" size="small" />
+        <nb-button
+          class="btn"
+          block
+          info
+          :style="{ marginTop: 20 }"
+          :on-press="login"
+        >
+          <nb-spinner v-if="logging_in" size="small" />
           <nb-text>{{ $root.lang.t('login') }}</nb-text>
         </nb-button>
-        <nb-button block transparent :style="{marginTop:20}" :on-press="toRegister">
+        <nb-button
+          block
+          transparent
+          :style="{ marginTop: 20 }"
+          :on-press="toRegister"
+        >
           <nb-text>{{ $root.lang.t('register') }}</nb-text>
         </nb-button>
       </nb-form>
-      <nb-form v-if="registration" :style="{ paddingLeft: 20, paddingRight: 20 }">
+      <nb-form
+        v-if="registration"
+        :style="{ paddingLeft: 20, paddingRight: 20 }"
+      >
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('email') }}</nb-label>
           <nb-input />
@@ -38,10 +57,21 @@
           <nb-label>{{ $root.lang.t('confirm_password') }}</nb-label>
           <nb-input secure-text-entry />
         </nb-item>
-        <nb-button class="btn" block success :style="{marginTop:20}" :on-press="register">
+        <nb-button
+          class="btn"
+          block
+          success
+          :style="{ marginTop: 20 }"
+          :on-press="register"
+        >
           <nb-text>{{ $root.lang.t('register') }}</nb-text>
         </nb-button>
-        <nb-button block transparent :style="{marginTop:20}" :on-press="backToLogin">
+        <nb-button
+          block
+          transparent
+          :style="{ marginTop: 20 }"
+          :on-press="backToLogin"
+        >
           <nb-text>{{ $root.lang.t('login') }}</nb-text>
         </nb-button>
       </nb-form>
@@ -50,87 +80,93 @@
 </template>
 
 <script>
-import { AsyncStorage } from "react-native";
-import store from '../store';
-import { required, email } from 'vuelidate/lib/validators'
+import { AsyncStorage } from 'react-native';
+import { required, email } from 'vuelidate/lib/validators';
 
-  export default {
-    data() {
-      return {
-        registration: false,
-        loaded: false,
+export default {
+  data() {
+    return {
+      registration: false,
+      loaded: false,
+      email: '',
+      password: '',
+      user: {
         email: '',
-        password: ''
-      };
+        password: '',
+      },
+    };
+  },
+  computed: {
+    logging_in() {
+      // return loggedIn = true;
     },
-      validations: {
-    emailValue: {
-      required,
-      email
-    },
-    password: {
-      required
-    }
   },
-      computed: {
-    logging_in () {
-      return store.state.logging_in;
-    }
-  },
-    created() {
-    AsyncStorage.getItem('email').then((val) => {
-      if (val) {
-        this.loaded = true
-        store.dispatch('SET_USER', {userObj: {email: val}})
-      } else {
-        this.loaded = true
-      }
-    })
-  },
-    methods: {
-      login: async function () { 
-        try {
-          let response = await fetch('http://api.arsus.nl/client', {
-            method: 'POST',
-            headers: {
-              Accespt: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email: this.email,
-              password: this.password
-            })
-          })
+  created() {},
+  methods: {
+    login: async function () {
+      try {
+        let response = await fetch('http://api.arsus.nl/client', {
+          method: 'POST',
+          headers: {
+            Accespt: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password,
+          }),
+        });
 
-          let responseJson = await response.json();
-          if(responseJson.success){
-            this.$root.loggedIn = true;
-            store.dispatch('LOGIN', {
-            userObj: {email: this.email,profileData:responseJson.results},
-           });
-          }else {
-            alert(JSON.stringify(responseJson));
-          }
-          
-        } catch (error) {
-          alert(error);
-          console.error(error);
+        let responseJson = await response.json();
+        if (responseJson.success) {
+          let user_updated = {
+            email: this.email,
+            password: this.password,
+          };
+
+          AsyncStorage.setItem('login', JSON.stringify(this.user), () => {
+            AsyncStorage.mergeItem(
+              'login',
+              JSON.stringify(user_updated),
+              () => {
+                AsyncStorage.getItem('login', (err, result) => {
+                  console.log(result);
+                });
+              }
+            );
+          });
+
+          AsyncStorage.getItem('login').then((val) => {
+            if (val) {
+              console.log(val);
+              this.$root.loggedIn = true;
+            } else {
+              return false;
+            }
+          });
+        } else {
+          alert(JSON.stringify(responseJson));
         }
-      },
-      toRegister: function () {
-        this.registration = true;
-      },
-      backToLogin: function () {
-        this.registration = false
-      },
-      register: function () {
-        //
+      } catch (error) {
+        alert(error);
+        console.error(error);
       }
-    }
-  }
+    },
+    toRegister: function () {
+      this.registration = true;
+    },
+    backToLogin: function () {
+      this.registration = false;
+    },
+    register: function () {
+      //
+    },
+  },
+};
 </script>
 <style>
-.btn,.text {
-  background-color:#0078ae;
+.btn,
+.text {
+  background-color: #0078ae;
 }
 </style>
