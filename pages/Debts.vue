@@ -23,14 +23,14 @@
         <nb-list-item v-for="debt in clientDebts" :key="clientDebts.ID">
           <nb-left>
             <nb-button transparent :on-press="() => detailDebt(1)">
-              <nb-text>{{debt.Incasseerder}}</nb-text>
+              <nb-text  class="text">{{debt.Incasseerder}}</nb-text>
             </nb-button>
           </nb-left>
           <nb-body>
-            <nb-text>{{debt.schuld}}</nb-text>
+            <nb-text class="text">{{debt.schuld}}</nb-text>
           </nb-body>
           <nb-right>
-            <nb-icon name="arrow-forward" />
+            <nb-icon class="text" name="arrow-forward" />
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -102,6 +102,9 @@
 }
 .marginBottom {
   margin-bottom: 20px;
+}
+.text {
+  color: #0078ae;
 }
 </style>
 
@@ -177,3 +180,4 @@ export default {
   },
 };
 </script>
+
