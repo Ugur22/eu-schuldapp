@@ -15,20 +15,23 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content>
+    <nb-content  >
       <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="zoek overige documenten" />
       </nb-item>
-      <nb-list>
+      <nb-list v-if="dataIsReady">
         <nb-list-item v-for="docs in clientDocs" :key="clientDocs.ID">
           <nb-left>
-            <nb-text>{{ docs.Filename }}</nb-text>
+            <nb-text class="text">{{ docs.Filename }}</nb-text>
           </nb-left>
           <nb-body>
-            <nb-text>{{ docs.DateTime }}</nb-text>
+            <nb-text class="text">{{ docs.DateTime }}</nb-text>
           </nb-body>
         </nb-list-item>
       </nb-list>
+      <nb-card-item v-else>
+			  <image :source="require('../assets/images/loader.gif')" class="loading" />
+	   </nb-card-item>
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -38,7 +41,18 @@
     </nb-footer>
   </nb-container>
 </template>
+<style>
+.text {
+    color: #0078ae;
+}
 
+.loading {
+  align-items: center;
+  justify-content: center;
+  height:50;
+  width:50;
+}
+</style>
 <script>
 import FooterNav from '../included/Footer';
 import { AsyncStorage } from 'react-native';
@@ -54,6 +68,7 @@ export default {
     return {
       selectedDoc: '0',
       clientDocs: {},
+       dataIsReady: false
     };
   },
   created() {
@@ -87,6 +102,7 @@ export default {
         let responseJson = await response.json();
         if (responseJson.success) {
           this.clientDocs = responseJson.results;
+          this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }

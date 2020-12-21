@@ -16,10 +16,10 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-item :style="{ borderColor: '#62B1F6' }">
+      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
-      </nb-item>
-      <nb-list>
+      </nb-item> -->
+      <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="clientDebts.ID">
           <nb-left>
             <nb-button transparent :on-press="() => detailDebt(1)">
@@ -34,6 +34,9 @@
           </nb-right>
         </nb-list-item>
       </nb-list>
+      <nb-card-item v-else>
+			  <image :source="require('../assets/images/loader.gif')" class="loading" />
+	   </nb-card-item>
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -106,6 +109,13 @@
 .text {
   color: #0078ae;
 }
+
+.loading {
+  align-items: center;
+  justify-content: center;
+  height:50;
+  width:50;
+}
 </style>
 
 <script>
@@ -125,6 +135,7 @@ export default {
     return {
       isModalVisible: false,
       clientDebts: {},
+      dataIsReady: false
     };
   },
   created() {
@@ -157,6 +168,7 @@ export default {
         let responseJson = await response.json();
         if (responseJson.success) {
           this.clientDebts = responseJson.results;
+          this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }

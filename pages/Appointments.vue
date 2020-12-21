@@ -52,7 +52,7 @@
           </nb-right>
         </nb-card-item>
       </nb-card>
-      <nb-card :style="{ marginTop: 20 }">
+      <nb-card :style="{ marginTop: 20 }" v-if="dataIsReady">
         <nb-card-item header bordered>
           <nb-text class="title">{{ $root.lang.t('appointments') }}</nb-text>
         </nb-card-item>
@@ -71,6 +71,9 @@
           </nb-right>
         </nb-card-item>
       </nb-card>
+	   <nb-card-item v-else>
+			<image :source="require('../assets/images/loader.gif')" class="loading" />
+	   </nb-card-item>
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -87,6 +90,13 @@
 
 .header {
 	color:#fff;
+}
+
+.loading {
+  align-items: center;
+  justify-content: center;
+  height:50;
+  width:50;
 }
 
 .title {
@@ -108,7 +118,8 @@ export default {
   data() {
     return {
       addAppointment: false,
-      appointments: {},
+	  appointments: {},
+	  dataIsReady: false
     };
   },
   created() {
@@ -142,7 +153,7 @@ export default {
         let responseJson = await response.json();
         if (responseJson.success) {
           this.appointments = responseJson.results;
-          console.log(responseJson.results);
+          this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }
