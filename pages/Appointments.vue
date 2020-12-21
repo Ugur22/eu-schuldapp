@@ -58,7 +58,7 @@
         </nb-card-item>
         <nb-card-item
           v-for="appointment in appointments"
-          :key="appointments.ID">
+          :key="appointment.ID">
           <nb-body>
             <nb-right>
             <nb-button transparent :on-press="() => openAppointment(1)">

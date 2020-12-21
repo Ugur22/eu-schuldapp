@@ -20,7 +20,7 @@
         <nb-input placeholder="Search" />
       </nb-item> -->
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="debt in clientDebts" :key="clientDebts.ID">
+        <nb-list-item v-for="debt in clientDebts" :key="debt.ID">
           <nb-left>
             <nb-button transparent :on-press="() => detailDebt(1)">
               <nb-text  class="text">{{debt.Incasseerder}}</nb-text>

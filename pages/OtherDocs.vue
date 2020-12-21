@@ -20,7 +20,7 @@
         <nb-input placeholder="zoek overige documenten" />
       </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="docs in clientDocs" :key="clientDocs.ID">
+        <nb-list-item v-for="docs in clientDocs" :key="docs.ID">
           <nb-left>
             <nb-text class="text">{{ docs.Filename }}</nb-text>
           </nb-left>

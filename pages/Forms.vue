@@ -17,7 +17,7 @@
     </nb-header>
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="clientForms.ID">
+        <nb-list-item v-for="form in clientForms" :key="form.ID">
           <nb-left>
             <nb-text class="text"
               >{{form.Filename}}</nb-text
