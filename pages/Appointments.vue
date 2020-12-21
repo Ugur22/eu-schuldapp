@@ -12,7 +12,7 @@
       <nb-right />
     </nb-header>
     <nb-content padder>
-      <nb-button
+      <nb-button v-if="dataIsReady"
         rounded
         info
         :style="{
@@ -71,7 +71,7 @@
           </nb-right>
         </nb-card-item>
       </nb-card>
-	   <nb-card-item v-else>
+	   <nb-card-item class="loadingWrapper" v-else>
 			<image :source="require('../assets/images/loader.gif')" class="loading" />
 	   </nb-card-item>
     </nb-content>
@@ -92,9 +92,13 @@
 	color:#fff;
 }
 
-.loading {
+.loadingWrapper {
   align-items: center;
   justify-content: center;
+  flex:1;
+}
+
+.loading {
   height:50;
   width:50;
 }

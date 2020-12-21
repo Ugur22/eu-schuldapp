@@ -12,7 +12,7 @@
       <nb-right />
     </nb-header>
     <nb-content padder>
-      <nb-card>
+      <nb-card v-if="dataIsReady">
         <nb-card-item
           header
           bordered
@@ -50,6 +50,9 @@
         </nb-card-item>
         <nb-card-item footer> </nb-card-item>
       </nb-card>
+      <nb-card-item class="loadingWrapper" v-else>
+			  <image :source="require('../assets/images/loader.gif')" class="loading" />
+	   </nb-card-item>
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -74,7 +77,8 @@ export default {
   components: { FooterNav },
   data() {
     return {
-     clientData: {}
+     clientData: {},
+      dataIsReady: false
     };
   },
   created() {
@@ -107,6 +111,7 @@ export default {
         let responseJson = await response.json();
         if (responseJson.success) {
           this.clientData = responseJson.results;
+          this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }
@@ -131,5 +136,16 @@ export default {
 .header {
   font-weight: bold;
   font-size: 24px;
+}
+
+.loadingWrapper {
+  align-items: center;
+  justify-content: center;
+  flex:1;
+}
+
+.loading {
+  height:50;
+  width:50;
 }
 </style>

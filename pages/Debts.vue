@@ -34,7 +34,7 @@
           </nb-right>
         </nb-list-item>
       </nb-list>
-      <nb-card-item v-else>
+      <nb-card-item class="loadingWrapper" v-else>
 			  <image :source="require('../assets/images/loader.gif')" class="loading" />
 	   </nb-card-item>
     </nb-content>
@@ -110,9 +110,13 @@
   color: #0078ae;
 }
 
-.loading {
+.loadingWrapper {
   align-items: center;
   justify-content: center;
+  flex:1;
+}
+
+.loading {
   height:50;
   width:50;
 }
