@@ -11,7 +11,7 @@
       </nb-body>
       <nb-right>
         <nb-button transparent>
-          <nb-icon name="info" />
+        <nb-icon name="information-circle" />
         </nb-button>
       </nb-right>
     </nb-header>

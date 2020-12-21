@@ -1,17 +1,17 @@
 <template>
   <nb-container>
-   <nb-header :style="{backgroundColor:'#0078ae'}">
+    <nb-header :style="{ backgroundColor: '#0078ae' }">
       <nb-left>
-        <nb-button transparent >
+        <nb-button transparent>
           <nb-icon name="arrow-back" :on-press="goBack" />
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>Documenten Schuldeiser</nb-title>
+        <nb-title>{{ $root.lang.t('creditors_documents') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
-          <nb-icon name="info" />
+          <nb-icon name="information-circle" />
         </nb-button>
       </nb-right>
     </nb-header>
@@ -47,29 +47,32 @@
       </nb-list>
     </nb-content>
     <nb-footer>
-      <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="docs"></footer-nav>
+      <footer-nav
+        :style="{ backgroundColor: '#0078ae' }"
+        activeBtn="docs"
+      ></footer-nav>
     </nb-footer>
   </nb-container>
 </template>
 
 <script>
-  import FooterNav from '../included/Footer';
-  export default {
-    props: {
-      navigation: {
-        type: Object
-      }
+import FooterNav from '../included/Footer';
+export default {
+  props: {
+    navigation: {
+      type: Object,
     },
-    components: { FooterNav },
-    data() {
-      return {
-        selectedDoc: '0'
-      };
+  },
+  components: { FooterNav },
+  data() {
+    return {
+      selectedDoc: '0',
+    };
+  },
+  methods: {
+    goBack: function () {
+      this.navigation.goBack();
     },
-    methods: {
-      goBack: function () {
-        this.navigation.goBack();
-      }
-    }
-  }
+  },
+};
 </script>

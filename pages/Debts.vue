@@ -7,11 +7,11 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>Mijn schulden</nb-title>
+        <nb-title>{{ $root.lang.t('debts') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
-          <nb-icon name="info" />
+          <nb-icon name="information-circle" />
         </nb-button>
       </nb-right>
     </nb-header>
