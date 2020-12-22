@@ -42,11 +42,63 @@
         :style="{ paddingLeft: 20, paddingRight: 20 }"
       >
         <nb-item floatingLabel>
-          <nb-label>{{ $root.lang.t('email') }}</nb-label>
+          <nb-label>{{ $root.lang.t('initials') }}</nb-label>
           <nb-input />
         </nb-item>
         <nb-item floatingLabel>
-          <nb-label>{{ $root.lang.t('name') }}</nb-label>
+          <nb-label>{{ $root.lang.t('firstname') }}</nb-label>
+          <nb-input />
+        </nb-item>
+        <nb-item floatingLabel>
+          <nb-label>{{ $root.lang.t('lastname') }}</nb-label>
+          <nb-input />
+        </nb-item>
+        <view>
+          <nb-date-picker
+            :minimumDate="minimumDate"
+            :modalTransparent="false"
+            animationType="fade"
+            androidMode="default"
+            placeHolderText="Select birthdate"
+            :textStyle="{ color: '#0078ae' }"
+            :placeHolderTextStyle="{ color: '#d3d3d3' }"
+            :onDateChange="setDate"
+          />
+          <nb-text>
+            {{chosenDate.toString().substr(4, 12)}}
+          </nb-text>
+        </view>
+        <nb-card-item floatingLabel>
+          <nb-label>{{ $root.lang.t('gender') }}</nb-label>
+          <nb-picker
+            mode="dialog"
+            placeholder="gender"
+            :selectedValue="selectedGender"
+            :onValueChange="onGenderChange">
+            <item label="male" value="male" />
+            <item label="female" value="female" />
+          </nb-picker>
+        </nb-card-item>
+        <nb-item floatingLabel>
+          <nb-label>{{ $root.lang.t('adres') }}</nb-label>
+          <nb-input />
+        </nb-item>
+        <nb-card-item floatingLabel>
+          <nb-label>{{ $root.lang.t('Township') }}</nb-label>
+          <nb-picker
+            mode="dialog"
+            placeholder="gender"
+            :selectedValue="selectedLocation"
+            :onValueChange="onLocationChange">
+            <item  v-for="location in locations" :key="location.id" :label="location.name" :value="location.id" />
+          </nb-picker>
+        </nb-card-item>
+        <nb-item floatingLabel>
+          <nb-label>{{ $root.lang.t('BSN') }}</nb-label>
+          <nb-input />
+        </nb-item>
+        <nb-item floatingLabel>
+          <nb-label>{{ $root.lang.t('email') }}</nb-label>
           <nb-input />
         </nb-item>
         <nb-item floatingLabel>
@@ -82,6 +134,7 @@
 <script>
 import { AsyncStorage } from 'react-native';
 import { required, email } from 'vuelidate/lib/validators';
+import { Picker } from "native-base";
 
 export default {
   data() {
@@ -94,6 +147,14 @@ export default {
         email: '',
         password: '',
       },
+      date: this.addDays(1),
+      minimumDate: this.addDays(1),
+      chosenDate:  new Date(),
+      days: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
+      selectedGender: 'male',
+      selectedLocation:'0',
+      locations:{},
+      dataIsReady: false
     };
   },
   computed: {
@@ -101,14 +162,30 @@ export default {
       // return loggedIn = true;
     },
   },
-  created() {},
+  created() {
+    // this.getLocations();
+  },
   methods: {
+    setDate: function(newDate) {
+      this.chosenDate = newDate;
+    },
+    addDays: function (days) {
+        let date = new Date();
+        date.setDate(date.getDate() + days);
+        return date;
+      },
+    onGenderChange: function (value) {
+        this.selectedGender = value;
+      },
+          onLocationChange: function (value) {
+        this.selectedLocation = value;
+      },
     login: async function () {
       try {
         let response = await fetch('http://api.arsus.nl/client', {
           method: 'POST',
           headers: {
-            Accespt: 'application/json',
+            accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -152,14 +229,37 @@ export default {
         console.error(error);
       }
     },
+    getLocations: async function () {
+      try {
+        let response = await fetch('http://api.arsus.nl/client/locations', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          }
+        });
+
+        let responseJson = await response.json();
+        if (responseJson.success) {
+          this.locations = responseJson.results;
+          this.dataIsReady = true;
+          console.log(responseJson.results);
+        } else {
+          console.log(responseJson);
+        }
+      } catch (error) {
+        console.log(error);
+        console.error(error);
+      }
+    },
     toRegister: function () {
       this.registration = true;
     },
     backToLogin: function () {
       this.registration = false;
     },
-    register: function () {
-      //
+    register: async function () {
+      console.log("Register");
     },
   },
 };

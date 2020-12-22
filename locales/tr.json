@@ -1,6 +1,13 @@
 {
   "username": "Username",
   "name": "Adi",
+  "initials": "baş harfleri",
+  "firstname": "İsim",
+  "lastname": "Soyadı",
+  "birthday": "doğum günü",
+  "adres": "adres",
+  "Township": "İlçe",
+  "gender": "cinsiyet",
   "email": "E-mail",
   "password": "şifre",
   "login": "giriş",

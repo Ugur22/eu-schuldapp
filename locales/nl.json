@@ -1,6 +1,13 @@
 {
   "username": "Gebruikersnaam",
   "name": "Naam",
+  "initials": "initialen",
+  "firstname": "Voornaam",
+  "lastname": "AChternaam",
+  "birthday": "dgeboorte datum",
+  "adres": "adres",
+  "Township": "gemeente",
+  "gender": "geslacht",
   "email": "E-mailadres",
   "password": "Wachtwoord",
   "login": "Inloggen",

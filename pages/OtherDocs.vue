@@ -24,9 +24,9 @@
           <nb-left>
             <nb-text class="text">{{ docs.Filename }}</nb-text>
           </nb-left>
-          <nb-body>
-            <nb-text class="text">{{ docs.DateTime }}</nb-text>
-          </nb-body>
+          <nb-right>
+            <nb-text class="text">{{ docs.DateTime.slice(0,11) }}</nb-text>
+          <nb-right>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
@@ -44,6 +44,7 @@
 <style>
 .text {
     color: #0078ae;
+    font-size:14;
 }
 
 .loadingWrapper {
@@ -94,7 +95,7 @@ export default {
         let response = await fetch('http://api.arsus.nl/client/docs/others', {
           method: 'POST',
           headers: {
-            Accespt: 'application/json',
+            accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({

@@ -95,7 +95,7 @@ export default {
         let response = await fetch('http://api.arsus.nl/client/docs/forms', {
           method: 'POST',
           headers: {
-            Accespt: 'application/json',
+            accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({

@@ -24,9 +24,9 @@
           <nb-left>
             <nb-text class="text">{{collector.client_debt.Incasseerder}}</nb-text>
           </nb-left>
-          <nb-body>
-            <nb-text class="text">{{collector.DateTime}}</nb-text>
-          </nb-body>
+          <nb-right>
+            <nb-text class="text">{{collector.DateTime.slice(0,11)}}</nb-text>
+          </nb-right>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
@@ -54,6 +54,7 @@
 }
 .text {
   color: #0078ae;
+  font-size: 14;
 }
 
 .loadingWrapper {
@@ -104,7 +105,7 @@ export default {
         let response = await fetch('http://api.arsus.nl/client/docs/debtors', {
           method: 'POST',
           headers: {
-            Accespt: 'application/json',
+            accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -121,7 +122,6 @@ export default {
           console.log(responseJson);
         }
       } catch (error) {
-        console.log(error);
         console.error(error);
       }
     },

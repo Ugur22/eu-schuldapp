@@ -58,17 +58,15 @@
         </nb-card-item>
         <nb-card-item
           v-for="appointment in appointments"
-          :key="appointment.ID">
-          <nb-body>
-            <nb-right>
-            <nb-button transparent :on-press="() => openAppointment(1)">
-            	<nb-text class="text">{{ appointment.DateTime }}</nb-text>
-            </nb-button>
-            </nb-right>
-          </nb-body>
-          <nb-right>
-            <nb-text class="text">{{ appointment.Status }}</nb-text>
-          </nb-right>
+          :key="appointment.id">
+            <nb-left>
+				<nb-button transparent :on-press="() => openAppointment(1)">
+					<nb-text class="text">{{ appointment.DateTime.slice(0,11) }}</nb-text>
+				</nb-button>
+            </nb-left>
+         	<nb-right>
+            	<nb-text class="text">{{ appointment.Status }}</nb-text>
+          	</nb-right>
         </nb-card-item>
       </nb-card>
 	   <nb-card-item class="loadingWrapper" v-else>
@@ -145,7 +143,7 @@ export default {
         let response = await fetch('http://api.arsus.nl/client/appointments ', {
           method: 'POST',
           headers: {
-            Accespt: 'application/json',
+            accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
