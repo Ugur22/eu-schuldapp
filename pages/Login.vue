@@ -43,15 +43,15 @@
       >
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('initials') }}</nb-label>
-          <nb-input />
+          <nb-input v-model="initials" />
         </nb-item>
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('firstname') }}</nb-label>
-          <nb-input />
+          <nb-input v-model="firstname" />
         </nb-item>
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('lastname') }}</nb-label>
-          <nb-input />
+          <nb-input v-model="lastname" />
         </nb-item>
         <view>
           <nb-date-picker
@@ -81,7 +81,7 @@
         </nb-card-item>
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('adres') }}</nb-label>
-          <nb-input />
+          <nb-input v-model="adres"/>
         </nb-item>
         <nb-card-item floatingLabel>
           <nb-label>{{ $root.lang.t('Township') }}</nb-label>
@@ -95,19 +95,19 @@
         </nb-card-item>
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('BSN') }}</nb-label>
-          <nb-input />
+          <nb-input v-model="bsn" />
         </nb-item>
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('email') }}</nb-label>
-          <nb-input />
+          <nb-input v-model="emailRegister" />
         </nb-item>
         <nb-item floatingLabel>
           <nb-label>{{ $root.lang.t('password') }}</nb-label>
-          <nb-input secure-text-entry />
+          <nb-input v-model="passwordRegister" secure-text-entry />
         </nb-item>
         <nb-item floatingLabel last>
           <nb-label>{{ $root.lang.t('confirm_password') }}</nb-label>
-          <nb-input secure-text-entry />
+          <nb-input v-model="passwordRepeat" secure-text-entry />
         </nb-item>
         <nb-button
           class="btn"
@@ -154,7 +154,15 @@ export default {
       selectedGender: 'male',
       selectedLocation:'0',
       locations:{},
-      dataIsReady: false
+      dataIsReady: false,
+      initials: '',
+      firstname: '',
+      lastname: '',
+      adres:'',
+      bsn: '',
+      emailRegister: '',
+      passwordRegister: '',
+      passwordRepeat: '',
     };
   },
   computed: {
@@ -163,8 +171,9 @@ export default {
     },
   },
   created() {
-    // this.getLocations();
+    this.getLocations();
   },
+  components: {Item: Picker.Item },
   methods: {
     setDate: function(newDate) {
       this.chosenDate = newDate;
@@ -243,7 +252,6 @@ export default {
         if (responseJson.success) {
           this.locations = responseJson.results;
           this.dataIsReady = true;
-          console.log(responseJson.results);
         } else {
           console.log(responseJson);
         }
@@ -259,7 +267,39 @@ export default {
       this.registration = false;
     },
     register: async function () {
-      console.log("Register");
+    var birthdate_client = new Date("1989-07-10");
+      try {
+        let response = await fetch('http://api.arsus.nl/auth/register', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: this.emailRegister,
+            password: this.passwordRegister,
+            birth_date: birthdate_client,
+            place_id: this.selectedLocation,
+            address: this.adres,
+            gender: this.selectedGender,
+            initial: this.initials,
+            firstname: this.firstname,
+            lastname: this.lastname,
+            card_id: this.bsn,
+            confirm_password: this.passwordRepeat,
+          }),
+        });
+
+        let responseJson = await response.json();
+        if (responseJson.success) {
+          console.log("client added");
+        } else {
+          console.log(responseJson);
+        }
+      } catch (error) {
+        console.log(error);
+        console.error(error);
+      }
     },
   },
 };
