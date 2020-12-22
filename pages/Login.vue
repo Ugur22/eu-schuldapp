@@ -66,6 +66,7 @@
           />
           <nb-text>
             {{chosenDate.toString().substr(4, 12)}}
+            {{chosenDate.toString().substr(4, 12)}}
           </nb-text>
         </view>
         <nb-card-item floatingLabel>
@@ -267,7 +268,9 @@ export default {
       this.registration = false;
     },
     register: async function () {
-    var birthdate_client = new Date("1989-07-10");
+      let formatDate = this.chosenDate.getFullYear() + "-" + (this.chosenDate.getMonth() + 1) + "-" + this.chosenDate.getDate();
+      console.log(formatDate);
+
       try {
         let response = await fetch('http://api.arsus.nl/auth/register', {
           method: 'POST',
@@ -278,7 +281,7 @@ export default {
           body: JSON.stringify({
             email: this.emailRegister,
             password: this.passwordRegister,
-            birth_date: birthdate_client,
+            birth_date: formatDate,
             place_id: this.selectedLocation,
             address: this.adres,
             gender: this.selectedGender,
