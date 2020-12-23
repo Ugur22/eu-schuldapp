@@ -105,9 +105,8 @@
         try {
           this.isAppReady = false;
           await Font.loadAsync({
-            Roboto: require('native-base/Fonts/Roboto.ttf'),
-            Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-            ...Ionicons.font,
+            Roboto: require("./node_modules/native-base/Fonts/Roboto.ttf"),
+            Roboto_medium: require("./node_modules/native-base/Fonts/Roboto_medium.ttf")
           });
           this.isAppReady = true;
         } catch (error) {
