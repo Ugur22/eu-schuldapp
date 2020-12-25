@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements JWTSubject, AuthenticatableContract, AuthorizableContract
 {
-    protected $table = 'client';
+    protected $table = 'users';
 
     use Authenticatable, Authorizable;
 
@@ -21,7 +21,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'email', 'gender', 'initial', 'firstname', 'lastname', 'role_id', 'place_id', 'last_login'
     ];
 
     /**
@@ -43,13 +43,18 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
         return [];
     }
 
-    public function appointments()
+    public function role()
     {
-        return $this->hasMany('App\Models\Calendar', 'Client', 'BSN');
+        return $this->belongsTo('App\Models\Role', 'role_id');
     }
 
-    public function debts()
+    public function client()
     {
-        return $this->hasMany('App\Models\Debt', 'Client', 'BSN');
+        return $this->hasOne('App\Models\Client', 'user_id');
+    }
+
+    public function consultant()
+    {
+        return $this->hasOne('App\Models\Consultant', 'user_id');
     }
 }

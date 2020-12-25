@@ -1,0 +1,75 @@
+api.arsus.nl/auth/register
+request: 'card_id (BSN)', 'email', 'initial', 'firstname', 'lastname', 'gender', 'birth_date' (YYYY-mm-dd), 'address', 'place_id', 'password', 'confirm_password'
+response: all detail back
+
+api.arsus.nl/client
+request: 'email', 'password'
+response: client data
+
+api.arsus.nl/client/consultants
+request: 'email', 'password'
+response: consultant list
+
+api.arsus.nl/client/locations
+request: 'email', 'password'
+response: location list
+
+api.arsus.nl/client/appointments
+request: 'email', 'password'
+response: appointments list
+
+api.arsus.nl/client/appointment
+request: 'email', 'password', 'id'
+response: appointment detail
+
+api.arsus.nl/client/docs/debts
+request: 'email', 'password'
+response: debt list
+
+api.arsus.nl/client/docs/debt
+request: 'email', 'password', 'id'
+response: debt detail
+
+api.arsus.nl/client/docs/forms
+request: 'email', 'password'
+response: form list
+
+api.arsus.nl/client/docs/form
+request: 'email', 'password', 'id'
+response: form detail
+
+api.arsus.nl/client/docs/debtors
+request: 'email', 'password'
+response: debtor list
+
+api.arsus.nl/client/docs/debtor
+request: 'email', 'password', 'id'
+response: debtor detail (company)
+
+api.arsus.nl/client/docs/others
+request: 'email', 'password'
+response: other docs list
+
+api.arsus.nl/client/docs/other
+request: 'email', 'password', 'id'
+response: other doc detail
+
+api.arsus.nl/client/docs/add
+request: 'email', 'password', 'schuld_id', 'filename', 'file', 'main' (1/0)
+response: 'schuld_id', 'filename', 'file', 'main' (1/0)
+
+api.arsus.nl/client/appointment/add
+request: 'email', 'password', 'date', 'time', 'consultant_id', 'title', 'notes'
+response: 'date', 'time', 'consultant_id', 'title', 'notes'
+
+api.arsus.nl/client/docs/debts/search
+request: 'email', 'password', 'search'
+response: searched debt list
+
+api.arsus.nl/client/docs/debtors/search
+request: 'email', 'password', 'search'
+response: searched debtor list
+
+api.arsus.nl/client/docs/others/search
+request: 'email', 'password', 'search'
+response: searched other docs list

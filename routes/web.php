@@ -17,11 +17,15 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-/* $router->post('/account','ClientController@index'); */
-$router->post('/auth/login','AuthController@postLogin');
-$router->post('/auth/account','AuthController@postBsn');
-$router->post('/client/appointments','ClientController@postAppointments');
-$router->post('/client/appointment','ClientController@postAppointment');
+$router->get('/test','GeneralController@test');
+$router->get('/locations','GeneralController@getLocations');
+$router->post('/login','AuthController@postLogin');
+/* client */
+/* get data */
+$router->post('/client','ClientController@clientAccount');
+$router->post('/client/consultants','ClientController@postConsultants');
+$router->post('/client/appointments','ClientController@appointments');
+$router->post('/client/appointment','ClientController@appointment');
 $router->post('/client/docs/debts','ClientController@postDebts');
 $router->post('/client/docs/debt','ClientController@postDebt');
 $router->post('/client/docs/forms','ClientController@postForms');
@@ -30,11 +34,21 @@ $router->post('/client/docs/debtors','ClientController@postDeptors');
 $router->post('/client/docs/debtor','ClientController@postDebtor');
 $router->post('/client/docs/others','ClientController@postOthers');
 $router->post('/client/docs/other','ClientController@postOther');
+/* Add record */
+$router->post('/client/docs/add','ClientController@postAddDocument');
+/* Search */
+$router->post('/client/docs/debts/search','ClientController@postSearchDebt');
+$router->post('/client/docs/debtors/search','ClientController@postSearchDebtor');
+$router->post('/client/docs/others/search','ClientController@postSearchOther');
 
-// $router->options('/auth/login', ['middleware' => 'cors', '']);
-
-
-// $router->post('/auth/login',['middleware' => 'cors', 'uses' => 'AuthController@postLogin']);
-
-
-
+/* consultant */
+/* get data */
+$router->post('/consultant/clients','ConsultantController@clientList');
+$router->post('/consultant/client','ConsultantController@clientDetails');
+$router->post('/consultant/client/create','ConsultantController@createClient');
+$router->post('/consultant/appointments','ConsultantController@appointmentList');
+$router->post('/consultant/appointment','ConsultantController@appointment');
+$router->post('/consultant/appointment','ConsultantController@appointment');
+$router->post('/consultant/client-debts','ConsultantController@clientDebts');
+$router->post('/consultant/client-debt-details','ConsultantController@clientDebt');
+$router->post('/consultant/client-debts-search','ConsultantController@searchClientDebts');

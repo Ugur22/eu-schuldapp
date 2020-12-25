@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Debt extends Model
+class ClientDebtStatus extends Model
 {
-   protected $table = 'client_schuld_status';
+   protected $table = 'client_debt_statuses';
 
    public function previous()
    {
-       return $this->belongsTo('App\Models\Debt', 'Previous', 'Status');
+       return $this->belongsTo('App\Models\Debt', 'previous');
    }
 }

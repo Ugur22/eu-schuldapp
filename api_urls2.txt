@@ -1,0 +1,43 @@
+GET
+/locations
+/test
+
+POST
+GENERAL
+/login
+request: email, password
+
+
+CLIENT SIDE
+/client
+request: email, password
+/client/appointments
+request: email, password
+/client/appointment
+request: email, password, id
+/client/docs/debts
+request: email, password
+/client/docs/debt
+request: email, password, id
+/client/docs/debts/search
+request: email, password, search
+
+CONSULTANT SIDE
+/consultant/clients
+request: email, password
+/consultant/client
+request: email, password, id
+/consultant/client/create
+request: email, password, initial, firstname, lastname, card_id, gender, birth_date, address, place_id
+/consultant/appointments
+request: email, password
+/consultant/appointment
+request: email, password, id
+/consultant/makeAppointment
+request: email, password, date, time, client_id, location_id, title, notes
+/consultant/client-debts
+request: email, password, client_id
+/consultant/client-debt-details
+request: email, password, client_id, id (debt id)
+/consultant/client-debts-search
+request: email, password, client_id, search
