@@ -25,7 +25,7 @@
         }"
         :on-press="clickAddAppointment"
       >
-        <nb-icon active name="ios-add" />
+        <!-- <nb-icon active name="ios-add" /> -->
       </nb-button>
       <nb-card :style="{ marginTop: 20 }" v-if="addAppointment">
         <nb-card-item header bordered>
@@ -114,8 +114,8 @@ export default {
   props: {
     navigation: {
       type: Object,
-      user: {},
-    },
+	},
+	user: {},
   },
   data() {
     return {

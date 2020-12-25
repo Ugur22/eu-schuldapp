@@ -66,8 +66,8 @@ export default {
   props: {
     navigation: {
       type: Object,
-      user: {},
     },
+    user: {},
   },
   data() {
     return {

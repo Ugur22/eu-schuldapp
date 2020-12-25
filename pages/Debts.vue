@@ -22,15 +22,15 @@
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.ID">
           <nb-left>
-            <nb-button transparent :on-press="() => detailDebt(1)">
-              <nb-text  class="text">{{debt.Incasseerder}}</nb-text>
-            </nb-button>
+            <nb-text  class="text">{{debt.Incasseerder}}</nb-text>
           </nb-left>
           <nb-body>
             <nb-text class="text">{{debt.schuld}}</nb-text>
           </nb-body>
           <nb-right>
+          <nb-button transparent :on-press="() => detailDebt(1)">
             <nb-icon class="text" name="arrow-forward" />
+          </nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -44,54 +44,9 @@
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
-    <modal v-if="isModalVisible">
-      <nb-header>
-        <nb-left>
-          <nb-button transparent>
-            <nb-icon name="arrow-back" :on-press="dismissModal" />
-          </nb-button>
-        </nb-left>
-        <nb-body>
-          <nb-title>Details</nb-title>
-        </nb-body>
-        <nb-right />
-      </nb-header>
-      <nb-content>
-        <nb-card
-          :style="{
-            marginLeft: 20,
-            marginRight: 20,
-            marginTop: 20,
-            marginBottom: 20,
-          }"
-        >
-          <nb-card-item rounded :style="{ backgroundColor: '#62B1F6' }">
-            <nb-body>
-              <nb-grid class="marginBottom">
-                <nb-col>
-                  <nb-text class="headerText">Kenmerk Ref</nb-text>
-                  <nb-text class="detailText">12345678</nb-text>
-                </nb-col>
-                <nb-col>
-                  <nb-text class="headerText">Percentage</nb-text>
-                  <nb-text class="detailText">12345678</nb-text>
-                </nb-col>
-              </nb-grid>
-              <nb-grid class="marginBottom">
-                <nb-col>
-                  <nb-text class="headerText">Incasseerder</nb-text>
-                  <nb-text class="detailText">12345678</nb-text>
-                </nb-col>
-                <nb-col>
-                  <nb-text class="headerText">Schuld</nb-text>
-                  <nb-text class="detailText">$585.89</nb-text>
-                </nb-col>
-              </nb-grid>
-            </nb-body>
-          </nb-card-item>
-        </nb-card>
-      </nb-content>
-    </modal>
+        <modal v-if="isModalVisible">
+          <DebtDetails></DebtDetails>
+        </modal>
   </nb-container>
 </template>
 
@@ -126,15 +81,16 @@
 import Modal from 'react-native-modal';
 import FooterNav from '../included/Footer';
 import { AsyncStorage } from 'react-native';
+import DebtDetails from '../pages/DebtDetails';
 
 export default {
   props: {
     navigation: {
       type: Object,
-      user: {},
     },
+    user: {},
   },
-  components: { FooterNav },
+  components: { FooterNav,DebtDetails },
   data() {
     return {
       isModalVisible: false,
@@ -189,9 +145,6 @@ export default {
     },
     detailDebt: function (id) {
       this.isModalVisible = true;
-    },
-    dismissModal: function () {
-      this.isModalVisible = false;
     },
   },
 };

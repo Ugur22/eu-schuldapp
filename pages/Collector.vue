@@ -76,8 +76,8 @@ export default {
   props: {
     navigation: {
       type: Object,
-       user: {},
     },
+    user: {},
   },
     created() {
     this.userData();

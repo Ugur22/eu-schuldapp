@@ -1,10 +1,11 @@
 <template>
   <nb-container>
-    <user-start v-if="!loggedIn"></user-start>
-    <root v-if="loggedIn">
-        <app-loading v-if="!isAppReady"> </app-loading>
-       <app-navigator v-if="isAppReady"></app-navigator>
-    </root>
+    <root >
+      <user-start v-if="!loggedIn && isAppReady"></user-start>
+      <root v-if="loggedIn">
+          <app-loading v-if="!isAppReady"> </app-loading>
+          <app-navigator v-if="isAppReady"></app-navigator>
+      </root>
   </nb-container>
 </template>
 
@@ -15,6 +16,7 @@
   import * as Font from 'expo-font';
   import * as Localization from 'expo-localization';
   import i18n from 'i18n-js';
+   import { AppLoading } from "expo";
 
   i18n.translations = {
     en: require('./locales/en.json'),
@@ -40,6 +42,7 @@
   import DateScreen from "./pages/MakeAppointment.vue";
   import DocumentsScreen from "./pages/Documents.vue";
   import DebtsScreen from "./pages/Debts.vue";
+  import DebtDetailScreen from "./pages/DebtDetails.vue";
   import FormsScreen from "./pages/Forms.vue";
   import CollectorDocsScreen from "./pages/Collector.vue";
   import OtherDocsScreen from "./pages/OtherDocs.vue";
@@ -68,6 +71,9 @@
       DebtList: {
         screen: DebtsScreen
       },
+      DebtDetailScreen: {
+        screen: DebtDetailScreen
+      },
       FormList: {
         screen: FormsScreen
       },
@@ -93,16 +99,18 @@
     data() {
       return {
         lang: i18n,
-        loggedIn: false
+        loggedIn: false,
+        isAppReady: false
       };
     },
-    components: { Root, AppNavigator, Ionicons, UserStart },
+    components: { AppLoading, Root, AppNavigator, Ionicons, UserStart },
     created() {
       this.loadFonts();
     },
     methods: {
        loadFonts: async function () {
         try {
+          console.log(this.isAppReady);
           this.isAppReady = false;
           await Font.loadAsync({
             Roboto: require("./node_modules/native-base/Fonts/Roboto.ttf"),
@@ -126,5 +134,9 @@
 }
 .text-color-primary {
   color: #0078ae;
+}
+.btn,
+.text {
+  background-color: #0078ae;
 }
 </style>

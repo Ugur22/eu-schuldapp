@@ -174,6 +174,7 @@ export default {
   created() {
     this.getLocations();
   },
+  
   components: {Item: Picker.Item },
   methods: {
     setDate: function(newDate) {
@@ -212,22 +213,14 @@ export default {
           };
 
           AsyncStorage.setItem('login', JSON.stringify(this.user), () => {
-            AsyncStorage.mergeItem(
-              'login',
-              JSON.stringify(user_updated),
-              () => {
-                AsyncStorage.getItem('login', (err, result) => {
-                  console.log(result);
-                });
-              }
+            AsyncStorage.mergeItem('login',JSON.stringify(user_updated)
             );
           });
 
           AsyncStorage.getItem('login').then((val) => {
             if (val) {
-              console.log(val);
               this.$root.loggedIn = true;
-            } else {
+            } else { 
               return false;
             }
           });
@@ -253,9 +246,7 @@ export default {
         if (responseJson.success) {
           this.locations = responseJson.results;
           this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
+        } 
       } catch (error) {
         console.log(error);
         console.error(error);
@@ -269,7 +260,6 @@ export default {
     },
     register: async function () {
       let formatDate = this.chosenDate.getFullYear() + "-" + (this.chosenDate.getMonth() + 1) + "-" + this.chosenDate.getDate();
-      console.log(formatDate);
 
       try {
         let response = await fetch('http://api.arsus.nl/auth/register', {

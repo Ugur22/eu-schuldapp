@@ -26,7 +26,7 @@
           </nb-left>
           <nb-right>
             <nb-text class="text">{{ docs.DateTime.slice(0,11) }}</nb-text>
-          <nb-right>
+          </nb-right>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
@@ -66,8 +66,8 @@ export default {
   props: {
     navigation: {
       type: Object,
-      user: {},
     },
+    user: {},
   },
   data() {
     return {

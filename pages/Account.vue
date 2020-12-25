@@ -18,20 +18,20 @@
           bordered
           :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
           <nb-text class="text-account header"
-            >{{clientData.Voornamen}} {{clientData.Achternaam}}</nb-text >
+            >{{clientData.firstname}} {{clientData.lastname}}</nb-text >
         </nb-card-item>
         <nb-card-item>
           <nb-body>
             <nb-card-item >
               <nb-left>
                 <nb-icon :style="{ color: '#0078ae' }" name="person"></nb-icon>
-                <nb-text class="text-account">{{ $root.lang.t('BSN') }}: {{clientData.BSN}}</nb-text>
+                <nb-text class="text-account">{{ $root.lang.t('BSN') }}: {{clientData.social_security_idsocial_security_id}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
                 <nb-icon :style="{ color: '#0078ae' }" name="map"></nb-icon>
-                <nb-text class="text-account">{{clientData.Adres}}{{ "\n" }}{{clientData.Postcode}} {{clientData.Woonplaats}}</nb-text>
+                <nb-text class="text-account">{{clientData.address}}{{ "\n" }}{{clientData.postal_code}} {{clientData.birth_place}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
