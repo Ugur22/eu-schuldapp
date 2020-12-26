@@ -38,5 +38,6 @@
   "repay_month": "Repayment p/m",
   "preference": "preference",
   "months": "months",
-  "currency": "$"
+  "currency": "$",
+  "clients": "clienten"
 }

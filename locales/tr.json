@@ -39,5 +39,6 @@
   "repay_month": "aylık geri ödeme",
   "preference": "tercih",
   "months": "şartlar(aylar)",
-  "currency": "₺"
+  "currency": "₺",
+  "clients": "müşteriler"
 }

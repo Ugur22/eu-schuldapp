@@ -1,40 +1,70 @@
 <template>
   <nb-container>
-   <nb-header :style="{backgroundColor:'#0078ae'}">
-      <nb-left>
-        <nb-button transparent >
-          <nb-icon name="arrow-back" :on-press="goBack" />
+    <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
+      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} consulent</nb-text>
+        <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
+          <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
         </nb-button>
-      </nb-left>
-      <nb-body>
-        <nb-title>Header</nb-title>
-      </nb-body>
-      <nb-right />
-    </nb-header>
-    <nb-content padder>
-      <nb-text>Content goes here</nb-text>
-    </nb-content>
-    <nb-footer>
-      <nb-footer-tab>
-        <nb-button active full>
-          <nb-text>Footer</nb-text>
+        <!-- <nb-button full info class="btns" :on-press="() => goToPage('Documents')">
+          <nb-text class="text-btn">{{ $root.lang.t('check_document') }}</nb-text>
+        </nb-button> -->
+        <!-- <nb-button full info class="btns" :on-press="() => goToPage('Help')">
+          <nb-text class="text-btn">{{ $root.lang.t('contact') }}</nb-text>
+        </nb-button> -->
+        <nb-button full info class="btns" :on-press="logout">
+          <nb-text class="text-btn">Logout</nb-text>
         </nb-button>
-      </nb-footer-tab>
-    </nb-footer>
+    </view>
+    <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
+      <image :source="require('../../assets/images/logo.png')" />
+    </view>
   </nb-container>
 </template>
 
 <script>
-  export default {
-    props: {
-      navigation: {
-        type: Object
-      }
-    },
-    methods: {
-      goBack: function () {
-        this.navigation.goBack();
-      }
+
+import { NavigationActions } from 'vue-native-router';
+import { AsyncStorage } from "react-native";
+
+
+export default {
+  props: {
+    navigation: {
+      type: Object
     }
-  }
+  },
+  data() {
+    return {
+      name: 'Mark'
+    };
+  },
+    computed: {
+  },
+  created() {
+  },
+  methods: {
+    goToPage: function (page) {
+      this.navigation.navigate(page);
+    },
+          logout() {
+              AsyncStorage.removeItem('login');
+               this.$root.loggedIn = false;
+        }
+  },
+};
 </script>
+
+<style>
+.btns {
+  padding:10px;
+  background-color:#0078ae;
+  margin:10px;
+  align-items: center;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.text-btn {
+  font-weight: bold;
+}
+</style>

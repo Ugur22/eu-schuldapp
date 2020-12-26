@@ -38,5 +38,6 @@
   "repay_month": "aflossing p/m",
   "preference": "preferentie",
   "months": "Maanden",
-  "currency": "€"
+  "currency": "€",
+  "clients": "clienten"
 }

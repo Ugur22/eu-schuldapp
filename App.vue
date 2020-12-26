@@ -1,6 +1,5 @@
 <template>
   <nb-container>
-    <root >
       <user-start v-if="!loggedIn && isAppReady"></user-start>
       <root v-if="loggedIn">
           <app-loading v-if="!isAppReady"> </app-loading>
@@ -47,6 +46,11 @@
   import CollectorDocsScreen from "./pages/Collector.vue";
   import OtherDocsScreen from "./pages/OtherDocs.vue";
   import HelpScreen from "./pages/Help.vue";
+  import ConsultantScreen from "./pages/consultant/Consultant";
+  import CreateClientScreen from "./pages/consultant/CreateClient";
+  import ClientsScreen from "./pages/consultant/Clients";
+
+  let PageStart;
 
   const StackNavigator = createStackNavigator(
     {
@@ -84,8 +88,8 @@
         screen: OtherDocsScreen
       },
       Help: {
-        screen: HelpScreen
-      }
+        screen: CreateClientScreen
+      },
     },
     {
       initialRouteName: 'Home',
@@ -93,9 +97,27 @@
     }
   );
 
-  const AppNavigator = createAppContainer(StackNavigator);
+    const StackNavigatorConsultant = createStackNavigator(
+    {
+      Consultant: {
+        screen: ConsultantScreen
+      },
+      CreateClient: {
+        screen: CreateClientScreen
+      },
+      Clients: {
+        screen: ClientsScreen
+      },
+    },
+    {
+      initialRouteName: 'Consultant',
+      headerMode: 'none'
+    }
+  );
 
-  export default {
+  const AppNavigator = createAppContainer(StackNavigatorConsultant);
+
+  export default { 
     data() {
       return {
         lang: i18n,
@@ -110,7 +132,6 @@
     methods: {
        loadFonts: async function () {
         try {
-          console.log(this.isAppReady);
           this.isAppReady = false;
           await Font.loadAsync({
             Roboto: require("./node_modules/native-base/Fonts/Roboto.ttf"),

@@ -44,6 +44,7 @@ export default {
       user: {
         email: '',
         password: '',
+        type:''
       },
       dataIsReady: false,
     };
@@ -58,7 +59,7 @@ export default {
   methods: {
     login: async function () {
       try {
-        let response = await fetch('http://api.arsus.nl/client', {
+        let response = await fetch('http://api.arsus.nl/login', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -71,27 +72,31 @@ export default {
         });
 
         let responseJson = await response.json();
-        if (responseJson.success) {
+        if (responseJson.id) {
           let user_updated = {
             email: this.email,
             password: this.password,
+            type:responseJson.role.slug
           };
 
           AsyncStorage.setItem('login', JSON.stringify(this.user), () => {
             AsyncStorage.mergeItem('login', JSON.stringify(user_updated));
           });
+          console.log(responseJson.role.slug);
 
-          AsyncStorage.getItem('login').then((val) => {
-            if (val) {
-              this.$root.loggedIn = true;
-            } else {
-              return false;
-            }
-          });
+          // if(responseJson.role.slug === 'client'){
+          //   this.$root.startPage = 'Home';
+          // }else if(responseJson.role.slug === 'consultant'){
+          //   this.$root.startPage = 'Consultant'; 
+          // }
+
+          this.$root.loggedIn = true; 
+
         } else {
           alert(JSON.stringify(responseJson));
         }
       } catch (error) {
+         AsyncStorage.removeItem('login');
         alert(error);
         console.error(error);
       }
