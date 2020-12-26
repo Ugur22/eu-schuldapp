@@ -17,14 +17,12 @@
     </nb-header>
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.ID">
+        <nb-list-item v-for="form in clientForms" :key="form.id">
           <nb-left>
-            <nb-text class="text"
-              >{{form.Filename}}</nb-text
-            >
+            <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{form.ID}}</nb-text>
+            <nb-text class="text">{{form.doc_date_time.slice(0,11)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -44,6 +42,7 @@
 <style>
 .text {
     color: #0078ae;
+     font-size: 14;
 }
 
 .loadingWrapper {

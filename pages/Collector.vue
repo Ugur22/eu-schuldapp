@@ -20,7 +20,7 @@
         <nb-input placeholder="zoek schuldeiser documenten" />
       </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="collector in clientCollectors" :key="collector.ID">
+        <nb-list-item v-for="collector in clientCollectors" :key="collector.id">
           <nb-left>
             <nb-text class="text">{{collector.title}}</nb-text>
           </nb-left>
