@@ -20,7 +20,7 @@
   "appointments": "appointments",
   "check_documents": "Check documents",
   "contact": "contact",
-  "BSN": "social security number",
+  "BSN": "SSN",
   "debts": "debts",
   "send": "send",
   "forms": "forms",
@@ -31,5 +31,12 @@
   "name_creditor": "Name creditor",
   "upload": "upload",
   "home": "home",
-  "calendar": "calendar"
+  "Collector": "Collector",
+  "debt": "debt",
+  "status": "status",
+  "total_repaid": "Repaid in total",
+  "repay_month": "Repayment p/m",
+  "preference": "preference",
+  "months": "months",
+  "currency": "$"
 }

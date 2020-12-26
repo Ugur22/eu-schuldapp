@@ -25,7 +25,7 @@
             <nb-card-item >
               <nb-left>
                 <nb-icon :style="{ color: '#0078ae' }" name="person"></nb-icon>
-                <nb-text class="text-account">{{ $root.lang.t('BSN') }}: {{clientData.social_security_idsocial_security_id}}</nb-text>
+                <nb-text class="text-account">{{ $root.lang.t('BSN') }}: {{clientData.social_security_id}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
@@ -43,7 +43,7 @@
             <nb-card-item >
               <nb-left>
                 <nb-icon :style="{ color: '#0078ae' }" name="call"></nb-icon>
-                <nb-text class="text-account">{{clientData.Telefoon_Mob}}</nb-text>
+                <nb-text class="text-account">{{clientData.phonenumber}}</nb-text>
               </nb-left>
             </nb-card-item>
           </nb-body>

@@ -31,5 +31,13 @@
   "name_creditor": "alacaklının adı",
   "upload": "yükle",
   "home": "anasayfa",
-  "calendar": "takvim"
+  "calendar": "takvim",
+  "Collector": "Kolektör",
+  "debt": "borç",
+  "status": "statü",
+  "total_repaid": "Toplam geri ödendi",
+  "repay_month": "aylık geri ödeme",
+  "preference": "tercih",
+  "months": "şartlar(aylar)",
+  "currency": "₺"
 }

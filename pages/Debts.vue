@@ -20,15 +20,15 @@
         <nb-input placeholder="Search" />
       </nb-item> -->
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="debt in clientDebts" :key="debt.ID">
+        <nb-list-item v-for="debt in clientDebts" :key="debt.id">
           <nb-left>
-            <nb-text  class="text">{{debt.Incasseerder}}</nb-text>
+            <nb-text  class="text">{{debt.debtor.name}}</nb-text>
           </nb-left>
           <nb-body>
-            <nb-text class="text">{{debt.schuld}}</nb-text>
+            <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button transparent :on-press="() => detailDebt(1)">
+          <nb-button transparent :on-press="() => detailDebt(debt.id)">
             <nb-icon class="text" name="arrow-forward" />
           </nb-button>
           </nb-right>
@@ -45,7 +45,7 @@
       ></footer-nav>
     </nb-footer>
         <modal v-if="isModalVisible">
-          <DebtDetails></DebtDetails>
+          <DebtDetails v-bind:debtID="debtNr"></DebtDetails>
         </modal>
   </nb-container>
 </template>
@@ -95,7 +95,8 @@ export default {
     return {
       isModalVisible: false,
       clientDebts: {},
-      dataIsReady: false
+      dataIsReady: false,
+      debtNr:0
     };
   },
   created() {
@@ -145,6 +146,7 @@ export default {
     },
     detailDebt: function (id) {
       this.isModalVisible = true;
+      this.debtNr = id;
     },
   },
 };

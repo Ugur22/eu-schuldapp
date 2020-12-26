@@ -61,11 +61,11 @@
           :key="appointment.id">
             <nb-left>
 				<nb-button transparent :on-press="() => openAppointment(1)">
-					<nb-text class="text">{{ appointment.DateTime.slice(0,11) }}</nb-text>
+					<nb-text class="text">{{ appointment.event_date}}</nb-text>
 				</nb-button>
             </nb-left>
          	<nb-right>
-            	<nb-text class="text">{{ appointment.Status }}</nb-text>
+            	<nb-text class="text">{{ appointment.location.name }}</nb-text>
           	</nb-right>
         </nb-card-item>
       </nb-card>
@@ -166,9 +166,6 @@ export default {
     },
     goBack: function () {
       this.navigation.goBack();
-    },
-    makeAppointment: function (id) {
-      this.navigation.navigate('MakeAppointment');
     },
     openAppointment: function (id) {
       this.navigation.navigate('Appointment');

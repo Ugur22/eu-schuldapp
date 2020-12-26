@@ -30,5 +30,13 @@
   "name_creditor": "Naam schuldeiser",
   "upload": "upload",
   "home": "home",
-  "calendar": "kalender"
+  "calendar": "kalender",
+  "Collector": "Incasseerder",
+  "debt": "schuld",
+  "status": "status",
+  "total_repaid": "Totaal afgelost",
+  "repay_month": "aflossing p/m",
+  "preference": "preferentie",
+  "months": "Maanden",
+  "currency": "€"
 }
