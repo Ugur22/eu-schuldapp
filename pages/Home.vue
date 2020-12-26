@@ -9,7 +9,7 @@
           <nb-text class="text-btn">{{ $root.lang.t('appointments') }}</nb-text>
         </nb-button>
         <nb-button full info class="btns" :on-press="() => goToPage('Documents')">
-          <nb-text class="text-btn">{{ $root.lang.t('check_documents') }}</nb-text>
+          <nb-text class="text-btn">{{ $root.lang.t('check_document') }}</nb-text>
         </nb-button>
         <!-- <nb-button full info class="btns" :on-press="() => goToPage('Help')">
           <nb-text class="text-btn">{{ $root.lang.t('contact') }}</nb-text>

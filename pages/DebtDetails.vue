@@ -53,7 +53,7 @@
                 <nb-text class="detailText">{{ debt.preference }}</nb-text>
               </nb-col>
             </nb-grid>
-                      <nb-grid class="marginBottom">
+            <nb-grid class="marginBottom">
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('months') }}</nb-text>
                 <nb-text class="detailText">{{ debt.terms }}</nb-text>

@@ -22,10 +22,10 @@
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="collector in clientCollectors" :key="collector.ID">
           <nb-left>
-            <nb-text class="text">{{collector.client_debt.Incasseerder}}</nb-text>
+            <nb-text class="text">{{collector.title}}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{collector.DateTime.slice(0,11)}}</nb-text>
+            <nb-text class="text">{{collector.doc_date_time.slice(0,11)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>

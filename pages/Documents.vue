@@ -199,6 +199,7 @@
   border-radius: 10px;
   justify-content: center;
 }
+
 .camera {
   flex: 1;
 }

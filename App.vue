@@ -23,7 +23,7 @@
     nl: require('./locales/nl.json'),
     tr: require('./locales/tr.json'),
   };
-  i18n.locale = 'tr';
+  i18n.locale = 'nl';
   i18n.fallbacks = true;
 
   Vue.component("ionicons", Ionicons);

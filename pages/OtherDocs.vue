@@ -22,10 +22,10 @@
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="docs in clientDocs" :key="docs.ID">
           <nb-left>
-            <nb-text class="text">{{ docs.Filename }}</nb-text>
+            <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{ docs.DateTime.slice(0,11) }}</nb-text>
+            <nb-text class="text">{{ docs.doc_date_time.slice(0,11) }}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
