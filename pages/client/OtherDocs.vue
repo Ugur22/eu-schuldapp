@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>{{ $root.lang.t('debts') }}</nb-title>
+        <nb-title>{{ $root.lang.t('other_documents') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
@@ -15,27 +15,22 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input placeholder="Search" />
-      </nb-item> -->
+    <nb-content  >
+      <nb-item :style="{ borderColor: '#62B1F6' }">
+        <nb-input placeholder="zoek overige documenten" />
+      </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="debt in clientDebts" :key="debt.id">
+        <nb-list-item v-for="docs in clientDocs" :key="docs.ID">
           <nb-left>
-            <nb-text  class="text">{{debt.debtor.name}}</nb-text>
+            <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
-          <nb-body>
-            <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
-          </nb-body>
           <nb-right>
-          <nb-button transparent :on-press="() => detailDebt(debt.id)">
-            <nb-icon class="text" name="arrow-forward" />
-          </nb-button>
+            <nb-text class="text">{{ docs.doc_date_time.slice(0,11) }}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../assets/images/loader.gif')" class="loading" />
+			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
 	   </nb-card-item>
     </nb-content>
     <nb-footer>
@@ -44,25 +39,12 @@
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
-        <modal v-if="isModalVisible">
-          <DebtDetails v-bind:debtID="debtNr"></DebtDetails>
-        </modal>
   </nb-container>
 </template>
-
 <style>
-.headerText {
-  color: white;
-  font-weight: bold;
-}
-.detailText {
-  color: white;
-}
-.marginBottom {
-  margin-bottom: 20px;
-}
 .text {
-  color: #0078ae;
+    color: #0078ae;
+    font-size:14;
 }
 
 .loadingWrapper {
@@ -76,12 +58,9 @@
   width:50;
 }
 </style>
-
 <script>
-import Modal from 'react-native-modal';
-import FooterNav from '../included/Footer';
+import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
-import DebtDetails from '../pages/DebtDetails';
 
 export default {
   props: {
@@ -90,18 +69,17 @@ export default {
     },
     user: {},
   },
-  components: { FooterNav,DebtDetails },
   data() {
     return {
-      isModalVisible: false,
-      clientDebts: {},
-      dataIsReady: false,
-      debtNr:0
+      selectedDoc: '0',
+      clientDocs: {},
+       dataIsReady: false
     };
   },
   created() {
     this.userData();
   },
+  components: { FooterNav },
   methods: {
     userData: async function () {
       let value = '';
@@ -114,7 +92,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debts', {
+        let response = await fetch('http://api.arsus.nl/client/docs/others', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -128,7 +106,7 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientDebts = responseJson.results;
+          this.clientDocs = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
@@ -141,14 +119,6 @@ export default {
     goBack: function () {
       this.navigation.goBack();
     },
-    goToPage: function (page) {
-      this.navigation.navigate(page);
-    },
-    detailDebt: function (id) {
-      this.isModalVisible = true;
-      this.debtNr = id;
-    },
   },
 };
 </script>
-

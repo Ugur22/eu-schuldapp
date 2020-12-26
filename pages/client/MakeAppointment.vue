@@ -65,7 +65,7 @@
 </template>
 
 <script>
-  import FooterNav from '../included/Footer';
+  import FooterNav from '../../included/Footer';
   import DateTimePicker from '@react-native-community/datetimepicker';
   import { Platform } from 'react-native';
   

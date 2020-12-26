@@ -70,7 +70,7 @@
         </nb-card-item>
       </nb-card>
 	   <nb-card-item class="loadingWrapper" v-else>
-			<image :source="require('../assets/images/loader.gif')" class="loading" />
+			<image :source="require('../../assets/images/loader.gif')" class="loading" />
 	   </nb-card-item>
     </nb-content>
     <nb-footer>
@@ -107,7 +107,7 @@
 }
 </style>
 <script>
-import FooterNav from '../included/Footer';
+import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
 
 export default {

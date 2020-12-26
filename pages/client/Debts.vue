@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>{{ $root.lang.t('forms') }}</nb-title>
+        <nb-title>{{ $root.lang.t('debts') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
@@ -16,18 +16,26 @@
       </nb-right>
     </nb-header>
     <nb-content>
+      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
+        <nb-input placeholder="Search" />
+      </nb-item> -->
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id">
+        <nb-list-item v-for="debt in clientDebts" :key="debt.id">
           <nb-left>
-            <nb-text class="text">{{form.title}}</nb-text>
+            <nb-text  class="text">{{debt.debtor.name}}</nb-text>
           </nb-left>
+          <nb-body>
+            <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
+          </nb-body>
           <nb-right>
-            <nb-text class="text">{{form.doc_date_time.slice(0,11)}}</nb-text>
+          <nb-button transparent :on-press="() => detailDebt(debt.id)">
+            <nb-icon class="text" name="arrow-forward" />
+          </nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../assets/images/loader.gif')" class="loading" />
+			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
 	   </nb-card-item>
     </nb-content>
     <nb-footer>
@@ -36,13 +44,25 @@
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
+        <modal v-if="isModalVisible">
+          <DebtDetails v-bind:debtID="debtNr"></DebtDetails>
+        </modal>
   </nb-container>
 </template>
 
 <style>
+.headerText {
+  color: white;
+  font-weight: bold;
+}
+.detailText {
+  color: white;
+}
+.marginBottom {
+  margin-bottom: 20px;
+}
 .text {
-    color: #0078ae;
-     font-size: 14;
+  color: #0078ae;
 }
 
 .loadingWrapper {
@@ -58,8 +78,10 @@
 </style>
 
 <script>
-import FooterNav from '../included/Footer';
+import Modal from 'react-native-modal';
+import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
+import DebtDetails from './DebtDetails';
 
 export default {
   props: {
@@ -68,17 +90,18 @@ export default {
     },
     user: {},
   },
+  components: { FooterNav,DebtDetails },
   data() {
     return {
-      selectedDoc: '0',
-      clientForms: {},
-      dataIsReady: false
+      isModalVisible: false,
+      clientDebts: {},
+      dataIsReady: false,
+      debtNr:0
     };
   },
   created() {
     this.userData();
   },
-  components: { FooterNav },
   methods: {
     userData: async function () {
       let value = '';
@@ -91,7 +114,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/forms', {
+        let response = await fetch('http://api.arsus.nl/client/docs/debts', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -105,7 +128,7 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientForms = responseJson.results;
+          this.clientDebts = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
@@ -118,6 +141,14 @@ export default {
     goBack: function () {
       this.navigation.goBack();
     },
+    goToPage: function (page) {
+      this.navigation.navigate(page);
+    },
+    detailDebt: function (id) {
+      this.isModalVisible = true;
+      this.debtNr = id;
+    },
   },
 };
 </script>
+

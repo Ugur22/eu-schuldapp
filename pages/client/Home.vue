@@ -19,7 +19,7 @@
         </nb-button>
     </view>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-      <image :source="require('../assets/images/logo.png')" />
+      <image :source="require('../../assets/images/logo.png')" />
     </view>
   </nb-container>
 </template>

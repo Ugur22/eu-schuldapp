@@ -28,7 +28,7 @@
                 <nb-text>Jan 23 2020</nb-text>
               </nb-right>
           </nb-card-item>
-          <image :source="require('../assets/images/logo.png')" />
+          <image :source="require('../../assets/images/logo.png')" />
           </nb-body>
         </nb-card-item>
       </nb-card>
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-  import FooterNav from '../included/Footer';
+  import FooterNav from '../../included/Footer';
   export default {
     props: {
       navigation: {

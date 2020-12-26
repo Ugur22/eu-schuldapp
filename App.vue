@@ -34,18 +34,18 @@
   } from "vue-native-router";
 
   import UserStart from "./pages/Login.vue";
-  import HomeScreen from "./pages/Home.vue";
-  import AccountScreen from "./pages/Account.vue";
-  import AppointmentsScreen from "./pages/Appointments.vue";
-  import AppointmentScreen from "./pages/Appointment.vue";
-  import DateScreen from "./pages/MakeAppointment.vue";
-  import DocumentsScreen from "./pages/Documents.vue";
-  import DebtsScreen from "./pages/Debts.vue";
-  import DebtDetailScreen from "./pages/DebtDetails.vue";
-  import FormsScreen from "./pages/Forms.vue";
-  import CollectorDocsScreen from "./pages/Collector.vue";
-  import OtherDocsScreen from "./pages/OtherDocs.vue";
-  import HelpScreen from "./pages/Help.vue";
+  import HomeScreen from "./pages/client/Home.vue";
+  import AccountScreen from "./pages/client/Account.vue";
+  import AppointmentsScreen from "./pages/client/Appointments.vue";
+  import AppointmentScreen from "./pages/client/Appointment.vue";
+  import DateScreen from "./pages/client/MakeAppointment.vue";
+  import DocumentsScreen from "./pages/client/Documents.vue";
+  import DebtsScreen from "./pages/client/Debts.vue";
+  import DebtDetailScreen from "./pages/client/DebtDetails.vue";
+  import FormsScreen from "./pages/client/Forms.vue";
+  import CollectorDocsScreen from "./pages/client/Collector.vue";
+  import OtherDocsScreen from "./pages/client/OtherDocs.vue";
+  import HelpScreen from "./pages/client/Help.vue";
   import ConsultantScreen from "./pages/consultant/Consultant";
   import CreateClientScreen from "./pages/consultant/CreateClient";
   import ClientsScreen from "./pages/consultant/Clients";
@@ -115,7 +115,7 @@
     }
   );
 
-  const AppNavigator = createAppContainer(StackNavigatorConsultant);
+  const AppNavigator = createAppContainer(StackNavigator);
 
   export default { 
     data() {

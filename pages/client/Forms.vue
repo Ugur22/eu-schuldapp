@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>{{ $root.lang.t('creditors_documents') }}</nb-title>
+        <nb-title>{{ $root.lang.t('forms') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
@@ -16,21 +16,18 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input placeholder="zoek schuldeiser documenten" />
-      </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="collector in clientCollectors" :key="collector.id">
+        <nb-list-item v-for="form in clientForms" :key="form.id">
           <nb-left>
-            <nb-text class="text">{{collector.title}}</nb-text>
+            <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{collector.doc_date_time.slice(0,11)}}</nb-text>
+            <nb-text class="text">{{form.doc_date_time.slice(0,11)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../assets/images/loader.gif')" class="loading" />
+			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
 	   </nb-card-item>
     </nb-content>
     <nb-footer>
@@ -41,20 +38,11 @@
     </nb-footer>
   </nb-container>
 </template>
+
 <style>
-.headerText {
-  color: white;
-  font-weight: bold;
-}
-.detailText {
-  color: white;
-}
-.marginBottom {
-  margin-bottom: 20px;
-}
 .text {
-  color: #0078ae;
-  font-size: 14;
+    color: #0078ae;
+     font-size: 14;
 }
 
 .loadingWrapper {
@@ -68,8 +56,9 @@
   width:50;
 }
 </style>
+
 <script>
-import FooterNav from '../included/Footer';
+import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
 
 export default {
@@ -79,19 +68,19 @@ export default {
     },
     user: {},
   },
-    created() {
-    this.userData();
-  },
-  components: { FooterNav },
   data() {
     return {
       selectedDoc: '0',
-       clientCollectors: {},
-       dataIsReady: false
+      clientForms: {},
+      dataIsReady: false
     };
   },
+  created() {
+    this.userData();
+  },
+  components: { FooterNav },
   methods: {
-        userData: async function () {
+    userData: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -102,7 +91,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debtors', {
+        let response = await fetch('http://api.arsus.nl/client/docs/forms', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -116,12 +105,13 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientCollectors = responseJson.results;
+          this.clientForms = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }
       } catch (error) {
+        console.log(error);
         console.error(error);
       }
     },
