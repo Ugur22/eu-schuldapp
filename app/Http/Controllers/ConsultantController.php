@@ -9,10 +9,18 @@ use App\Models\Form;
 use App\Models\Place;
 use App\Models\Client;
 use App\Models\Company;
+use App\Models\DocHtml;
+use App\Models\DocFile;
+use App\Models\Template;
 use App\Models\Document;
 use App\Models\Consultant;
+use App\Models\CompanyType;
 use App\Models\Appointment;
+use App\Models\ClientStatus;
 use App\Models\ClientDebtStatus;
+use App\Helpers\TemplateHelpers;
+use App\Helpers\ControllerHelpers;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\JWTAuth;
 
@@ -86,6 +94,7 @@ class ConsultantController extends Controller
         'lastname' => 'required',
         'gender' => 'required',
         'birth_date' => 'required',
+        'phonenumber' => 'phonenumber',
         'address' => 'required',
         'place_id' => 'required',
         'password' => 'required',
@@ -109,6 +118,7 @@ class ConsultantController extends Controller
             $client->card_id = $input['card_id'];
             $client->gender = $input['gender'];
             $client->birth_date = $input['birth_date'];
+            $client->phonenumber = $input['phonenumber'];
             $client->address = $input['address'];
             $client->place_id = $input['place_id'];
             if($client->save()) {
@@ -123,6 +133,23 @@ class ConsultantController extends Controller
       } catch (\Exception $e) {
         return response()->json(['success' => false, 'message' => $e->getMessage()]);
       }
+    }
+
+    public function companyList(Request $request){
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $items = Company::where(function($query) {
+            $query->whereHas('types', function($q) {
+                $q->where('slug', '!=', 'employer');
+            });
+        })->get();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_company']);
+        }
     }
 
     public function appointmentList(Request $request)
@@ -174,26 +201,23 @@ class ConsultantController extends Controller
         }
     }
 
-    public function clientDebts(Request $request)
+    public function clientDebts(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
         $input = $request->all();
-        $myClients = $this->jwt->user()->consultant->clients()->pluck('id')->toArray();
-        $myClient = in_array($input['client_id'], $myClients) ? true: false;
-        $items=[];
-        if($myClient){
-            $debts = Debt::where('client_id', $input['client_id'])->get();
-            foreach ($debts as $key => $debt) {
-                $items[$key]['id'] = $debt->id;
-                $items[$key]['reference_id'] = $debt->reference_id;
-                $items[$key]['client'] = $debt->client;
-                $items[$key]['debt_amount'] = $debt->debt_amount;
-                $items[$key]['debtor'] = $debt->debtor;
-            };
-        }else{
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+        $items=[];
+        $debts = Debt::where('client_id', $input['client_id'])->get();
+        foreach ($debts as $key => $debt) {
+            $items[$key]['id'] = $debt->id;
+            $items[$key]['reference_id'] = $debt->reference_id;
+            $items[$key]['client'] = $debt->client;
+            $items[$key]['debt_amount'] = $debt->debt_amount;
+            $items[$key]['debtor'] = $debt->debtor;
         }
         
         if(count($items)){
@@ -203,20 +227,18 @@ class ConsultantController extends Controller
         }
     }
 
-    public function clientDebt(Request $request)
+    public function clientDebt(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
         
         $input = $request->all();
-        $myClients = $this->jwt->user()->consultant->clients()->pluck('id')->toArray();
-        $myClient = in_array($input['client_id'], $myClients) ? true: false;
-        if($myClient){
-            $item = Debt::whereId($input['id'])->with('client')->first();
-        }else{
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
+
+        $item = Debt::whereId($input['id'])->with('client')->first();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
@@ -224,61 +246,126 @@ class ConsultantController extends Controller
         }
     }
 
-    public function searchClientDebts(Request $request)
+    public function createClientDebt(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
         
         $input = $request->all();
-        $myClients = $this->jwt->user()->consultant->clients()->pluck('id')->toArray();
-        $myClient = in_array($input['client_id'], $myClients) ? true: false;
-        $items=[];
-        if($myClient){
-            $search = trim($input['search']);
-            $companies = Company::where('name', 'LIKE', '%'.$search.'%')->pluck('id')->toArray();
-            $statuses = ClientDebtStatus::where('status', 'LIKE', '%'.$search.'%')->pluck('id')->toArray();
-            $debts = Debt::where('client_id', $input['client_id'])->where(function($query) use($search, $companies, $statuses) {
-                $query->orWhereIn('debtor_id', $companies);
-                $query->orWhere('reference_id', 'LIKE', '%'.$search.'%');
-                $query->orWhereIn('status_id', $statuses);
-                $query->orWhere('notes', 'LIKE', '%'.$search.'%');
-            })->get();
-            
-            foreach ($debts as $key => $debt) {
-                $items[$key]['id'] = $debt->id;
-                $items[$key]['reference_id'] = $debt->reference_id;
-                $items[$key]['client'] = $debt->client;
-                $items[$key]['debt_amount'] = $debt->debt_amount;
-                $items[$key]['debtor'] = $debt->debtor;
-            };
-            if(count($items)){
-                return response()->json(['success' => true, 'results' => $items]);
-            }else{
-                return response()->json(['success' => false, 'message' => 'no_debt_found']);
-            }
-        }else{
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
 
+        $this->validate($request, [
+            'due_date'    => 'required'
+        ]);
+
+        $item = new Debt;
+        $item->client_id = $input['client_id'];
+        $item->reference_id = $input['reference_id'];
+        $item->debtor_id = $input['debtor_id'] ? $input['debtor_id']: null;
+        $item->status_id = 1;
+        $item->due_date = $input['due_date'];
+        $item->preference = $input['preference'];
+        $item->terms = $input['terms'];
+        $item->debt_amount = $input['debt_amount'];
+        $item->total_redeemed = $input['total_redeemed'];
+        $item->redeem_per_month = $input['redeem_per_month'];
+        $item->total_redemption = $input['total_redemption'];
+        $item->notes = $input['notes'];
+
+        if($item->save()){
+            return response()->json(['success' => true, 'results' => $item]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'create_failed']);
+        }
     }
 
-    /* 
-
-    public function postForms(Request $request)
+    public function updateClientDebt(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $user = $this->jwt->user();
-        $status = $user->Status;
         
-        $debts = $this->jwt->user()->debts()->groupBy('Status')->pluck('Status')->toArray();
-        $items = Form::select('ID', 'Filename')->where(function ($q) use ($debts, $status) {
-            $q->orWhere('Client_Status', $status)->whereNull('Client_Schuld_status');
-            $q->orWhereNull('Client_Status')->whereIn('Client_Schuld_status', $debts);
-        })->orderBy('Filename')->get();
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
 
+        $this->validate($request, [
+            'due_date'    => 'required',
+            'debt_amount' => 'required',
+        ]);
+
+        $item = Debt::find($input['debt_id']);
+        $item->reference_id = $input['reference_id'];
+        $item->debtor_id = $input['debtor_id'] ? $input['debtor_id']: null;
+        $item->status_id = $input['status_id'];
+        $item->due_date = $input['due_date'];
+        $item->preference = $input['preference'];
+        $item->terms = $input['terms'];
+        $item->debt_amount = $input['debt_amount'];
+        $item->total_redeemed = $input['total_redeemed'];
+        $item->redeem_per_month = $input['redeem_per_month'];
+        $item->total_redemption = $input['total_redemption'];
+        $item->notes = $input['notes'];
+
+        if($item->save()){
+            return response()->json(['success' => true, 'results' => $item]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'update_failed']);
+        }
+    }
+
+    public function searchClientDebts(Request $request, ControllerHelpers $helper)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+        
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $search = trim($input['search']);
+        $companies = Company::where('name', 'LIKE', '%'.$search.'%')->pluck('id')->toArray();
+        $statuses = ClientDebtStatus::where('status', 'LIKE', '%'.$search.'%')->pluck('id')->toArray();
+        $debts = Debt::where('client_id', $input['client_id'])->where(function($query) use($search, $companies, $statuses) {
+            $query->orWhereIn('debtor_id', $companies);
+            $query->orWhere('reference_id', 'LIKE', '%'.$search.'%');
+            $query->orWhereIn('status_id', $statuses);
+            $query->orWhere('notes', 'LIKE', '%'.$search.'%');
+        })->get();
+        
+        $items=[];
+        foreach ($debts as $key => $debt) {
+            $items[$key]['id'] = $debt->id;
+            $items[$key]['reference_id'] = $debt->reference_id;
+            $items[$key]['client'] = $debt->client;
+            $items[$key]['debt_amount'] = $debt->debt_amount;
+            $items[$key]['debtor'] = $debt->debtor;
+        };
+        if(count($items)){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_debt_found']);
+        }
+
+    }
+
+    public function clientFormList(Request $request, ControllerHelpers $helper)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $items = Document::where('client_id', $input['client_id'])->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('doc_date_time')->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{
@@ -286,13 +373,17 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postForm(Request $request)
+    public function clientFormDetails(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
         
-        $item = Form::find($request->id);
+        $item = Document::with('client')->with('clientStatus')->with('clientDebt')->whereId($input['id'])->first();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
@@ -300,13 +391,17 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postDeptors(Request $request)
+    public function clientDeptorDocs(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $client_id = $this->jwt->user()->BSN;
-        $items = Document::with('clientDebt')->whereNotNull('Client_Schuld_ID')->where('Client', $client_id)->get();
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $input['client_id'])->orderBy('doc_date_time')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -315,13 +410,17 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postDeptor(Request $request)
+    public function deptorDocDetails(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
         
-        $item = Document::find($request->id);
+        $item = Document::with('clientDebt')->with('template')->whereId($input['id'])->first();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
@@ -329,19 +428,22 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postSearchDebtor(Request $request)
+    public function searchDebtorDocs(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $client_id = $this->jwt->user()->BSN;
-        $search = trim($request->search);
-        $items = Document::with('clientDebt')->whereNotNull('Client_Schuld_ID')->where('Client', $client_id)->where(function($query) use($search) {
-            $query->orWhere('Filename', 'LIKE', '%'.$search.'%');
-            $query->orWhereHas('clientDebt', function($q) use ($search) {
-                $q->where(function($q) use ($search) {
-                    $q->where('Incasseerder', 'LIKE', '%' . $search . '%');
-                });
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $search = trim($input['search']);
+        $debtors = Company::where('name', 'LIKE', '%' . $search . '%')->orWhere('phone', 'LIKE', '%' . $search . '%')->orWhere('email', 'LIKE', '%' . $search . '%')->pluck('id')->toArray();
+        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $$input['client_id'])->where(function($query) use($search, $debtors) {
+            $query->orWhere('title', 'LIKE', '%'.$search.'%');
+            $query->orWhereHas('clientDebt', function($q) use ($debtors) {
+                $q->whereIn('debtor_id', $debtors);
             });
         })->get();
 
@@ -352,13 +454,17 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postOthers(Request $request)
+    public function otherDocList(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $client_id = $this->jwt->user()->BSN;
-        $items = Document::select('ID', 'DateTime', 'Filename')->whereNull('Client_Schuld_ID')->where('Client', $client_id)->orderBy('Filename')->get();
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $items = Document::has('file')->with('file')->whereNull('template_id')->where('client_id', $input['client_id'])->orderBy('doc_date_time')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -367,13 +473,17 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postOther(Request $request)
+    public function otherDocDetails(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
         
-        $item = Document::find($request->id);
+        $item = Document::whereId($input['id'])->with('file')->with('clientStatus')->first();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
@@ -381,16 +491,19 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postSearchOther(Request $request)
+    public function searchOtherDocs(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $client_id = $this->jwt->user()->BSN;
-        $search = trim($request->search);
-        $items = Document::select('ID', 'DateTime', 'Filename')->whereNull('Client_Schuld_ID')->where('Client', $client_id)->orderBy('Filename')->where(function($query) use($search) {
-            $query->orWhere('Filename', 'LIKE', '%'.$search.'%');
-        })->get();
+
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $search = trim($input['search']);
+        $items = Document::with('file')->whereHas('file')->where('client_id', $input['client_id'])->with('clientStatus')->where('title', 'LIKE', '%'.$search.'%')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -399,25 +512,149 @@ class ConsultantController extends Controller
         }
     }
 
-    public function postAddDocument(Request $request)
+    public function templateList(Request $request, ControllerHelpers $helper)
     {
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
 
         $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $client = Client::find($input['client_id']);
+        $client_status = $client->status->id;
+        $client_debt_statuses = $client->debts()->pluck('status_id')->toArray();
+        $items = Template::select('id', 'slug', 'filename')->Where('client_status_id', $client_status)->whereNull('client_debt_status_id')->orWhereIn('client_debt_status_id', $client_debt_statuses)->whereNull('client_status_id')->get();
+
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_template']);
+        }
+    }
+
+    public function nextClientStatus(Request $request, ControllerHelpers $helper)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $client = Client::find($input['client_id']);
+        $client_status = $client->status->sort;
+        $next_status = ClientStatus::where('sort', $client_status + 1)->first();
+        if($next_status) {
+            $client->client_status_id = $next_status->id;
+            if($client->save()){
+                return response()->json(['success' => true, 'results' => $client->status->status]);
+            }else{
+                return response()->json(['success' => false, 'message' => 'next_status_failed']);
+            }
+        }
+    }
+
+    public function nextDebtStatusList(Request $request, ControllerHelpers $helper)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $debt = Debt::find($input['debt_id']);
+        $next_statuses = $debt->status->next;
+        if($next_statuses->count()){
+            return response()->json(['success' => true, 'results' => $next_statuses]);
+        }else{
+            $next_statuses = ClientDebtStatus::where('sort', '>', $debt->status->sort)->get();
+            if($next_statuses->count()){
+                return response()->json(['success' => true, 'results' => $next_statuses]);
+            }else{
+                return response()->json(['success' => false, 'message' => 'end_of_steps']);
+            }
+        }
+    }
+
+    public function nextClientDebtStatus(Request $request, ControllerHelpers $helper)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $debt = Debt::find($input['debt_id']);
+        $debt->status_id = $input['debt_status_id'];
+        
+        if($debt->save()) {
+            return response()->json(['success' => true, 'results' => $debt]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'next_status_failed']);
+        }
+    }
+
+    public function addDocument(Request $request, ControllerHelpers $helper)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $input = $request->all();
+        $client_id = $input['client_id'];
+        $client = Client::find($client_id);
+        if(!$helper->myClient($this->jwt->user(), $client_id)) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+        
         $item = new Document;
-        $item->DateTime = \Carbon\Carbon::now();
-        $item->Client = $this->jwt->user()->BSN;
-        $item->Client_Schuld_ID = isset($input['schuld_id']) ? $input['schuld_id']: null;
-        $item->Filename = $input['filename'];
-        $item->data = $input['file'];
-        $item->main = $input['main'];
+        $item->doc_date_time = \Carbon\Carbon::now();
+        $item->client_id = $client_id;
+        $item->client_debt_id = isset($input['debt_id']) ? $input['debt_id']: null;
+        if(!isset($input['debt_id'])){
+            $item->client_status_id = $client->client_status_id;
+        }
+        $item->title = $input['title'];
+        $item->main = isset($input['main']) && $input['main'] ? $input['main']: null;
+        $item->template_id = $input['template_id'] ? $input['template_id']: null;
+        if($item->save()){
+            if($request->hasFile('file')) {
+                $file = new DocFile;
+                $file->doc_id = $item->id;
+                $filename = $request->file('file')->getClientOriginalName();
+                $filetype = $request->file('file')->extension();
+                $file->filename = $filename;
+                $file->filetype = $filetype;
+                if($request->file('file')->move(storage_path('app/documents'), $filename)){
+                    $file->save();
+                }
+            }else{
+                $template = Template::find($input['template_id']);
+                $templateHelper = new TemplateHelpers;
+                $html = $template->html;
+                $html = $templateHelper->templateToDoc($template->slug, $client, $template->html);
+                $file = new DocHtml;
+                $file->html = $html;
+                $file->doc_id = $item->id;
+                $file->save();
+            }
+        }
 
         if($item->save()){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
-            return response()->json(['success' => false, 'message' => 'add_failed']);
+            return response()->json(['success' => false, 'message' => 'add_doc_failed']);
         }
-    } */
+    }
 }

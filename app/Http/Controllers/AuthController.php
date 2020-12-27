@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\JWTAuth;
 use App\Models\User;
 use App\Models\Client;
@@ -21,6 +22,12 @@ class AuthController extends Controller
         $this->jwt = $jwt;
     }
 
+    public function testToken($token)
+    {
+        $login = $this->jwt->toUser($token);
+        return $login;
+    }
+
     public function postLogin(Request $request)
     {
         $this->validate($request, [
@@ -29,11 +36,17 @@ class AuthController extends Controller
         ]);
 
         try {
-
-            if (!$this->jwt->attempt($request->only('email', 'password'))) {
+            $token = $this->jwt->attempt($request->only('email', 'password'));
+            if (!$token) {
                 return response()->json(['user_not_found'], 404);
+            }else{
+                $user = User::with('role')->find($this->jwt->user()->id);
+                $str = bcrypt(Str::random(40));
+                $user->token = $str;
+                $user->last_login = \Carbon\Carbon::now();
+                $user->save();
+                return $user;
             }
-
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 
             return response()->json(['token_expired'], 500);
@@ -47,7 +60,6 @@ class AuthController extends Controller
             return response()->json(['token_absent' => $e->getMessage()], 500);
 
         }
-        return User::with('role')->find($this->jwt->user()->id);
         // return $this->jwt->user()->role;
         // return response()->json(compact('token'));
     }

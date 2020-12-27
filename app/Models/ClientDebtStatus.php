@@ -10,6 +10,11 @@ class ClientDebtStatus extends Model
 
    public function previous()
    {
-       return $this->belongsTo('App\Models\Debt', 'previous');
+       return $this->belongsTo('App\Models\ClientDebtStatus', 'previous');
+   }
+
+   public function next()
+   {
+       return $this->hasMany('App\Models\ClientDebtStatus', 'previous');
    }
 }

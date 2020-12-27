@@ -44,4 +44,25 @@ class TemplateHelpers
 
     return $html;
   }
+
+  public function templateToDoc($slug, $user, $html)
+  {
+    switch ($slug) {
+      case '1-0-inschrijf-form':
+        $ifloop = [
+          'children' => $user->children,
+          'initial' => $user->partner_lastname
+        ];
+        $html = $this->switchDisplay($html, $ifloop);
+        $html = $this->looping($html, $ifloop);
+        $modifieds['place_name'] = $user->location->name;
+        $html = $this->templateStr($html, $user, $modifieds);
+        break;
+      case 'contract-client':
+        $html = $this->templateStr($html, $user);
+        break;
+    }
+    
+    return $html;
+  }
 }
