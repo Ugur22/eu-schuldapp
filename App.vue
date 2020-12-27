@@ -49,6 +49,7 @@
   import ConsultantScreen from "./pages/consultant/Consultant";
   import CreateClientScreen from "./pages/consultant/CreateClient";
   import ClientsScreen from "./pages/consultant/Clients";
+  import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
 
   let PageStart;
 
@@ -108,6 +109,9 @@
       Clients: {
         screen: ClientsScreen
       },
+      AppointmentsConsultant: {
+        screen: AppointmentsConsultantScreen
+      },
     },
     {
       initialRouteName: 'Consultant',
@@ -115,7 +119,9 @@
     }
   );
 
-  const AppNavigator = createAppContainer(StackNavigator);
+  
+
+  const AppNavigator = createAppContainer(StackNavigatorConsultant);
 
   export default { 
     data() {

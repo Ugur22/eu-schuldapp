@@ -5,12 +5,12 @@
         <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
           <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
         </nb-button>
-        <!-- <nb-button full info class="btns" :on-press="() => goToPage('Documents')">
-          <nb-text class="text-btn">{{ $root.lang.t('check_document') }}</nb-text>
-        </nb-button> -->
-        <!-- <nb-button full info class="btns" :on-press="() => goToPage('Help')">
-          <nb-text class="text-btn">{{ $root.lang.t('contact') }}</nb-text>
-        </nb-button> -->
+        <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
+          <nb-text class="text-btn">{{ $root.lang.t('status_clients') }}</nb-text>
+        </nb-button>
+        <nb-button full info class="btns" :on-press="() => goToPage('AppointmentsConsultant')">
+          <nb-text class="text-btn">{{ $root.lang.t('appointments') }}</nb-text>
+        </nb-button>
         <nb-button full info class="btns" :on-press="logout">
           <nb-text class="text-btn">Logout</nb-text>
         </nb-button>

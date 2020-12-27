@@ -3,7 +3,7 @@
     <nb-content padder>
       <nb-card>
         <nb-card-item>
-          <nb-picker
+          <nb-pickerW
             mode="dialog"
             placeholder="Type document"
             :selectedValue="selectedDoc"

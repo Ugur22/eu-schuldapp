@@ -15,11 +15,24 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content>
+    <nb-content v-if="dataIsReady">
       <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
       </nb-item>
-      <nb-list v-if="dataIsReady">
+      <nb-list>
+      <nb-list-item itemDivider class="list-Header">
+          <nb-left>
+            <nb-text  class="text header-text">Naam</nb-text>
+          </nb-left>
+          <nb-body>
+            <nb-text  class="text header-text">status</nb-text>
+          </nb-body>
+          <nb-right>
+            <nb-text  class="text header-text">more</nb-text>
+          </nb-right>
+        </nb-list-item>
+      </nb-list>
+      <nb-list >
         <nb-list-item v-for="client in Clients" :key="client.id">
           <nb-left>
             <nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
@@ -34,10 +47,10 @@
           </nb-right>
         </nb-list-item>
       </nb-list>
-      <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
     </nb-content>
+    <nb-card-item class="loadingWrapper" v-else>
+			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
+	  </nb-card-item>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
@@ -71,6 +84,14 @@
 .loading {
   height:50;
   width:50;
+}
+
+.list-Header{
+  padding-bottom: 0;
+}
+
+.header-text {
+  font-weight: bold;
 }
 </style>
 

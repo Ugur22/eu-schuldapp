@@ -39,5 +39,6 @@
   "preference": "preference",
   "months": "months",
   "currency": "$",
-  "clients": "clienten"
+  "clients": "clienten",
+  "status_clients": "status clients"
 }

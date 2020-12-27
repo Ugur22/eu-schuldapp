@@ -39,5 +39,6 @@
   "preference": "preferentie",
   "months": "Maanden",
   "currency": "€",
-  "clients": "clienten"
+  "clients": "clienten",
+  "status_clients": "status clienten"
 }
