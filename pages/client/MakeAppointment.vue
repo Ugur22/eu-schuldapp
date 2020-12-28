@@ -9,7 +9,6 @@
       <nb-body>
         <nb-title>Afspraak maken</nb-title>
       </nb-body>
-      <nb-right />
     </nb-header>
     <nb-content padder>
       <nb-card>

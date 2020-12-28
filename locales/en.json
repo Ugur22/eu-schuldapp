@@ -40,5 +40,8 @@
   "months": "months",
   "currency": "$",
   "clients": "clienten",
-  "status_clients": "status clients"
+  "status_clients": "status clients",
+  "outbox": "outbox",
+  "income": "income",
+  "expenses": "expenses"
 }

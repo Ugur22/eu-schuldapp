@@ -107,7 +107,7 @@
 }
 </style>
 <script>
-import FooterNav from '../../included/Footer';
+import FooterNav from '../../included/FooterConsultant';
 import { AsyncStorage } from 'react-native';
 
 export default {

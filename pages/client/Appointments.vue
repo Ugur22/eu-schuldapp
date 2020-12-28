@@ -9,7 +9,6 @@
       <nb-body>
       	<nb-title>{{ $root.lang.t('appointments') }}</nb-title>
       </nb-body>
-      <nb-right />
     </nb-header>
     <nb-content padder>
       <nb-button v-if="dataIsReady"

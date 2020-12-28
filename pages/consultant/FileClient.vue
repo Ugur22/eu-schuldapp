@@ -1,14 +1,19 @@
 <template>
-  <nb-container>
-   <nb-header :style="{backgroundColor:'#0078ae'}">
-      <nb-left>
+  <nb-container v-if="dataIsReady">
+   <nb-header  :style="{backgroundColor:'#0078ae'}">
+      <nb-left :style="{flex:1}">
         <nb-button transparent >
           <nb-icon name="arrow-back" :on-press="goBack" />
         </nb-button>
       </nb-left>
-      <nb-body>
-        <nb-title>{{ $root.lang.t('file') }}</nb-title>
+      <nb-body :style="{flex:1}">
+        <nb-title>{{Client.firstname}} {{Client.lastname}}</nb-title>
       </nb-body>
+      <nb-right :style="{flex:1}">
+        <nb-button transparent>
+          <nb-icon name="information-circle" />
+        </nb-button>
+      </nb-right>
     </nb-header>
     <nb-content padder>
       <nb-card>
@@ -52,26 +57,41 @@
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
       </nb-card>
-      <nb-grid :style="{ marginTop: 20 }">
+      <nb-grid :style="{ marginTop: 10 }">
         <nb-col>
-          <nb-button warning full vertical class="btns" :on-press="() => goToPage('DebtList')">
-            <nb-text>{{ $root.lang.t('debts') }}</nb-text>
+          <nb-button warning full vertical class="btns" :on-press="() => goToPage('Home')">
+            <nb-text>{{ $root.lang.t('forms') }}</nb-text>
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button primary full vertical class="btns" :on-press="() => goToPage('FormList')">
-            <nb-text>{{ $root.lang.t('forms') }}</nb-text>
+          <nb-button primary full vertical class="btns" :on-press="() => goToPage('Home')">
+            <nb-text>{{ $root.lang.t('outbox') }}</nb-text>
           </nb-button>
         </nb-col>
       </nb-grid>
         <nb-col>
-          <nb-button danger full vertical class="btns" :on-press="() => goToPage('DocsCollector')">
+          <nb-button danger full vertical class="btns" :on-press="() => goToPage('Home')">
+            <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
+          </nb-button>
+        </nb-col>
+        <nb-col>
+          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
             <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button success full vertical class="btns" :on-press="() => goToPage('DocsOthers')">
-            <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
+          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
+            <nb-text>{{ $root.lang.t('income') }}</nb-text>
+          </nb-button>
+        </nb-col>
+        <nb-col>
+          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
+            <nb-text>{{ $root.lang.t('expenses') }}</nb-text>
+          </nb-button>
+        </nb-col>
+        <nb-col>
+          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
+            <nb-text>{{ $root.lang.t('debt') }}</nb-text>
           </nb-button>
         </nb-col>
     </nb-content>
@@ -108,20 +128,26 @@
       </image-background>
     </modal>
   </nb-container>
+        <nb-card-item class="loadingWrapper" v-else>
+			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
+	   </nb-card-item>
 </template>
 
 <script>
   import { Picker } from "native-base";
-  import FooterNav from '../../included/Footer';
+  import FooterNav from '../../included/FooterConsultant';
   import * as Permissions from 'expo-permissions';
   import { Camera } from 'expo-camera';
   import Modal from 'react-native-modal';
+  import { AsyncStorage } from 'react-native';
 
   export default {
     props: {
       navigation: {
         type: Object
-      }
+      },
+      ClientID:'',
+      user: {},
     },
     data() {
       return {
@@ -133,11 +159,52 @@
         displayCam: false,
         displayThumbnail: false,
         finalPic: null,
-        displayLarge: false
+        displayLarge: false,
+        Client: {},
+        dataIsReady: false,
       };
     },
+      created() {
+        this.clientData();
+      },
     components: { FooterNav, Camera, Item: Picker.Item },
     methods: {
+    clientData: async function () {
+      let value = '';
+      try {
+        value = await AsyncStorage.getItem('login');
+        this.user = JSON.parse(value);
+      } catch (error) {
+        // Error retrieving data
+        console.log(error.message);
+      }
+
+      try {
+        let response = await fetch('http://api.arsus.nl/consultant/client', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: this.user.email,
+            password: this.user.password,
+            id: this.ClientID,
+          }),
+        });
+
+        let responseJson = await response.json();
+        if (responseJson.success) {
+          this.Client = responseJson.results;
+          this.dataIsReady = true;
+        } else {
+          console.log(responseJson);
+        }
+      } catch (error) {
+        console.log(error);
+        console.error(error);
+      }
+    },
       goBack: function () {
         this.navigation.goBack();
       },
@@ -191,9 +258,9 @@
 <style>
 
 .btns {
-  padding:10px;
+  padding:20px;
   background-color:#0078ae;
-  margin:10px;
+  margin:7px;
   align-items: center;
   border-radius: 10px;
   justify-content: center;
@@ -201,5 +268,16 @@
 
 .camera {
   flex: 1;
+}
+
+.loadingWrapper {
+  align-items: center;
+  justify-content: center;
+  flex:1;
+}
+
+.loading {
+  height:50;
+  width:50;
 }
 </style>

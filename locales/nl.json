@@ -20,7 +20,7 @@
   "appointments": "Afspraken",
   "check_document": "Bekijk dossier",
   "help_center": "Hulpcenter",
-  "debts": "mijn schulden",
+  "debts": "schulden",
   "send": "verzend",
   "forms": "formulieren",
   "creditors_documents": "schuldeiser documenten",
@@ -40,5 +40,8 @@
   "months": "Maanden",
   "currency": "€",
   "clients": "clienten",
-  "status_clients": "status clienten"
+  "status_clients": "status clienten",
+  "outbox": "outbox",
+  "income": "inkomsten",
+  "expenses": "uitgaven"
 }

@@ -50,6 +50,7 @@
   import CreateClientScreen from "./pages/consultant/CreateClient";
   import ClientsScreen from "./pages/consultant/Clients";
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
+  import FileClientScreen from "./pages/consultant/FileClient";
 
   let PageStart;
 
@@ -111,6 +112,9 @@
       },
       AppointmentsConsultant: {
         screen: AppointmentsConsultantScreen
+      },
+      FileClient: {
+        screen: FileClientScreen
       },
     },
     {

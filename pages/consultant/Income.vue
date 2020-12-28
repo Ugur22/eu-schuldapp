@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>{{ $root.lang.t('clients') }}</nb-title>
+        <nb-title>{{ $root.lang.t('') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
@@ -15,51 +15,38 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content v-if="dataIsReady">
+    <nb-content>
       <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
       </nb-item>
-      <nb-list>
-      <nb-list-item itemDivider class="list-Header">
+      <nb-list v-if="dataIsReady">
+        <nb-list-item v-for="debt in clientDebts" :key="debt.id">
           <nb-left>
-            <nb-text  class="text header-text">Naam</nb-text>
+            <nb-text  class="text">{{debt.debtor.name}}</nb-text>
           </nb-left>
           <nb-body>
-            <nb-text  class="text header-text">status</nb-text>
+            <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
           </nb-body>
           <nb-right>
-            <nb-text  class="text header-text">more</nb-text>
-          </nb-right>
-        </nb-list-item>
-      </nb-list>
-      <nb-list >
-        <nb-list-item v-for="client in Clients" :key="client.id">
-          <nb-left>
-            <nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
-          </nb-left>
-          <nb-body>
-            <nb-text class="text">{{client.status}}</nb-text>
-          </nb-body>
-          <nb-right>
-          <nb-button transparent :on-press="() => detailClient(client.id)">
+          <nb-button transparent :on-press="() => detailDebt(debt.id)">
             <nb-icon class="text" name="arrow-forward" />
           </nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>
-    </nb-content>
-    <nb-card-item class="loadingWrapper" v-else>
+      <nb-card-item class="loadingWrapper" v-else>
 			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	  </nb-card-item>
+	   </nb-card-item>
+    </nb-content>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
-    <modal v-if="isModalVisible">
-      <FileClient v-bind:ClientID="clientNr"></FileClient>
-    </modal>
+        <modal v-if="isModalVisible">
+          <DebtDetails v-bind:debtID="debtNr"></DebtDetails>
+        </modal>
   </nb-container>
 </template>
 
@@ -88,21 +75,13 @@
   height:50;
   width:50;
 }
-
-.list-Header{
-  padding-bottom: 0;
-}
-
-.header-text {
-  font-weight: bold;
-}
 </style>
 
 <script>
 import Modal from 'react-native-modal';
-import FooterNav from '../../included/FooterConsultant';
-import FileClient from './FileClient';
+import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
+import DebtDetails from './DebtDetails';
 
 export default {
   props: {
@@ -111,20 +90,20 @@ export default {
     },
     user: {},
   },
-  components: { FooterNav,FileClient },
+  components: { FooterNav,DebtDetails },
   data() {
     return {
       isModalVisible: false,
-      Clients: {},
+      clientDebts: {},
       dataIsReady: false,
-       clientNr:0
+      debtNr:0
     };
   },
   created() {
-    this.getClients();
+    this.userData();
   },
   methods: {
-    getClients: async function () {
+    userData: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -135,7 +114,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/consultant/clients', {
+        let response = await fetch('http://api.arsus.nl/client/docs/debts', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -149,7 +128,7 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.Clients = responseJson.results;
+          this.clientDebts = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
@@ -165,9 +144,9 @@ export default {
     goToPage: function (page) {
       this.navigation.navigate(page);
     },
-    detailClient: function (id) {
+    detailDebt: function (id) {
       this.isModalVisible = true;
-      this.clientNr = id;
+      this.debtNr = id;
     },
   },
 };
