@@ -59,7 +59,7 @@
       </nb-card>
       <nb-grid :style="{ marginTop: 10 }">
         <nb-col>
-          <nb-button warning full vertical class="btns" :on-press="() => goToPage('Debts')">
+          <nb-button warning full vertical class="btns" :on-press="() => detailPage(Client.id,'Debts')">
             <nb-text>{{ $root.lang.t('debts') }}</nb-text>
           </nb-button>
         </nb-col>
@@ -234,7 +234,12 @@
       },
       sendFile: function () {
         alert('sent!');
-      }
+      },
+      detailPage: function (id,pageName) {
+         this.navigation.navigate(pageName, {
+         id: id
+      });
+    },
     }
   }
 </script>

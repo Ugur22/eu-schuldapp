@@ -16,10 +16,10 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
+      <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
-      </nb-item> -->
-      <!-- <nb-list v-if="dataIsReady">
+      </nb-item>
+      <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id">
           <nb-left>
             <nb-text  class="text">{{debt.debtor.name}}</nb-text>
@@ -28,7 +28,7 @@
             <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button transparent :on-press="() => detailDebt(debt.id)">
+          <nb-button transparent :on-press="() => detailDebt(debt.id,debt.client.id)">
             <nb-icon class="text" name="arrow-forward" />
           </nb-button>
           </nb-right>
@@ -36,7 +36,7 @@
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
 			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item> -->
+	   </nb-card-item>
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -44,9 +44,6 @@
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
-        <modal v-if="isModalVisible">
-          <DebtDetails v-bind:debtID="debtNr"></DebtDetails>
-        </modal>
   </nb-container>
 </template>
 
@@ -96,7 +93,6 @@ export default {
       isModalVisible: false,
       clientDebts: {},
       dataIsReady: false,
-      debtNr:0
     };
   },
   created() {
@@ -123,7 +119,7 @@ export default {
           body: JSON.stringify({
             email: this.user.email,
             password: this.user.password,
-            client_id: 67,
+            client_id: this.navigation.getParam('id'),
           }),
         });
 
@@ -143,11 +139,14 @@ export default {
       this.navigation.goBack();
     },
     goToPage: function (page) {
-      // this.navigation.navigate(page);
+      this.navigation.navigate(page);
     },
-    detailDebt: function (id) {
+    detailDebt: function (id,clientID) {
       this.isModalVisible = true;
-      this.debtNr = id;
+      this.navigation.navigate('DebtDetails', {
+        debtID: id,
+        ClientID:clientID
+      });
     },
   },
 };

@@ -51,6 +51,8 @@
   import ClientsScreen from "./pages/consultant/Clients";
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
   import FileClientScreen from "./pages/consultant/FileClient";
+  import DebtClientScreen from "./pages/consultant/Debts";
+  import DebtClientDetailScreen from "./pages/consultant/DebtDetails";
 
   let PageStart;
 
@@ -115,6 +117,12 @@
       },
       FileClient: {
         screen: FileClientScreen
+      },
+      Debts: {
+        screen: DebtClientScreen
+      },
+      DebtDetails: {
+        screen: DebtClientDetailScreen
       },
     },
     {
