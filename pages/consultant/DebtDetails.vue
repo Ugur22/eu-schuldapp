@@ -100,7 +100,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debt', {
+        let response = await fetch('consultant/client/debt/details', {
           method: 'POST',
           headers: {
             accept: 'application/json',

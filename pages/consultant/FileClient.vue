@@ -59,13 +59,13 @@
       </nb-card>
       <nb-grid :style="{ marginTop: 10 }">
         <nb-col>
-          <nb-button warning full vertical class="btns" :on-press="() => goToPage('Home')">
-            <nb-text>{{ $root.lang.t('forms') }}</nb-text>
+          <nb-button warning full vertical class="btns" :on-press="() => goToPage('Debts')">
+            <nb-text>{{ $root.lang.t('debts') }}</nb-text>
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button primary full vertical class="btns" :on-press="() => goToPage('Home')">
-            <nb-text>{{ $root.lang.t('outbox') }}</nb-text>
+          <nb-button primary full vertical class="btns" :on-press="() => goToPage('Consultant')">
+            <nb-text>{{ $root.lang.t('forms') }}</nb-text>
           </nb-button>
         </nb-col>
       </nb-grid>
@@ -77,21 +77,6 @@
         <nb-col>
           <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
             <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
-          </nb-button>
-        </nb-col>
-        <nb-col>
-          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
-            <nb-text>{{ $root.lang.t('income') }}</nb-text>
-          </nb-button>
-        </nb-col>
-        <nb-col>
-          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
-            <nb-text>{{ $root.lang.t('expenses') }}</nb-text>
-          </nb-button>
-        </nb-col>
-        <nb-col>
-          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
-            <nb-text>{{ $root.lang.t('debt') }}</nb-text>
           </nb-button>
         </nb-col>
     </nb-content>
@@ -146,7 +131,6 @@
       navigation: {
         type: Object
       },
-      ClientID:'',
       user: {},
     },
     data() {
@@ -189,7 +173,7 @@
           body: JSON.stringify({
             email: this.user.email,
             password: this.user.password,
-            id: this.ClientID,
+            id: this.navigation.getParam('clientID'),
           }),
         });
 
@@ -198,7 +182,7 @@
           this.Client = responseJson.results;
           this.dataIsReady = true;
         } else {
-          console.log(responseJson);
+          console.log(responseJson.results);
         }
       } catch (error) {
         console.log(error);

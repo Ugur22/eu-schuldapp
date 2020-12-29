@@ -44,9 +44,9 @@
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
-        <modal v-if="isModalVisible">
+        <!-- <modal v-if="isModalVisible">
           <DebtDetails v-bind:debtID="debtNr"></DebtDetails>
-        </modal>
+        </modal> -->
   </nb-container>
 </template>
 
@@ -146,7 +146,10 @@ export default {
     },
     detailDebt: function (id) {
       this.isModalVisible = true;
-      this.debtNr = id;
+      // this.debtNr = id;
+      this.navigation.navigate('DebtDetails', {
+        debtID: id
+      });
     },
   },
 };

@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>{{ $root.lang.t('') }}</nb-title>
+        <nb-title>{{ $root.lang.t('debts') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
@@ -16,10 +16,10 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-item :style="{ borderColor: '#62B1F6' }">
+      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
-      </nb-item>
-      <nb-list v-if="dataIsReady">
+      </nb-item> -->
+      <!-- <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id">
           <nb-left>
             <nb-text  class="text">{{debt.debtor.name}}</nb-text>
@@ -36,7 +36,7 @@
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
 			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
+	   </nb-card-item> -->
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -114,7 +114,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debts', {
+        let response = await fetch('http://api.arsus.nl/consultant/client/debts', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -123,6 +123,7 @@ export default {
           body: JSON.stringify({
             email: this.user.email,
             password: this.user.password,
+            client_id: 67,
           }),
         });
 
@@ -142,7 +143,7 @@ export default {
       this.navigation.goBack();
     },
     goToPage: function (page) {
-      this.navigation.navigate(page);
+      // this.navigation.navigate(page);
     },
     detailDebt: function (id) {
       this.isModalVisible = true;

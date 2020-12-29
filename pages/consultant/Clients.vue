@@ -57,9 +57,6 @@
         activeBtn="docs"
       ></footer-nav>
     </nb-footer>
-    <modal v-if="isModalVisible">
-      <FileClient v-bind:ClientID="clientNr"></FileClient>
-    </modal>
   </nb-container>
 </template>
 
@@ -117,7 +114,6 @@ export default {
       isModalVisible: false,
       Clients: {},
       dataIsReady: false,
-       clientNr:0
     };
   },
   created() {
@@ -166,8 +162,9 @@ export default {
       this.navigation.navigate(page);
     },
     detailClient: function (id) {
-      this.isModalVisible = true;
-      this.clientNr = id;
+    this.navigation.navigate('FileClient', {
+        clientID: id
+      });
     },
   },
 };
