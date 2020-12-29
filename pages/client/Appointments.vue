@@ -11,46 +11,6 @@
       </nb-body>
     </nb-header>
     <nb-content padder>
-      <nb-button v-if="dataIsReady"
-        rounded
-        info
-        :style="{
-          backgroundColor: '#0078ae',
-          position: 'absolute',
-          zIndex: 5,
-          elevation: 5,
-          right: 5,
-          top: 5,
-        }"
-        :on-press="clickAddAppointment"
-      >
-        <nb-icon active name="ios-add" />
-      </nb-button>
-      <nb-card :style="{ marginTop: 20 }" v-if="addAppointment">
-        <nb-card-item header bordered>
-          <nb-text>Kies een persoon om afspraak te maken</nb-text>
-        </nb-card-item>
-        <nb-card-item>
-          <nb-body>
-            <nb-button transparent :on-press="() => makeAppointment(1)">
-              <nb-text>Erik Jansen</nb-text>
-            </nb-button>
-          </nb-body>
-          <nb-right>
-            <nb-text>( Rotterdam )</nb-text>
-          </nb-right>
-        </nb-card-item>
-        <nb-card-item>
-          <nb-body>
-            <nb-button transparent :on-press="() => makeAppointment(2)">
-              <nb-text>Nikos van Sleeuwen</nb-text>
-            </nb-button>
-          </nb-body>
-          <nb-right>
-            <nb-text>( Rotterdam )</nb-text>
-          </nb-right>
-        </nb-card-item>
-      </nb-card>
       <nb-card :style="{ marginTop: 20 }" v-if="dataIsReady">
         <nb-card-item header bordered>
           <nb-text class="title">{{ $root.lang.t('appointments') }}</nb-text>
@@ -59,11 +19,9 @@
           v-for="appointment in appointments"
           :key="appointment.id">
             <nb-left>
-				<nb-button transparent :on-press="() => openAppointment(1)">
-					<nb-text class="text">{{ appointment.event_date}}</nb-text>
-				</nb-button>
+					    <nb-text class="text">{{ appointment.event_date}}</nb-text>
             </nb-left>
-         	<nb-right>
+         	  <nb-right>
             	<nb-text class="text">{{ appointment.location.name }}</nb-text>
           	</nb-right>
         </nb-card-item>
@@ -165,12 +123,6 @@ export default {
     },
     goBack: function () {
       this.navigation.goBack();
-    },
-    openAppointment: function (id) {
-      this.navigation.navigate('Appointment');
-    },
-    clickAddAppointment: function (page) {
-      this.addAppointment = !this.addAppointment;
     },
   },
 };

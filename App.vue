@@ -37,8 +37,8 @@
   import HomeScreen from "./pages/client/Home.vue";
   import AccountScreen from "./pages/client/Account.vue";
   import AppointmentsScreen from "./pages/client/Appointments.vue";
-  import AppointmentScreen from "./pages/client/Appointment.vue";
-  import DateScreen from "./pages/client/MakeAppointment.vue";
+  import AppointmentScreen from "./pages/consultant/Appointment";
+  import DateScreen from "./pages/consultant/MakeAppointment";
   import DocumentsScreen from "./pages/client/Documents.vue";
   import DebtsScreen from "./pages/client/Debts.vue";
   import DebtDetailScreen from "./pages/client/DebtDetails.vue";
@@ -53,6 +53,7 @@
   import FileClientScreen from "./pages/consultant/FileClient";
   import DebtClientScreen from "./pages/consultant/Debts";
   import DebtClientDetailScreen from "./pages/consultant/DebtDetails";
+  import AppointmentConfirmationtScreen from "./pages/consultant/AppointmentConfirmation";
 
   let PageStart;
 
@@ -66,12 +67,6 @@
       },
       Appointments: {
         screen: AppointmentsScreen
-      },
-      Appointment: {
-        screen: AppointmentScreen
-      },
-      MakeAppointment: {
-        screen: DateScreen
       },
       Documents: {
         screen: DocumentsScreen
@@ -123,6 +118,15 @@
       },
       DebtDetails: {
         screen: DebtClientDetailScreen
+      },
+      Appointment: {
+        screen: AppointmentScreen
+      },
+      MakeAppointment: {
+        screen: DateScreen
+      },
+      AppointmentConfirmation: {
+        screen: AppointmentConfirmationtScreen
       },
     },
     {

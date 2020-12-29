@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>{{ $root.lang.t('clients') }}</nb-title>
+        <nb-title>{{ $root.lang.t('forms') }}</nb-title>
       </nb-body>
       <nb-right>
         <nb-button transparent>
@@ -15,64 +15,34 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content v-if="dataIsReady">
-      <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input placeholder="Search" />
-      </nb-item>
-      <nb-list>
-      <nb-list-item itemDivider class="list-Header">
+    <nb-content>
+      <nb-list v-if="dataIsReady">
+        <nb-list-item v-for="form in clientForms" :key="form.id">
           <nb-left>
-            <nb-text  class="text header-text">Naam</nb-text>
+            <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
-          <nb-body>
-            <nb-text  class="text header-text">status</nb-text>
-          </nb-body>
           <nb-right>
-            <nb-text  class="text header-text">more</nb-text>
+            <nb-text class="text">{{form.doc_date_time.slice(0,11)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
-      <nb-list >
-        <nb-list-item v-for="client in Clients" :key="client.id">
-          <nb-left>
-            <nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
-          </nb-left>
-          <nb-body>
-            <nb-text class="text">{{client.status}}</nb-text>
-          </nb-body>
-          <nb-right>
-          <nb-button transparent :on-press="() => detailClient(client.id)">
-            <nb-icon class="text" name="arrow-forward" />
-          </nb-button>
-          </nb-right>
-        </nb-list-item>
-      </nb-list>
-    </nb-content>
-    <nb-card-item class="loadingWrapper" v-else>
+      <nb-card-item class="loadingWrapper" v-else>
 			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	  </nb-card-item>
+	   </nb-card-item>
+    </nb-content>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
-        activeBtn="clients"
+        activeBtn="docs"
       ></footer-nav>
     </nb-footer>
   </nb-container>
 </template>
 
 <style>
-.headerText {
-  color: white;
-  font-weight: bold;
-}
-.detailText {
-  color: white;
-}
-.marginBottom {
-  margin-bottom: 20px;
-}
 .text {
-  color: #0078ae;
+    color: #0078ae;
+     font-size: 14;
 }
 
 .loadingWrapper {
@@ -85,20 +55,10 @@
   height:50;
   width:50;
 }
-
-.list-Header{
-  padding-bottom: 0;
-}
-
-.header-text {
-  font-weight: bold;
-}
 </style>
 
 <script>
-import Modal from 'react-native-modal';
-import FooterNav from '../../included/FooterConsultant';
-import FileClient from './FileClient';
+import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
 
 export default {
@@ -108,19 +68,19 @@ export default {
     },
     user: {},
   },
-  components: { FooterNav,FileClient },
   data() {
     return {
-      isModalVisible: false,
-      Clients: {},
-      dataIsReady: false,
+      selectedDoc: '0',
+      clientForms: {},
+      dataIsReady: false
     };
   },
   created() {
-    this.getClients();
+    this.userData();
   },
+  components: { FooterNav },
   methods: {
-    getClients: async function () {
+    userData: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -131,7 +91,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/consultant/clients', {
+        let response = await fetch('http://api.arsus.nl/client/docs/forms', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -145,7 +105,7 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.Clients = responseJson.results;
+          this.clientForms = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
@@ -158,15 +118,6 @@ export default {
     goBack: function () {
       this.navigation.goBack();
     },
-    goToPage: function (page) {
-      this.navigation.navigate(page);
-    },
-    detailClient: function (id) {
-    this.navigation.navigate('FileClient', {
-        clientID: id
-      });
-    },
   },
 };
 </script>
-

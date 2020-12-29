@@ -25,30 +25,20 @@
         }"
         :on-press="clickAddAppointment"
       >
-        <nb-icon active name="add" />
+        <nb-icon active :name='addAppointment ? "remove" : "add"'/>
       </nb-button>
-      <nb-card :style="{ marginTop: 20 }" v-if="addAppointment">
+      <nb-card :style="{ marginTop: 20 }" v-if="addAppointment"  >
         <nb-card-item header bordered>
-          <nb-text>Kies een persoon om afspraak te maken</nb-text>
+          <nb-text class="text">Kies een client om afspraak te maken</nb-text>
         </nb-card-item>
-        <nb-card-item>
+        <nb-card-item v-for="client in Clients" :key="client.id">
           <nb-body>
-            <nb-button transparent :on-press="() => makeAppointment(1)">
-              <nb-text>Erik Jansen</nb-text>
+            <nb-button transparent :on-press="() => makeAppointment(client.id,client.firstname,client.lastname)">
+              <nb-text class="text">{{client.firstname}} {{client.lastname}}</nb-text>
             </nb-button>
           </nb-body>
           <nb-right>
-            <nb-text>( Rotterdam )</nb-text>
-          </nb-right>
-        </nb-card-item>
-        <nb-card-item>
-          <nb-body>
-            <nb-button transparent :on-press="() => makeAppointment(2)">
-              <nb-text>Nikos van Sleeuwen</nb-text>
-            </nb-button>
-          </nb-body>
-          <nb-right>
-            <nb-text>( Rotterdam )</nb-text>
+            <nb-text class="text">{{client.status}}</nb-text>
           </nb-right>
         </nb-card-item>
       </nb-card>
@@ -60,7 +50,7 @@
           v-for="appointment in appointments"
           :key="appointment.id">
             <nb-left>
-				<nb-button transparent :on-press="() => openAppointment(1)">
+				<nb-button transparent :on-press="() => openAppointment(appointment.id)">
 					<nb-text class="text">{{ appointment.event_date}}</nb-text>
 				</nb-button>
             </nb-left>
@@ -120,16 +110,53 @@ export default {
   data() {
     return {
       addAppointment: false,
-	  appointments: {},
-	  dataIsReady: false
+      appointments: {},
+      dataIsReady: false,
+      Clients: {},
     };
   },
   created() {
-    this.userData();
+    this.getAppointments();
+    this.getClients();
   },
   components: { FooterNav },
   methods: {
-    userData: async function () {
+        getClients: async function () {
+    let value = '';
+    try {
+      value = await AsyncStorage.getItem('login');
+      this.user = JSON.parse(value);
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+
+    try {
+      let response = await fetch('http://api.arsus.nl/consultant/clients', {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.user.email,
+          password: this.user.password,
+        }),
+      });
+
+      let responseJson = await response.json();
+      if (responseJson.success) {
+        this.Clients = responseJson.results;
+        this.dataIsReady = true;
+      } else {
+        console.log(responseJson);
+      }
+    } catch (error) {
+      console.log(error);
+      console.error(error);
+    }
+  },
+    getAppointments: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -167,8 +194,17 @@ export default {
     goBack: function () {
       this.navigation.goBack();
     },
+    makeAppointment: function (id,firstname,lastname) {
+      this.navigation.navigate('MakeAppointment', {
+        ClientID:id,
+        firstname:firstname,
+        lastname:lastname
+      });
+      },
     openAppointment: function (id) {
-      this.navigation.navigate('Appointment');
+      this.navigation.navigate('Appointment',{
+        id:id
+      });
     },
     clickAddAppointment: function (page) {
       this.addAppointment = !this.addAppointment;

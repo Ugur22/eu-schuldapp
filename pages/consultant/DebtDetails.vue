@@ -26,7 +26,7 @@
             <nb-grid class="marginBottom">
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('Collector') }}</nb-text>
-                <nb-text class="detailText">Ziggo</nb-text>
+                <nb-text class="detailText">nvt</nb-text>
               </nb-col>
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('debt') }}</nb-text>
@@ -36,7 +36,7 @@
             <nb-grid class="marginBottom">
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('status') }}</nb-text>
-                <nb-text class="detailText">compleet</nb-text>
+                <nb-text class="detailText">nvt</nb-text>
               </nb-col>
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('total_repaid') }}</nb-text>

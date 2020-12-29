@@ -5,9 +5,9 @@
         <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
           <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
         </nb-button>
-        <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
+        <!-- <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
           <nb-text class="text-btn">{{ $root.lang.t('status_clients') }}</nb-text>
-        </nb-button>
+        </nb-button> -->
         <nb-button full info class="btns" :on-press="() => goToPage('AppointmentsConsultant')">
           <nb-text class="text-btn">{{ $root.lang.t('appointments') }}</nb-text>
         </nb-button>

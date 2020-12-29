@@ -18,20 +18,24 @@
       <nb-card>
         <nb-card-item>
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-            <nb-icon name="check" :style="{ fontSize: 150, color: 'green' }" />
-            <nb-text>Afspraak bewindvoerder EU</nb-text>
+            <nb-icon name="checkmark" :style="{ fontSize: 150, color: 'green' }" />
+            <nb-text>{{navigation.getParam('title')}}</nb-text>
             <nb-card-item>
               <nb-left>
-                <nb-text>14:00 - 15:00</nb-text>
+                <nb-text>{{navigation.getParam('time')}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>Jan 23 2020</nb-text>
+                <nb-text>{{navigation.getParam('date')}}</nb-text>
               </nb-right>
           </nb-card-item>
           <image :source="require('../../assets/images/logo.png')" />
           </nb-body>
         </nb-card-item>
       </nb-card>
+    <nb-button full info class="btns" :on-press="() => goToPage('AppointmentsConsultant')">
+      <nb-icon name="arrow-back" :on-press="goBack" />
+      <nb-text class="text-btn">Terug naar alle afspraken</nb-text>
+    </nb-button>
     </nb-content>
     <nb-footer>
       <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="appointments"></footer-nav>
@@ -40,7 +44,7 @@
 </template>
 
 <script>
-  import FooterNav from '../../included/Footer';
+  import FooterNav from '../../included/FooterConsultant';
   export default {
     props: {
       navigation: {
@@ -56,7 +60,24 @@
     methods: {
       goBack: function () {
         this.navigation.goBack();
-      }
+      },
+      goToPage: function (page) {
+      this.navigation.navigate(page);
+    },
     }
   }
 </script>
+<style>
+.btns {
+  padding:10px;
+  background-color:#0078ae;
+  margin:10px;
+  align-items: center;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.text-btn {
+  font-weight: bold;
+}
+</style>
