@@ -17,8 +17,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-/* $router->get('/test','GeneralController@test'); */
-$router->get('/test/{token}','AuthController@testToken');
+$router->get('/test','GeneralController@test');
 $router->get('/locations','GeneralController@getLocations');
 $router->post('/login','AuthController@postLogin');
 /* client */
@@ -35,6 +34,7 @@ $router->post('/client/docs/debtors','ClientController@postDebtors');
 $router->post('/client/docs/debtor','ClientController@postDebtor');
 $router->post('/client/docs/others','ClientController@postOthers');
 $router->post('/client/docs/other','ClientController@postOther');
+$router->post('/client/sign','ClientController@postSign');
 /* Search */
 $router->post('/client/docs/debts/search','ClientController@postSearchDebt');
 $router->post('/client/docs/debtors/search','ClientController@postSearchDebtor');
@@ -42,19 +42,20 @@ $router->post('/client/docs/others/search','ClientController@postSearchOther');
 
 /* consultant */
 /* get data */
+$router->post('/consultant/companies','ConsultantController@companyList');
 $router->post('/consultant/clients','ConsultantController@clientList');
 $router->post('/consultant/client','ConsultantController@clientDetails');
 $router->post('/consultant/client/create','ConsultantController@createClient');
-$router->post('/consultant/companies','ConsultantController@companyList');
-
-$router->post('/consultant/appointments','ConsultantController@appointmentList');
-$router->post('/consultant/appointment','ConsultantController@appointment');
-$router->post('/consultant/make-appointment','ConsultantController@makeAppointment');
 $router->post('/consultant/client/debts','ConsultantController@clientDebts');
 $router->post('/consultant/client/debt/details','ConsultantController@clientDebt');
 $router->post('/consultant/client/debt/create','ConsultantController@createClientDebt');
 $router->post('/consultant/client/debt/update','ConsultantController@updateClientDebt');
 $router->post('/consultant/client/debts/search','ConsultantController@searchClientDebts');
+
+
+$router->post('/consultant/appointments','ConsultantController@appointmentList');
+$router->post('/consultant/appointment','ConsultantController@appointment');
+$router->post('/consultant/make-appointment','ConsultantController@makeAppointment');
 $router->post('/consultant/doc/forms','ConsultantController@clientFormList');
 $router->post('/consultant/doc/form','ConsultantController@clientFormDetails');
 $router->post('/consultant/doc/debtors','ConsultantController@clientDeptorDocs');
@@ -69,7 +70,10 @@ $router->post('/consultant/client/debt/next-steps','ConsultantController@nextDeb
 $router->post('/consultant/client/debt/next-step','ConsultantController@nextDebtStatus');
 $router->post('/consultant/client/templates','ConsultantController@templateList');
 $router->post('/consultant/doc/add','ConsultantController@addDocument');
+$router->post('/consultant/sign','ConsultantController@toSign');
 
 /* download */
+$router->post('/document/html-preview','DownloadController@htmlPreview');
 $router->post('/document/pdf-download','DownloadController@formPDF');
 $router->post('/document/file-download','DownloadController@clientFile');
+$router->post('/document/signatures','DownloadController@checkSignatures');

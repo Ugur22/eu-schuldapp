@@ -27,17 +27,8 @@ class GeneralController extends Controller
         $templateHelper = new TemplateHelpers;
         $html = $template->html;
 
-        preg_match_all("/(?:\<\!\-\-(loop)\(([a-z_]+)\)\-\-\>)((.|\n)*?)(?:\<\!\-\-(endloop)\(([a-z_]+)\)\-\-\>)/", $html, $looping);
-
-        $ifs = [
-            'children' => $user->children,
-            'initial' => $user->partner_lastname
-        ];
-        $html = $templateHelper->switchDisplay($html, $ifs);
-        $html = $templateHelper->looping($html, $ifs);
-        $modifieds['place_name'] = $user->location->name;
-        $html = $templateHelper->templateStr($html, $user, $modifieds);
-        
-        return PDF::loadHTML($html)->stream('download.pdf');
+        $html = $templateHelper->findSignaturePlaceholder($html, 'consultant');
+        return $html;
+        /* return PDF::loadHTML($html)->stream('download.pdf'); */
     }
 }

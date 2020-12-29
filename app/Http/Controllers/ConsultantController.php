@@ -54,8 +54,10 @@ class ConsultantController extends Controller
         $results = [];
         foreach ($this->jwt->user()->consultant->clients as $key => $client) {
           $results[$key]['id'] = $client->id;
+          $results[$key]['social_security_id'] = $client->social_security_id;
           $results[$key]['firstname'] = $client->firstname;
           $results[$key]['lastname'] = $client->lastname;
+          $results[$key]['login'] = $client->user;
           $results[$key]['status'] = $client->status->status;
         }
         
@@ -440,7 +442,7 @@ class ConsultantController extends Controller
 
         $search = trim($input['search']);
         $debtors = Company::where('name', 'LIKE', '%' . $search . '%')->orWhere('phone', 'LIKE', '%' . $search . '%')->orWhere('email', 'LIKE', '%' . $search . '%')->pluck('id')->toArray();
-        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $$input['client_id'])->where(function($query) use($search, $debtors) {
+        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $input['client_id'])->where(function($query) use($search, $debtors) {
             $query->orWhere('title', 'LIKE', '%'.$search.'%');
             $query->orWhereHas('clientDebt', function($q) use ($debtors) {
                 $q->whereIn('debtor_id', $debtors);
@@ -655,6 +657,28 @@ class ConsultantController extends Controller
             return response()->json(['success' => true, 'results' => $item]);
         }else{
             return response()->json(['success' => false, 'message' => 'add_doc_failed']);
+        }
+    }
+
+    public function toSign(Request $request)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $template = new TemplateHelpers;
+        $input = $request->all();
+        $doc = Document::whereId($input['document_id'])->where('client_id', $input['client_id'])->first();
+        
+        if($request->hasFile('signature')){
+            $signed = $template->uploadSignature($request->file('signature'), $doc, $input['author']);
+            if(!$signed){
+                return response()->json(['success' => false, 'message' => 'upload_sign_failed']);
+            }else{
+                return response()->json(['success' => true, 'results' => $signed]);
+            }
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_signature_found']);
         }
     }
 }

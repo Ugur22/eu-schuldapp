@@ -38,6 +38,11 @@ class Client extends Model
        return $this->belongsTo('App\Models\Place', 'place_id');
    }
 
+   public function employer()
+   {
+       return $this->belongsTo('App\Models\Company', 'employer_id');
+   }
+
    public function children()
    {
        return $this->hasMany('App\Models\Child', 'client_id');

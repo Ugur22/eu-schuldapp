@@ -8,6 +8,11 @@ class Company extends Model
 {
    protected $table = 'companies';
 
+   public function location()
+   {
+       return $this->belongsTo('App\Models\Place', 'place_id');
+   }
+
    public function types()
    {
        return $this->belongsToMany('App\Models\CompanyType', 'companies_types', 'company_id', 'type_id');

@@ -1,5 +1,5 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<table style="font-size: 0.8em; text-align: justify; " cellspacing="2" >
+<table style="font-size: 9px; text-align: justify; " cellspacing="2" >
 
   <tr>
     <td colspan="11" style="text-align: center; "><img src="http://api.arsus.nl/images/logo.jpg" width="150"><br/>
@@ -8,14 +8,6 @@
     </td>
   </tr>
   
-  <tr><td colspan="11"></td></tr>
-
-  <tr>
-    <td style="text-align: center; " colspan="11">
-      <b>Inschrijf formulier</b>
-    </td>
-  </tr>
-
   <tr><td colspan="11"></td></tr>
 
   <tr>
@@ -51,10 +43,18 @@
 
   <tr>
     <td colspan="3"><b>Voorletter(s) en Achternaam:</b></td>
-    <td colspan="2"><!--initial--> <!--firstname--> <!--lastname--></td>
+    <td colspan="2"><!--initial--> <!--lastname--></td>
     <td colspan="1"></td>
     <td colspan="3"><b>Voorletter(s) en Achternaam:</b></td>
-    <td colspan="2"><!--partner_initial--> <!--partner_firstname--> <!--partner_lastname--></td>
+    <td colspan="2"><!--partner_initial--> <!--partner_lastname--></td>
+  </tr>
+
+  <tr>
+    <td colspan="3"><b>Voornamen:</b></td>
+    <td colspan="2"><!--firstname--></td>
+    <td colspan="1"></td>
+    <td colspan="3"><b>Voornamen:</b></td>
+    <td colspan="2"><!--partner_firstname--></td>
   </tr>
 
   <tr>
@@ -145,19 +145,16 @@
 
   <tr>
     <td colspan="3"><b>E-mailadres:</b></td>
-    <td colspan="8"><!--email--></td>
+    <td colspan="2"><!--email--></td>
+    <td colspan="6"></td>
   </tr>
 
   <tr>
     <td colspan="3"><b>Bankgegevens:</b></td>
-    <td colspan="8"><!--bank_account--></td>
+    <td colspan="2"><!--bank_account--></td>
+    <td colspan="6"></td>
   </tr>
 
-    <tr>
-      <td colspan="3"><b>Kind(eren):</b></td>
-      <td colspan="2"><!--count(children)--></td>
-      <td colspan="6"></td>
-    </tr>
   <!--if(children)-->
   <!--loop(children)-->
   <tr>
@@ -169,7 +166,9 @@
   </tr>
   <!--endloop(children)-->
   <!--endif(children)-->
+
   <tr><td colspan="11"></td></tr>
+
   <tr>
     <td colspan="11"><b><i>Ondergetekende(n) verklaart (en) dat het machtigingsformulier naar waarheid is ingevuld en dat er kennis is genomen van de werkwijze van de bemiddelaar.</i></b></td>
   </tr>
@@ -196,25 +195,20 @@
     <td colspan="5"><img width="140" src="<!--sign_client-->"><br/>
     Handtekening:..............................</td>
     <td colspan="1"></td>
-    <td colspan="5">
-      <!--if(initial)-->
-      <img width="140" src="<!--sign_partner-->"><br/>
+    <td colspan="5"><img width="140" src="<!--sign_partner-->"><br/>
     Handtekening:..............................</td>
-    <!--endif(initial)-->
   </tr>
 
   <tr><td colspan="11"></td></tr>
 
   <tr>
-    <td colspan="5">Naam voluit: <!--initial--> <!--firstname--> <!--lastname--></td>
+    <td colspan="5">Naam voluit: <!--firstname--> <!--lastname--></td>
     <td colspan="1"></td>
-    <!--if(initial)-->
-    <td colspan="5">Naam voluit: <!--partner_initial--> <!--partner_firstname--> <!--partner_lastname--></td>
-    <!--endif(initial)-->
+    <td colspan="5">Naam voluit: <!--partner_firstname--> <!--partner_lastname--></td>
   </tr>
 
   <tr><td colspan="11"></td></tr>
 
-  <tr><td colspan="11"><b>EU-Bewindvoering B.V.</b></td></tr>
+  <tr><td colspan="11"><b>EU-Bewindvoering B.V. </b></td></tr>
 
 </table>

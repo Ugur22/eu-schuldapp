@@ -43,7 +43,7 @@ class ClientController extends Controller
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $results = $this->jwt->user()->client;
+        $results = Client::with('user')->with('status')->find($this->jwt->user()->client->id);
         
         if(!$results){
             return response()->json(['success' => false, 'message' => 'wrong_credential']);
@@ -290,6 +290,29 @@ class ClientController extends Controller
             return response()->json(['success' => true, 'results' => $items]);
         }else{
             return response()->json(['success' => false, 'message' => 'no_other_doc']);
+        }
+    }
+
+    public function postSign(Request $request)
+    {
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $template = new TemplateHelpers;
+        $input = $request->all();
+        $client_id = $this->jwt->user()->id;
+        $doc = Document::whereId($input['document_id'])->where('client_id', $client_id)->first();
+        
+        if($request->hasFile('signature')){
+            $signed = $template->uploadSignature($request->file('signature'), $doc, $input['author']);
+            if(!$signed){
+                return response()->json(['success' => false, 'message' => 'upload_sign_failed']);
+            }else{
+                return response()->json(['success' => true, 'results' => $signed]);
+            }
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_signature_found']);
         }
     }
 }

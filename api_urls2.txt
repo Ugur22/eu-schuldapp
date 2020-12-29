@@ -76,6 +76,9 @@ download other document list
 request: email, password, search
 searching for other documents based on doc name/title
 
+/client/sign
+required: email, password, document_id, signature (signature image), author (client/partner)
+
 CONSULTANT SIDE
 
 /consultant/clients
@@ -135,12 +138,23 @@ required: email, password, client_id, title
 optional: main (1 or none), file (if upload file), template_id (if pdf otherwise 0)
 create/add document for client, could be file/picture or pdf from template.
 
+/client/sign
+required: email, password, document_id, signature (signature image), client_id, author (client/consultant/partner)
+
 DOWNLOAD
 
+/document/html-preview
+request: email, password, client_id (not required as client), document_id
+HTML preview client's form
+
 /document/pdf-download
-request: email, password, client_id, document_id
+request: email, password, client_id (not required as client), document_id
 download/stream pdf client's pdf form
 
 /document/file-download
-request: email, password, client_id, document_id
+request: email, password, client_id (not required as client), document_id
 download/stream pdf client's pdf form
+
+/document/check-signatures
+request: email, password, document_id
+Check if document complete signed, or who need to sign
