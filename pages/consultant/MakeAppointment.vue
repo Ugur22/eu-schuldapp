@@ -17,7 +17,7 @@
         </nb-card-item>
         <nb-card-item>
           <nb-body>
-          <nb-body :style="{ marginBottom: 20}">
+          <nb-body>
             <nb-item floatingLabel>
               <nb-label>Title</nb-label>
               <nb-input v-model="title" />
@@ -26,41 +26,39 @@
               <nb-label>Notes</nb-label>
               <nb-input v-model="notes" />
             </nb-item>
-                    <nb-card-item floatingLabel>
-          <nb-label>{{ $root.lang.t('Township') }}</nb-label>
-          <nb-picker
-            mode="dialog"
-            placeholder="gender"
-            :selectedValue="selectedLocation"
-            :onValueChange="onLocationChange"
-          >
-            <item
-              v-for="location in locations"
-              :key="location.id"
-              :label="location.name"
-              :value="location.id"
-            />
-          </nb-picker>
+            <nb-card-item floatingLabel>
+          <nb-label>{{ $root.lang.t('Township') }}:</nb-label>
+            <nb-picker
+              mode="dialog"
+              placeholder="gender"
+              :selectedValue="selectedLocation"
+              :onValueChange="onLocationChange">
+              <item
+                v-for="location in locations"
+                :key="location.id"
+                :label="location.name"
+                :value="location.id"/>
+            </nb-picker>
         </nb-card-item>
           </nb-body>
-            <nb-text :style="{ fontSize: 20 }">{{ days[date.getDay()] }}</nb-text>
-            <view :style="{ flexDirection:'row' }">
-              <nb-text :style="{ fontSize: 35 }">{{ date.toString().substr(4, 12) }}</nb-text>
-              <nb-button rounded info :on-press="showDatepicker" :style="{ marginLeft: 'auto' }">
+            <nb-text :style="{ fontSize: 20 }">{{ formatDay(date)}}</nb-text>
+            <view :style="{ flexDirection:'row', paddingTop:10 }">
+              <nb-text :style="{ fontSize: 30 }">{{ formatDate(date) }}</nb-text>
+              <nb-button rounded info :on-press="showDatepicker" :style="{ marginLeft: 10,backgroundColor:'#0078ae' }">
                 <nb-icon active name="calendar" />
               </nb-button>
             </view>
-            <view :style="{ flexDirection:'row' }">
-              <nb-text :style="{ fontSize: 28 }">{{ ('0'  + (date.getHours())).slice(-2) + ":" + ('0'  + (date.getMinutes())).slice(-2) }}</nb-text>
-              <nb-button rounded info :on-press="showTimepicker" :style="{ justifyContent: 'center', alignSelf: 'flex-end' }">
-                <nb-icon active name="clock" />
+            <view :style="{ flexDirection:'row',paddingTop:10 }">
+              <nb-text :style="{ fontSize: 28 }">{{ formatTime(date)}}</nb-text>
+              <nb-button rounded info :on-press="showTimepicker" :style="{ justifyContent: 'center',marginLeft: 10, alignSelf: 'flex-end',backgroundColor:'#0078ae' }">
+                <nb-icon active name="clock"/>
               </nb-button>
             </view>
           </nb-body>            
         </nb-card-item>
         <nb-card-item footer :style="{ flex: 1,  backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }">
           <view :style="{ flexDirection:'row' }">
-            <nb-button rounded success :on-press="appointmentMake" :style="{marginRight: 5}">
+            <nb-button rounded success :on-press="appointmentMake" :style="{marginRight: 5,backgroundColor:'#008551'}">
               <nb-icon active name="checkmark" />
             </nb-button>
             <nb-button rounded danger :on-press="appointmentCancel" :style="{marginLeft: 5}">
@@ -96,6 +94,7 @@
   import { Picker,Textarea } from "native-base";
   import { AsyncStorage } from 'react-native';
   import moment from "moment";
+  import localization from "moment/locale/nl";
   
   export default {
     props: {
@@ -111,7 +110,6 @@
         mode: 'date',
         show: false,
         minimumDate: this.addDays(1),
-        days: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
         title:'',
         notes:'',
         locations: {},
@@ -119,9 +117,22 @@
       };
     },
     created() {
+        moment.locale('nl'); 
         this.getLocations();
     },
     methods: {
+    formatDate: function(date) {
+      let Formatdate = moment(date).format("DD-MM-YYYY");
+      return Formatdate;
+    },
+    formatTime: function(date) {
+      let FormatTime = moment(date).format("HH:mm");
+      return FormatTime;
+    },
+    formatDay: function(date) {
+      let formatDay = moment(date).format("dddd");
+      return formatDay;
+    },
     getLocations: async function () {
       try {
         let response = await fetch('http://api.arsus.nl/locations', {
@@ -170,7 +181,6 @@
       this.selectedLocation = value;
     },
       appointmentMake: async function () {
-
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -213,7 +223,6 @@
           console.log(responseJson);
         }
       } catch (error) {
-        console.log(error);
         console.error(error);
       }
         

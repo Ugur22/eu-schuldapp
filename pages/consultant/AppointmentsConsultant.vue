@@ -52,7 +52,7 @@
             <nb-left>
 				<nb-button transparent :on-press="() => openAppointment(appointment.id)">
 					<nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
-					<nb-text class="text">{{ appointment.event_date.slice(10,16)}}</nb-text>
+					<nb-text class="text">{{ formatTime(appointment.event_date)}}</nb-text>
 				</nb-button>
             </nb-left>
          	<nb-right>
@@ -127,6 +127,10 @@ export default {
     formatDate: function(date) {
       let Formatdate = moment(date).format("DD-MM-YYYY");
       return Formatdate;
+    },
+    formatTime: function(date) {
+      let FormatTime = moment(date).format("HH:mm");
+      return FormatTime;
     },
         getClients: async function () {
     let value = '';
