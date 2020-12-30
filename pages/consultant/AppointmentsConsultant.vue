@@ -51,7 +51,7 @@
           :key="appointment.id">
             <nb-left>
 				<nb-button transparent :on-press="() => openAppointment(appointment.id)">
-					<nb-text class="text">{{ appointment.event_date.slice(0,11)}}</nb-text>
+					<nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
 					<nb-text class="text">{{ appointment.event_date.slice(10,16)}}</nb-text>
 				</nb-button>
             </nb-left>
@@ -100,13 +100,15 @@
 <script>
 import FooterNav from '../../included/FooterConsultant';
 import { AsyncStorage } from 'react-native';
+import moment from "moment";
+
 
 export default {
   props: {
     navigation: {
       type: Object,
 	},
-	user: {},
+  user: {}
   },
   data() {
     return {
@@ -122,6 +124,10 @@ export default {
   },
   components: { FooterNav },
   methods: {
+    formatDate: function(date) {
+      let Formatdate = moment(date).format("DD-MM-YYYY");
+      return Formatdate;
+    },
         getClients: async function () {
     let value = '';
     try {

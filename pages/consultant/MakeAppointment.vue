@@ -95,6 +95,7 @@
   import { Platform } from 'react-native';
   import { Picker,Textarea } from "native-base";
   import { AsyncStorage } from 'react-native';
+  import moment from "moment";
   
   export default {
     props: {
@@ -178,10 +179,6 @@
         // Error retrieving data
         console.log(error.message);
       }
-     
-        let formatDate = this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate();
-        console.log(formatDate);
-        let timestamp = this.date.getHours() + ":" + this.date.getMinutes();
 
       try {
         let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
@@ -195,8 +192,8 @@
             password: this.user.password,
             title: this.title,
             notes: this.notes,
-            date: formatDate,
-            time:timestamp = this.date.getHours() + ":" + this.date.getMinutes(),
+            date: moment(this.date).format("DD-MM-YYYY"),
+            time: moment(this.date).format("HH:mm"),
             client_id: this.navigation.getParam('ClientID'),
             location_id: this.selectedLocation,
           }),
@@ -209,8 +206,8 @@
             title: this.title,
             notes: this.notes,
             clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
-            date:  formatDate,
-            time: timestamp
+            date:  this.date,
+            time: moment(this.date).format("HH:mm")
           });
         } else {
           console.log(responseJson);

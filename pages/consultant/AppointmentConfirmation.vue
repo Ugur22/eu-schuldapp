@@ -23,10 +23,10 @@
             <nb-text>cient: {{navigation.getParam('clientName')}}</nb-text>
             <nb-card-item>
               <nb-left>
-                <nb-text>{{navigation.getParam('time')}}</nb-text>
+                <nb-text>tijd: {{navigation.getParam('time')}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>{{navigation.getParam('date')}}</nb-text>
+                <nb-text>datum: {{formatDate(navigation.getParam('date'))}}</nb-text>
               </nb-right>
           </nb-card-item>
           <nb-card-item>
@@ -49,6 +49,8 @@
 
 <script>
   import FooterNav from '../../included/FooterConsultant';
+  import moment from "moment";
+
   export default {
     props: {
       navigation: {
@@ -64,10 +66,14 @@
     methods: {
       goBack: function () {
         this.navigation.goBack();
-      },
+        },
       goToPage: function (page) {
       this.navigation.navigate(page);
-    },
+        },
+      formatDate: function(date) {
+      let formatdate = moment(date).format("DD-MM-YYYY");
+        return formatdate;
+        },
     }
   }
 </script>
