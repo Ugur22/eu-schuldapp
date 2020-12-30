@@ -208,6 +208,7 @@
           this.navigation.navigate('AppointmentConfirmation', {
             title: this.title,
             notes: this.notes,
+            clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
             date:  formatDate,
             time: timestamp
           });

@@ -51,7 +51,8 @@
           :key="appointment.id">
             <nb-left>
 				<nb-button transparent :on-press="() => openAppointment(appointment.id)">
-					<nb-text class="text">{{ appointment.event_date}}</nb-text>
+					<nb-text class="text">{{ appointment.event_date.slice(0,11)}}</nb-text>
+					<nb-text class="text">{{ appointment.event_date.slice(10,16)}}</nb-text>
 				</nb-button>
             </nb-left>
          	<nb-right>

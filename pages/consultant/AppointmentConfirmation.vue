@@ -20,6 +20,7 @@
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
             <nb-icon name="checkmark" :style="{ fontSize: 150, color: 'green' }" />
             <nb-text>{{navigation.getParam('title')}}</nb-text>
+            <nb-text>cient: {{navigation.getParam('clientName')}}</nb-text>
             <nb-card-item>
               <nb-left>
                 <nb-text>{{navigation.getParam('time')}}</nb-text>
@@ -27,6 +28,9 @@
               <nb-right>
                 <nb-text>{{navigation.getParam('date')}}</nb-text>
               </nb-right>
+          </nb-card-item>
+          <nb-card-item>
+            <nb-text>opmerkingen: {{navigation.getParam('notes')}}</nb-text>
           </nb-card-item>
           <image :source="require('../../assets/images/logo.png')" />
           </nb-body>

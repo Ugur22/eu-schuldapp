@@ -7,24 +7,30 @@
         </nb-button>
       </nb-left>
       <nb-body>
-        <nb-title>Uw afspraak</nb-title>
+        <nb-title>afspraak detail</nb-title>
       </nb-body>
       <nb-right />
     </nb-header>
     <nb-content padder>
       <nb-card v-if="dataIsReady">
-        <nb-card-item v-for="appointment in Appointment" :key="appointment.id">
+        <nb-card-item >
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-            <nb-text :style="{ fontSize: 24, color: 'green' }">{{appointment.title}} - {{appointment.location.name}}</nb-text>
+            <nb-text :style="{ fontSize: 24, color: 'green' }">client: {{Appointment.client.firstname}} {{Appointment.client.lastname}}</nb-text>
+            <nb-text :style="{ fontSize: 20, color: 'green' }">{{Appointment.title}}</nb-text>
             <nb-card-item>
               <nb-left>
-                <nb-text>{{appointment.event_date.slice(10,16)}}</nb-text>
+                <nb-text>tijd:{{Appointment.event_date.slice(10,16)}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>{{appointment.event_date.slice(0,11)}}</nb-text>
+                <nb-text>datum:{{Appointment.event_date.slice(0,11)}}</nb-text>
               </nb-right>
           </nb-card-item>
-          <image :source="require('../../assets/images/logo.png')" />
+          <nb-card-item>
+              <nb-text :style="{ fontSize: 20, color: '#000' }">locatie: {{Appointment.location.name}}</nb-text>
+          </nb-card-item>
+          <nb-card-item v-if="Appointment.notes">
+              <nb-text :style="{ fontSize: 14, color: '#000' }">opmerkingen: {{Appointment.notes}}</nb-text>
+          </nb-card-item>
           </nb-body>
         </nb-card-item>
       </nb-card>
