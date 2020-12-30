@@ -49,7 +49,7 @@
               </nb-button>
             </view>
             <view :style="{ flexDirection:'row',paddingTop:10 }">
-              <nb-text :style="{ fontSize: 28 }">{{ formatTime(date)}}</nb-text>
+              <nb-text :style="{ fontSize: 28 }">{{ FormatTime(date)}}</nb-text>
               <nb-button rounded info :on-press="showTimepicker" :style="{ justifyContent: 'center',marginLeft: 10, alignSelf: 'flex-end',backgroundColor:'#0078ae' }">
                 <nb-icon active name="clock"/>
               </nb-button>
@@ -95,6 +95,7 @@
   import { AsyncStorage } from 'react-native';
   import moment from "moment";
   import localization from "moment/locale/nl";
+  import {formatDate,FormatTime,formatDay} from "../utils/dates";
   
   export default {
     props: {
@@ -114,6 +115,9 @@
         notes:'',
         locations: {},
         selectedLocation: '0',
+        formatDate,
+        FormatTime,
+        formatDay
       };
     },
     created() {
@@ -121,18 +125,6 @@
         this.getLocations();
     },
     methods: {
-    formatDate: function(date) {
-      let Formatdate = moment(date).format("DD-MM-YYYY");
-      return Formatdate;
-    },
-    formatTime: function(date) {
-      let FormatTime = moment(date).format("HH:mm");
-      return FormatTime;
-    },
-    formatDay: function(date) {
-      let formatDay = moment(date).format("dddd");
-      return formatDay;
-    },
     getLocations: async function () {
       try {
         let response = await fetch('http://api.arsus.nl/locations', {
@@ -202,8 +194,8 @@
             password: this.user.password,
             title: this.title,
             notes: this.notes,
-            date: moment(this.date).format("DD-MM-YYYY"),
-            time: moment(this.date).format("HH:mm"),
+            date: this.formatDate(this.date),
+            time: this.FormatTime(this.date),
             client_id: this.navigation.getParam('ClientID'),
             location_id: this.selectedLocation,
           }),
@@ -216,8 +208,8 @@
             title: this.title,
             notes: this.notes,
             clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
-            date:  this.date,
-            time: moment(this.date).format("HH:mm")
+            date: this.formatDate(this.date),
+            time: this.FormatTime(this.date)
           });
         } else {
           console.log(responseJson);

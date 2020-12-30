@@ -25,7 +25,7 @@
             <nb-text class="text">{{collector.title}}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{collector.doc_date_time.slice(0,11)}}</nb-text>
+            <nb-text class="text">{{formatDate(collector.doc_date_time)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -71,6 +71,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
+import {formatDate} from "../utils/dates";
 
 export default {
   props: {
@@ -87,7 +88,8 @@ export default {
     return {
       selectedDoc: '0',
        clientCollectors: {},
-       dataIsReady: false
+       dataIsReady: false,
+       formatDate
     };
   },
   methods: {

@@ -37,7 +37,7 @@
             <nb-card-item >
               <nb-left>
                 <nb-icon :style="{ color: '#0078ae' }" name="mail"></nb-icon>
-                <nb-text class="text-account">{{ clientData.email }}</nb-text>
+                <nb-text class="text-account">{{ clientData.user.email }}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >

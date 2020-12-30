@@ -19,10 +19,10 @@
             <nb-text :style="{ fontSize: 20, color: 'green' }">{{Appointment.title}}</nb-text>
             <nb-card-item>
               <nb-left>
-                <nb-text>tijd: {{FormatTime}}</nb-text>
+                <nb-text>tijd: {{formatDate(Appointment.event_date)}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>datum: {{Formatdate}}</nb-text>
+                <nb-text>datum: {{FormatTime(Appointment.event_date)}}</nb-text>
               </nb-right>
           </nb-card-item>
           <nb-card-item>
@@ -47,7 +47,7 @@
 <script>
   import FooterNav from '../../included/FooterConsultant';
   import { AsyncStorage } from 'react-native';
-  import moment from "moment";
+  import {formatDate,FormatTime} from "../utils/dates";
 
   export default {
     props: {
@@ -61,8 +61,8 @@
       return {
         Appointment:{},
         dataIsReady: false,
-        Formatdate:'',
-        FormatTime:''
+        formatDate,
+        FormatTime
       };
     },
     created() {
@@ -99,8 +99,6 @@
           let responseJson = await response.json();
           if (responseJson.success) {
             this.Appointment = responseJson.results;
-            this.Formatdate = moment(this.Appointment.event_date).format("DD-MM-YYYY");
-            this.FormatTime = moment(this.Appointment.event_date).format("HH-mm");
             this.dataIsReady = true;
           } else {
             console.log(responseJson);

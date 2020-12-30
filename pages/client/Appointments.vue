@@ -19,7 +19,8 @@
           v-for="appointment in appointments"
           :key="appointment.id">
             <nb-left>
-					    <nb-text class="text">{{ appointment.event_date}}</nb-text>
+					    <nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
+					    <nb-text class="text">{{ FormatTime(appointment.event_date)}}</nb-text>
             </nb-left>
          	  <nb-right>
             	<nb-text class="text">{{ appointment.location.name }}</nb-text>
@@ -66,6 +67,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
+import {formatDate,FormatTime} from "../utils/dates";
 
 export default {
   props: {
@@ -76,17 +78,19 @@ export default {
   },
   data() {
     return {
-      addAppointment: false,
+    addAppointment: false,
 	  appointments: {},
-	  dataIsReady: false
+    dataIsReady: false,
+    formatDate,
+    FormatTime
     };
   },
   created() {
-    this.userData();
+    this.getAppointments();
   },
   components: { FooterNav },
   methods: {
-    userData: async function () {
+    getAppointments: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');

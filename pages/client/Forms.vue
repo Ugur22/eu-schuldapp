@@ -22,7 +22,7 @@
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{form.doc_date_time.slice(0,11)}}</nb-text>
+            <nb-text class="text">{{formatDate(form.doc_date_time)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -60,6 +60,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
+import {formatDate} from "../utils/dates";
 
 export default {
   props: {
@@ -72,7 +73,8 @@ export default {
     return {
       selectedDoc: '0',
       clientForms: {},
-      dataIsReady: false
+      dataIsReady: false,
+      formatDate,
     };
   },
   created() {

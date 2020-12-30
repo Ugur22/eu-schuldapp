@@ -26,7 +26,7 @@
                 <nb-text>tijd: {{navigation.getParam('time')}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>datum: {{formatDate(navigation.getParam('date'))}}</nb-text>
+                <nb-text>datum: {{navigation.getParam('date')}}</nb-text>
               </nb-right>
           </nb-card-item>
           <nb-card-item>
@@ -69,10 +69,6 @@
         },
       goToPage: function (page) {
       this.navigation.navigate(page);
-        },
-      formatDate: function(date) {
-      let formatdate = moment(date).format("DD-MM-YYYY");
-        return formatdate;
         },
     }
   }

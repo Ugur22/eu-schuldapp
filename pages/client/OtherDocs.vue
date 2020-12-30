@@ -20,12 +20,12 @@
         <nb-input placeholder="zoek overige documenten" />
       </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="docs in clientDocs" :key="docs.ID">
+        <nb-list-item v-for="docs in clientDocs" :key="docs.id">
           <nb-left>
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{ docs.doc_date_time.slice(0,11) }}</nb-text>
+            <nb-text class="text">{{ formatDate(docs.doc_date_time) }}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -61,6 +61,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
+import {formatDate} from "../utils/dates";
 
 export default {
   props: {
@@ -73,7 +74,8 @@ export default {
     return {
       selectedDoc: '0',
       clientDocs: {},
-       dataIsReady: false
+       dataIsReady: false,
+       formatDate
     };
   },
   created() {
