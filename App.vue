@@ -135,7 +135,7 @@
     }
   );
 
-  const AppNavigator = createAppContainer(StackNavigatorConsultant);
+  const AppNavigator = createAppContainer(StackNavigator);
 
   export default { 
     data() {

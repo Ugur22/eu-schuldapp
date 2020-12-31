@@ -1,16 +1,16 @@
 <template>
   <nb-container>
-    <!-- <web-view  :source="{html:'<h1>Hello world</h1>'}" :style="{marginTop: 0}" /> -->
+    <web-view  :source="{html:'<h1>Hello world</h1>'}" :style="{marginTop: 0}" />
     <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left>
-        <nb-button transparent>
-          <nb-icon name="arrow-back" :on-press="goBack" />
+      <nb-left :style="{flex:1}">
+        <nb-button transparent :on-press="goBack" >
+          <nb-icon name="arrow-back"/>
         </nb-button>
       </nb-left>
-      <nb-body>
-        <nb-title>{{ $root.lang.t('forms') }}</nb-title>
+      <nb-body :style="{flex:1}">
+      	<nb-title>{{ $root.lang.t('forms') }}</nb-title>
       </nb-body>
-      <nb-right>
+      <nb-right :style="{flex:1}">
         <nb-button transparent>
           <nb-icon name="information-circle" />
         </nb-button>
@@ -84,14 +84,14 @@ export default {
     this.getForms();
     this.getDoc();
   },
-  mounted() {
+  mounted() { 
     // console.log(this.clientDocs);
   },
   components: { FooterNav,"web-view": WebView },
   methods: {
     getDoc: async function () {
-      let that = this;
       let value = '';
+
       try {
         value = await AsyncStorage.getItem('login');
         this.user = JSON.parse(value);
@@ -99,7 +99,6 @@ export default {
         // Error retrieving data
         console.log(error.message);
       }
-
       try {
         let response = await fetch('http://api.arsus.nl/document/html-preview', {
           method: 'POST',
@@ -114,11 +113,10 @@ export default {
             document_id:1490
           }),
         });
-      
         let responseJson = await response.json();
         if (responseJson.success) {
-          that.clientDocs = JSON.stringify(responseJson.results);
-          that.clientDocs = that.clientDocs.replace(/['"]+/g, '');
+          this.clientDocs = JSON.stringify(responseJson.results);
+          this.clientDocs = this.clientDocs.replace(/['"]+/g, '');
           // this.clientDocs = '<h1>Hello world</h1>';
           // console.log(this.clientDocs);
           this.dataIsReady = true;
@@ -129,6 +127,7 @@ export default {
         console.log(error);
         console.error(error);
       }
+     
     },
     getForms: async function () {
       let value = '';

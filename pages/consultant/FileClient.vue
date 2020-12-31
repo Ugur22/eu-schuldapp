@@ -2,8 +2,8 @@
   <nb-container v-if="dataIsReady">
    <nb-header  :style="{backgroundColor:'#0078ae'}">
       <nb-left :style="{flex:1}">
-        <nb-button transparent >
-          <nb-icon name="arrow-back" :on-press="goBack" />
+        <nb-button transparent :on-press="goBack">
+          <nb-icon name="arrow-back" />
         </nb-button>
       </nb-left>
       <nb-body :style="{flex:1}">

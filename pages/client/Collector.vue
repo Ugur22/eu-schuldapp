@@ -1,19 +1,14 @@
 <template>
   <nb-container>
     <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left>
-        <nb-button transparent>
-          <nb-icon name="arrow-back" :on-press="goBack" />
+      <nb-left >
+        <nb-button transparent :on-press="goBack" >
+          <nb-icon name="arrow-back"/>
         </nb-button>
       </nb-left>
-      <nb-body>
-        <nb-title>{{ $root.lang.t('creditors_documents') }}</nb-title>
+      <nb-body >
+      	<nb-title>{{ $root.lang.t('creditors_documents') }}</nb-title>
       </nb-body>
-      <nb-right>
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
     </nb-header>
     <nb-content>
       <nb-item :style="{ borderColor: '#62B1F6' }">
