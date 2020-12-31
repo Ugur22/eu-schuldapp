@@ -1,18 +1,62 @@
 <template>
   <nb-container>
     <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left>
-        <nb-button transparent>
-          <nb-icon name="arrow-back" :on-press="goBack" />
+      <nb-left :style="{flex:1}">
+        <nb-button transparent :on-press="goBack" >
+          <nb-icon name="arrow-back"/>
         </nb-button>
       </nb-left>
-      <nb-body>
+      <nb-body :style="{flex:1}">
       	<nb-title>{{ $root.lang.t('appointments') }}</nb-title>
       </nb-body>
-      <nb-right />
+      <nb-right :style="{flex:1}">
+        <nb-button transparent>
+          <nb-icon name="information-circle" />
+        </nb-button>
+      </nb-right>
     </nb-header>
-    <nb-content padder>
-      <nb-button v-if="dataIsReady"
+    <nb-content padder v-if="dataIsReady">
+      <nb-card :style="{ marginTop: 10 }" v-if="addAppointment"  >
+        <nb-card-item header bordered>
+          <nb-text class="text">Kies een client om afspraak te maken</nb-text>
+        </nb-card-item>
+        <nb-card-item bordered v-for="client in Clients" :key="client.id">
+          <nb-body>
+            <nb-button transparent :on-press="() => makeAppointment(client.id,client.firstname,client.lastname)">
+              <nb-text class="text">{{client.firstname}} {{client.lastname}}</nb-text>
+            </nb-button>
+          </nb-body>
+          <nb-right>
+            <nb-text class="text">{{client.status}}</nb-text>
+          </nb-right>
+        </nb-card-item>
+      </nb-card>
+      <nb-card :style="{ marginTop: addAppointment ? 10 : 50 }">
+        <nb-card-item header bordered>
+          <nb-text class="text">Alle afspraken</nb-text>
+        </nb-card-item>
+        <nb-list>
+          <nb-list-item  v-for="appointment in appointments"
+            :key="appointment.id"  :style="{ padding: 0}" :on-press="() => openAppointment(appointment.id)">
+            <nb-left>
+              <nb-body>
+                <nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
+                <nb-text class="text">{{ FormatTime(appointment.event_date)}}</nb-text>
+              </nb-body>
+            </nb-left>
+            <nb-body>
+                <nb-text class="text">Erik jansen</nb-text>
+                <nb-text class="text">{{ appointment.location.name }}</nb-text>
+            </nb-body>
+            <nb-right>
+              <nb-button iconLeft transparent :style="{ marginTop: 10}" :on-press="() => detailClient(client.id)">
+                <nb-icon class="text" name="arrow-forward" />
+              </nb-button>
+            </nb-right>
+          </nb-list-item>
+        </nb-list>
+      </nb-card>
+    <nb-button v-if="dataIsReady"
         rounded
         info
         :style="{
@@ -27,43 +71,10 @@
       >
         <nb-icon active :name='addAppointment ? "remove" : "add"'/>
       </nb-button>
-      <nb-card :style="{ marginTop: 20 }" v-if="addAppointment"  >
-        <nb-card-item header bordered>
-          <nb-text class="text">Kies een client om afspraak te maken</nb-text>
-        </nb-card-item>
-        <nb-card-item v-for="client in Clients" :key="client.id">
-          <nb-body>
-            <nb-button transparent :on-press="() => makeAppointment(client.id,client.firstname,client.lastname)">
-              <nb-text class="text">{{client.firstname}} {{client.lastname}}</nb-text>
-            </nb-button>
-          </nb-body>
-          <nb-right>
-            <nb-text class="text">{{client.status}}</nb-text>
-          </nb-right>
-        </nb-card-item>
-      </nb-card>
-      <nb-card :style="{ marginTop: 20 }" v-if="dataIsReady">
-        <nb-card-item header bordered>
-          <nb-text class="title">{{ $root.lang.t('appointments') }}</nb-text>
-        </nb-card-item>
-        <nb-card-item
-          v-for="appointment in appointments"
-          :key="appointment.id">
-            <nb-left>
-				<nb-button transparent :on-press="() => openAppointment(appointment.id)">
-          <nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
-          <nb-text class="text">{{ FormatTime(appointment.event_date)}}</nb-text>
-				</nb-button>
-            </nb-left>
-         	<nb-right>
-            	<nb-text class="text">{{ appointment.location.name }}</nb-text>
-          	</nb-right>
-        </nb-card-item>
-      </nb-card>
-	   <nb-card-item class="loadingWrapper" v-else>
-			<image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
     </nb-content>
+    <nb-card-item class="loadingWrapper" v-else>
+			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
+	   </nb-card-item>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
@@ -110,6 +121,7 @@ export default {
 	},
   user: {}
   },
+  components: { FooterNav },
   data() {
     return {
       addAppointment: false,

@@ -1,5 +1,6 @@
 <template>
   <nb-container>
+    <!-- <web-view  :source="{html:'<h1>Hello world</h1>'}" :style="{marginTop: 0}" /> -->
     <nb-header :style="{ backgroundColor: '#0078ae' }">
       <nb-left>
         <nb-button transparent>
@@ -61,6 +62,7 @@
 import FooterNav from '../../included/Footer';
 import { AsyncStorage } from 'react-native';
 import {formatDate} from "../utils/dates";
+import { WebView } from 'react-native-webview';
 
 export default {
   props: {
@@ -73,16 +75,62 @@ export default {
     return {
       selectedDoc: '0',
       clientForms: {},
+      clientDocs: {},
       dataIsReady: false,
       formatDate,
     };
   },
   created() {
-    this.userData();
+    this.getForms();
+    this.getDoc();
   },
-  components: { FooterNav },
+  mounted() {
+    // console.log(this.clientDocs);
+  },
+  components: { FooterNav,"web-view": WebView },
   methods: {
-    userData: async function () {
+    getDoc: async function () {
+      let that = this;
+      let value = '';
+      try {
+        value = await AsyncStorage.getItem('login');
+        this.user = JSON.parse(value);
+      } catch (error) {
+        // Error retrieving data
+        console.log(error.message);
+      }
+
+      try {
+        let response = await fetch('http://api.arsus.nl/document/html-preview', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: this.user.email,
+            password: this.user.password,
+            client_id:67,
+            document_id:1490
+          }),
+        });
+      
+        let responseJson = await response.json();
+        if (responseJson.success) {
+          that.clientDocs = JSON.stringify(responseJson.results);
+          that.clientDocs = that.clientDocs.replace(/['"]+/g, '');
+          // this.clientDocs = '<h1>Hello world</h1>';
+          // console.log(this.clientDocs);
+          this.dataIsReady = true;
+        } else {
+          console.log(responseJson);
+        }
+      } catch (error) {
+        console.log(error);
+        console.error(error);
+      }
+    },
+    getForms: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');

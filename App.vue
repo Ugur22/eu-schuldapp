@@ -135,8 +135,6 @@
     }
   );
 
-  
-
   const AppNavigator = createAppContainer(StackNavigatorConsultant);
 
   export default { 

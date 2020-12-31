@@ -79,11 +79,11 @@ export default {
     };
   },
   created() {
-    this.userData();
+    this.getOtherDocs();
   },
   components: { FooterNav },
   methods: {
-    userData: async function () {
+    getOtherDocs: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');

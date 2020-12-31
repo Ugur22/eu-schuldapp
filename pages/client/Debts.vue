@@ -96,10 +96,10 @@ export default {
     };
   },
   created() {
-    this.userData();
+    this.getDebts();
   },
   methods: {
-    userData: async function () {
+    getDebts: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');

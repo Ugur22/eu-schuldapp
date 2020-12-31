@@ -15,17 +15,15 @@
           <nb-text class="text-btn">Logout</nb-text>
         </nb-button>
     </view>
-    <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-      <image :source="require('../../assets/images/logo.png')" />
-    </view>
+      <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
+        <image :source="require('../../assets/images/logo.png')" />
+      </view>
   </nb-container>
 </template>
-
 <script>
 
 import { NavigationActions } from 'vue-native-router';
 import { AsyncStorage } from "react-native";
-
 
 export default {
   props: {
@@ -46,14 +44,13 @@ export default {
     goToPage: function (page) {
       this.navigation.navigate(page);
     },
-          logout() {
-              AsyncStorage.removeItem('login');
-               this.$root.loggedIn = false;
-        }
+    logout() {
+      AsyncStorage.removeItem('login');
+        this.$root.loggedIn = false;
+    }
   },
 };
 </script>
-
 <style>
 .btns {
   padding:10px;
@@ -63,7 +60,6 @@ export default {
   border-radius: 10px;
   justify-content: center;
 }
-
 .text-btn {
   font-weight: bold;
 }

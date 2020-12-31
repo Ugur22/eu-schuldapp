@@ -35,7 +35,8 @@
     "vue-native-i18n": "0.0.1",
     "vue-native-router": "^0.2.0",
     "vuelidate": "^0.7.6",
-    "vuex": "^3.6.0"
+    "vuex": "^3.6.0",
+    "react-native-webview": "10.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

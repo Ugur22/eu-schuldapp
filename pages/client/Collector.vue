@@ -81,7 +81,7 @@ export default {
     user: {},
   },
     created() {
-    this.userData();
+    this.getCollectors();
   },
   components: { FooterNav },
   data() {
@@ -93,7 +93,7 @@ export default {
     };
   },
   methods: {
-        userData: async function () {
+    getCollectors: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
