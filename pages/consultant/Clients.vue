@@ -99,7 +99,7 @@
 import Modal from 'react-native-modal';
 import FooterNav from '../../included/FooterConsultant';
 import FileClient from './FileClient';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default {
   props: {

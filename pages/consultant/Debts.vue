@@ -77,7 +77,7 @@
 <script>
 import Modal from 'react-native-modal';
 import FooterNav from '../../included/Footer';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DebtDetails from './DebtDetails';
 
 export default {

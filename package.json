@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "github:react-native-community/async-storage",
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/datetimepicker": "^3.0.8",
     "expo": "~39.0.2",
     "expo-camera": "^9.1.1",
@@ -30,13 +30,13 @@
     "react-native-screens": "^2.15.0",
     "react-native-swipe-list-view": "^3.2.5",
     "react-native-web": "~0.13.12",
+    "react-native-webview": "10.7.0",
     "vue-native-core": "^0.1.4",
     "vue-native-helper": "^0.1.4",
     "vue-native-i18n": "0.0.1",
     "vue-native-router": "^0.2.0",
     "vuelidate": "^0.7.6",
-    "vuex": "^3.6.0",
-    "react-native-webview": "10.7.0"
+    "vuex": "^3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

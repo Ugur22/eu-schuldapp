@@ -124,7 +124,7 @@
   import * as Permissions from 'expo-permissions';
   import { Camera } from 'expo-camera';
   import Modal from 'react-native-modal';
-  import { AsyncStorage } from 'react-native';
+  import AsyncStorage from '@react-native-async-storage/async-storage';
 
   export default {
     props: {

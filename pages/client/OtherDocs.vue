@@ -55,7 +55,7 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 
 export default {

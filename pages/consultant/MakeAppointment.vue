@@ -92,7 +92,7 @@
   import DateTimePicker from '@react-native-community/datetimepicker';
   import { Platform } from 'react-native';
   import { Picker,Textarea } from "native-base";
-  import { AsyncStorage } from 'react-native';
+  import AsyncStorage from '@react-native-async-storage/async-storage';
   import moment from "moment";
   import localization from "moment/locale/nl";
   import {formatDate,FormatTime,formatDay} from "../utils/dates";

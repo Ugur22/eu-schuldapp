@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { required, email } from 'vuelidate/lib/validators';
 
 export default {
