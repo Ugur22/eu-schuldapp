@@ -17,6 +17,7 @@
         <nb-button full info class="btns" :on-press="logout">
           <nb-text class="text-btn">Logout</nb-text>
         </nb-button>
+         <nb-text class="text-btn">{{userType}}</nb-text>
     </view>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
       <image :source="require('../../assets/images/logo.png')" />
@@ -34,25 +35,38 @@ export default {
   props: {
     navigation: {
       type: Object
-    }
+    },
+    userType: '',
   },
   data() {
     return {
-      name: 'Mark'
     };
   },
     computed: {
   },
-  created() {
+  mounted() {
+    this.getUser().then(val => {
+      // got value here
+      this.userType = val.type;
+    }).catch(e => {
+      // error
+      console.log(e);
+    });
   },
   methods: {
+    getUser: async function () {
+      let value = '';
+      value = await AsyncStorage.getItem('login');
+      value = JSON.parse(value);
+      return value;
+    },
     goToPage: function (page) {
       this.navigation.navigate(page);
     },
-          logout() {
-              AsyncStorage.removeItem('login');
-               this.$root.loggedIn = false;
-        }
+    logout() {
+      AsyncStorage.removeItem('login');
+      this.$root.loggedIn = false;
+    }
   },
 };
 </script>
