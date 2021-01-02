@@ -1,6 +1,6 @@
 <template>
   <nb-container>
-    <web-view  :source="{html:'<h1>Hello world</h1>'}" :style="{marginTop: 0}" />
+    <!-- <web-view  :source="{html:'<h1>Hello world</h1>'}" :style="{marginTop: 0}" /> -->
     <nb-header :style="{ backgroundColor: '#0078ae' }">
       <nb-left :style="{flex:1}">
         <nb-button transparent :on-press="goBack" >
@@ -20,7 +20,7 @@
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="form in clientForms" :key="form.id">
           <nb-left>
-            <nb-text class="text">{{form.title}}</nb-text>
+            <nb-text class="text">{{clientDocs}}</nb-text>
           </nb-left>
           <nb-right>
             <nb-text class="text">{{formatDate(form.doc_date_time)}}</nb-text>
@@ -85,7 +85,14 @@ export default {
     this.getDoc();
   },
   mounted() { 
-    // console.log(this.clientDocs);
+    //    this.getDoc().then(val => {
+    //   // got value here
+    //   this.clientDocs = val;
+    //   console.log(val)
+    // }).catch(e => {
+    //   // error
+    //   console.log(e);
+    // });
   },
   components: { FooterNav,"web-view": WebView },
   methods: {
@@ -115,11 +122,16 @@ export default {
         });
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientDocs = JSON.stringify(responseJson.results);
-          this.clientDocs = this.clientDocs.replace(/['"]+/g, '');
+          value = JSON.stringify(responseJson.results);
+          // this.clientDocs = this.clientDocs.replace(/['"]+/g, '');
           // this.clientDocs = '<h1>Hello world</h1>';
           // console.log(this.clientDocs);
+          value  = value.replace(/['"]+/g, '');
+          value = `<h1>Hello world</h1>`;
+             return value;
           this.dataIsReady = true;
+
+       
         } else {
           console.log(responseJson);
         }

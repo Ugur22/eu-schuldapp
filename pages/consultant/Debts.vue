@@ -78,7 +78,7 @@
 import Modal from 'react-native-modal';
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DebtDetails from './DebtDetails';
+import DebtDetailsClient from './DebtDetailsClient';
 
 export default {
   props: {
@@ -87,7 +87,7 @@ export default {
     },
     user: {},
   },
-  components: { FooterNav,DebtDetails },
+  components: { FooterNav,DebtDetailsClient },
   data() {
     return {
       isModalVisible: false,
@@ -143,7 +143,7 @@ export default {
     },
     detailDebt: function (id,clientID) {
       this.isModalVisible = true;
-      this.navigation.navigate('DebtDetails', {
+      this.navigation.navigate('DebtDetailsClient', {
         debtID: id,
         ClientID:clientID
       });

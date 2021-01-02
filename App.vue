@@ -51,7 +51,7 @@
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
   import FileClientScreen from "./pages/consultant/FileClient";
   import DebtClientScreen from "./pages/consultant/Debts";
-  import DebtClientDetailScreen from "./pages/consultant/DebtDetails";
+  import DebtClientDetailScreen from "./pages/consultant/DebtDetailsClient";
   import AppointmentConfirmationtScreen from "./pages/consultant/AppointmentConfirmation";
 
   let PageStart;
@@ -85,16 +85,7 @@
       DocsOthers: {
         screen: OtherDocsScreen
       },
-    },
-    {
-      initialRouteName: 'Home',
-      headerMode: 'none'
-    }
-  );
-
-    const StackNavigatorConsultant = createStackNavigator(
-    {
-      Consultant: {
+            Consultant: {
         screen: ConsultantScreen
       },
       Clients: {
@@ -109,7 +100,7 @@
       Debts: {
         screen: DebtClientScreen
       },
-      DebtDetails: {
+      DebtDetailsClient: {
         screen: DebtClientDetailScreen
       },
       Appointment: {
@@ -123,7 +114,7 @@
       },
     },
     {
-      initialRouteName: 'Consultant',
+      initialRouteName: 'Home',
       headerMode: 'none'
     }
   );

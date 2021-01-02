@@ -1,6 +1,6 @@
 <template>
   <nb-container>
-    <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
+    <view v-if="userType === 'client'" :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
       <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} </nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Account')">
           <nb-text class="text-btn">{{ $root.lang.t('my_account') }}</nb-text>
@@ -11,13 +11,21 @@
         <nb-button full info class="btns" :on-press="() => goToPage('Documents')">
           <nb-text class="text-btn">{{ $root.lang.t('check_document') }}</nb-text>
         </nb-button>
-        <!-- <nb-button full info class="btns" :on-press="() => goToPage('Help')">
-          <nb-text class="text-btn">{{ $root.lang.t('contact') }}</nb-text>
-        </nb-button> -->
         <nb-button full info class="btns" :on-press="logout">
           <nb-text class="text-btn">Logout</nb-text>
         </nb-button>
-         <nb-text class="text-btn">{{userType}}</nb-text>
+    </view>
+    <view v-else :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
+      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} consulent</nb-text>
+        <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
+          <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
+        </nb-button>
+        <nb-button full info class="btns" :on-press="() => goToPage('AppointmentsConsultant')">
+          <nb-text class="text-btn">{{ $root.lang.t('appointments') }}</nb-text>
+        </nb-button>
+        <nb-button full info class="btns" :on-press="logout">
+          <nb-text class="text-btn">Logout</nb-text>
+        </nb-button>
     </view>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
       <image :source="require('../../assets/images/logo.png')" />
