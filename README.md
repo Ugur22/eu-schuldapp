@@ -1,16 +1,16 @@
-##GET
+## GET
 
 `/locations`
 `/test`
 
-##POST
+## POST
 
-###GENERAL
+### GENERAL
 
 `/login`
 *request: email, password*
 
-###CLIENT SIDE
+### CLIENT SIDE
 
 `/client`
 *request: email, password*
@@ -75,7 +75,7 @@
 `/client/sign`
 *required: email, password, document_id, signature (signature image), author (client/partner)*
 
-###CONSULTANT SIDE
+### CONSULTANT SIDE
 
 `/consultant/clients`
 *request: email, password*
@@ -170,14 +170,14 @@
 **get pdf template list for specific client**
 
 `/consultant/doc/add`
-*required: email, password, client_id, title
-optional: main (1 or none), file (if upload file), template_id (if pdf otherwise 0)*
+*required: email, password, client_id, title*
+*optional: main (1 or none), file (if upload file), template_id (if pdf otherwise 0)*
 **create/add document for client, could be file/picture or pdf from template.**
 
 `/client/sign`
 *required: email, password, document_id, signature (signature image), client_id, author (client/consultant/partner)*
 
-###DOWNLOAD
+### DOWNLOAD
 
 `/document/html-preview`
 *request: email, password, client_id (not required as client), document_id*
