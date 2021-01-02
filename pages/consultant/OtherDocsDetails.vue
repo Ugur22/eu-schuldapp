@@ -29,44 +29,12 @@
           <nb-body>
             <nb-grid class="marginBottom">
               <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('Collector') }}</nb-text>
-                <nb-text class="detailText">{{Debt.debtor.name}}</nb-text>
+                <nb-text class="headerText">title</nb-text>
+                <nb-text class="detailText">{{otherDoc.title}}</nb-text>
               </nb-col>
               <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('debt') }}</nb-text>
-                <nb-text class="detailText">{{ $root.lang.t('currency') }}{{ Debt.debt_amount }}</nb-text>
-              </nb-col>
-            </nb-grid>
-            <nb-grid class="marginBottom">
-              <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('status') }}</nb-text>
-                <nb-text class="detailText">Bedrag Akkoord</nb-text>
-              </nb-col>
-              <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('total_repaid') }}</nb-text>
-                <nb-text class="detailText">{{ $root.lang.t('currency') }}{{ Debt.total_redeemed }}</nb-text>
-              </nb-col>
-            </nb-grid>
-            <nb-grid class="marginBottom">
-              <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('repay_month') }}</nb-text>
-                <nb-text class="detailText">{{ $root.lang.t('currency') }}{{ Debt.redeem_per_month }}</nb-text>
-              </nb-col>
-              <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('preference') }}</nb-text>
-                <nb-text class="detailText">{{ Debt.preference }}</nb-text>
-              </nb-col>
-            </nb-grid>
-            <nb-grid class="marginBottom">
-              <nb-col>
-                <nb-text class="headerText">{{ $root.lang.t('months') }}</nb-text>
-                <nb-text class="detailText">{{ Debt.terms }}</nb-text>
-              </nb-col>
-            </nb-grid>
-            <nb-grid class="marginBottom">
-              <nb-col>
-                <nb-text class="headerText">notes</nb-text>
-                <nb-text class="detailText">{{ Debt.notes }}</nb-text>
+                <nb-text class="headerText">date</nb-text>
+                <nb-text class="detailText">{{otherDoc.doc_date_time}}</nb-text>
               </nb-col>
             </nb-grid>
           </nb-body>
@@ -92,14 +60,14 @@ export default {
   data() {
     return {
       dataIsReady: false,
-      Debt: {},
+      otherDoc: {},
     };
   },
   created() {
-    this.GetDebt();
+    this.GetOther();
   },
   methods: {
-    GetDebt: async function () {
+    GetOther: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -110,7 +78,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/consultant/client/debt/details', {
+        let response = await fetch('http://api.arsus.nl/consultant/doc/other', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -120,13 +88,13 @@ export default {
             email: this.user.email,
             password: this.user.password,
             client_id: this.navigation.getParam('ClientID'),
-            id: this.navigation.getParam('debtID'),
+            id: this.navigation.getParam('docID'),
           }),
         });
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.Debt = responseJson.results;
+          this.otherDoc = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);

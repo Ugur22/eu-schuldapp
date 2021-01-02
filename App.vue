@@ -53,6 +53,10 @@
   import DebtClientScreen from "./pages/consultant/Debts";
   import DebtClientDetailScreen from "./pages/consultant/DebtDetailsClient";
   import AppointmentConfirmationtScreen from "./pages/consultant/AppointmentConfirmation";
+  import OtherDocsConsultantScreen from "./pages/consultant/OtherDocsConsultant";
+  import FormsConsultantScreen from "./pages/consultant/FormsConsultant";
+  import CollectorConsultantScreen from "./pages/consultant/CollectorConsultant";
+  import OtherDocsDetailsScreen from "./pages/consultant/OtherDocsDetails";
 
   let PageStart;
 
@@ -85,7 +89,7 @@
       DocsOthers: {
         screen: OtherDocsScreen
       },
-            Consultant: {
+      Consultant: {
         screen: ConsultantScreen
       },
       Clients: {
@@ -111,6 +115,18 @@
       },
       AppointmentConfirmation: {
         screen: AppointmentConfirmationtScreen
+      },
+      OtherDocsConsultant: {
+        screen: OtherDocsConsultantScreen
+      },
+      FormsConsultant: {
+        screen: FormsConsultantScreen
+      },
+      CollectorConsultant: {
+        screen: CollectorConsultantScreen
+      },
+      OtherDocsDetails: {
+        screen: OtherDocsDetailsScreen
       },
     },
     {

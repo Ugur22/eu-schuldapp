@@ -28,7 +28,7 @@
             <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button transparent :on-press="() => detailDebt(debt.id,debt.client.id)">
+          <nb-button iconLeft transparent :on-press="() => detailDebt(debt.id,debt.client.id)">
             <nb-icon class="text" name="arrow-forward" />
           </nb-button>
           </nb-right>
@@ -76,7 +76,7 @@
 
 <script>
 import Modal from 'react-native-modal';
-import FooterNav from '../../included/Footer';
+import FooterNav from '../../included/FooterConsultant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DebtDetailsClient from './DebtDetailsClient';
 

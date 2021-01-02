@@ -64,18 +64,18 @@
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button primary full vertical class="btns" :on-press="() => goToPage('Consultant')">
+          <nb-button primary full vertical class="btns" :on-press="() => detailPage(Client.id,'FormsConsultant')">
             <nb-text>{{ $root.lang.t('forms') }}</nb-text>
           </nb-button>
         </nb-col>
       </nb-grid>
         <nb-col>
-          <nb-button danger full vertical class="btns" :on-press="() => goToPage('Home')">
+          <nb-button danger full vertical class="btns" :on-press="() => detailPage(Client.id,'OtherDocsConsultant')">
             <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button success full vertical class="btns" :on-press="() => goToPage('Home')">
+          <nb-button success full vertical class="btns" :on-press="() => detailPage(Client.id,'CollectorConsultant')">
             <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
           </nb-button>
         </nb-col>

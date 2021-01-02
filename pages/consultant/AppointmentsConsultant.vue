@@ -130,7 +130,7 @@ export default {
       FormatTime
     };
   },
-  created() {
+  mounted() {
     this.getAppointments();
     this.getClients();
   },

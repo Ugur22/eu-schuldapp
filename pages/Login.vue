@@ -82,13 +82,6 @@ export default {
           AsyncStorage.setItem('login', JSON.stringify(this.user), () => {
             AsyncStorage.mergeItem('login', JSON.stringify(user_updated));
           });
-          console.log(responseJson.role.slug);
-
-          // if(responseJson.role.slug === 'client'){
-          //   this.$root.startPage = 'Home';
-          // }else if(responseJson.role.slug === 'consultant'){
-          //   this.$root.startPage = 'Consultant'; 
-          // }
 
           this.$root.loggedIn = true; 
 

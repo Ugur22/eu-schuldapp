@@ -1,29 +1,27 @@
 <template>
   <nb-container>
     <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left>
-        <nb-button transparent  :on-press="goBack">
-          <nb-icon name="arrow-back" />
+      <nb-left >
+        <nb-button transparent :on-press="goBack" >
+          <nb-icon name="arrow-back"/>
         </nb-button>
       </nb-left>
-      <nb-body>
-        <nb-title>{{ $root.lang.t('forms') }}</nb-title>
+      <nb-body >
+      	<nb-title>{{ $root.lang.t('creditors_documents') }}</nb-title>
       </nb-body>
-      <nb-right>
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
     </nb-header>
     <nb-content>
+      <nb-item :style="{ borderColor: '#62B1F6' }">
+        <nb-input placeholder="zoek schuldeiser documenten" />
+      </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id">
+        <nb-list-item v-for="collector in clientCollectors" :key="collector.id">
           <nb-left>
-            <nb-text class="text">{{form.title}}</nb-text>
+            <nb-text class="text">{{collector.title}}</nb-text>
           </nb-left>
-          <nb-right>
-            <nb-text class="text">{{form.doc_date_time.slice(0,11)}}</nb-text>
-          </nb-right>
+          <nb-body>
+            <nb-text class="text">{{formatDate(collector.doc_date_time)}}</nb-text>
+          </nb-body>
         </nb-list-item>
       </nb-list>
       <nb-card-item class="loadingWrapper" v-else>
@@ -38,11 +36,19 @@
     </nb-footer>
   </nb-container>
 </template>
-
 <style>
+.headerText {
+  color: white;
+  font-weight: bold;
+}
+.detailText {
+  color: white;
+}
+.marginBottom {
+  margin-bottom: 20px;
+}
 .text {
-    color: #0078ae;
-     font-size: 14;
+  color: #0078ae;
 }
 
 .loadingWrapper {
@@ -56,10 +62,10 @@
   width:50;
 }
 </style>
-
 <script>
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {formatDate} from "../utils/dates";
 
 export default {
   props: {
@@ -68,19 +74,20 @@ export default {
     },
     user: {},
   },
+    created() {
+    this.getCollectors();
+  },
+  components: { FooterNav },
   data() {
     return {
       selectedDoc: '0',
-      clientForms: {},
-      dataIsReady: false
+       clientCollectors: {},
+       dataIsReady: false,
+       formatDate
     };
   },
-  created() {
-    this.userData();
-  },
-  components: { FooterNav },
   methods: {
-    userData: async function () {
+    getCollectors: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -91,7 +98,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/forms', {
+        let response = await fetch('http://api.arsus.nl/consultant/doc/debtors', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -100,18 +107,18 @@ export default {
           body: JSON.stringify({
             email: this.user.email,
             password: this.user.password,
+            client_id: this.navigation.getParam('id'),
           }),
         });
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientForms = responseJson.results;
+          this.clientCollectors = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }
       } catch (error) {
-        console.log(error);
         console.error(error);
       }
     },

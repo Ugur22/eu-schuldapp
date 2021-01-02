@@ -1,36 +1,31 @@
 <template>
   <nb-container>
     <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
+      <nb-left >
         <nb-button transparent :on-press="goBack" >
           <nb-icon name="arrow-back"/>
         </nb-button>
       </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>{{ $root.lang.t('debts') }}</nb-title>
+      <nb-body >
+      	<nb-title>{{ $root.lang.t('other_documents') }}</nb-title>
       </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
     </nb-header>
-    <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input placeholder="Search" />
-      </nb-item> -->
+    <nb-content  >
+      <nb-item :style="{ borderColor: '#62B1F6' }">
+        <nb-input placeholder="zoek overige documenten" />
+      </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="debt in clientDebts" :key="debt.id">
+        <nb-list-item v-for="docs in clientDocs" :key="docs.id">
           <nb-left>
-            <nb-text  class="text">{{debt.debtor.name}}</nb-text>
+            <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
           <nb-body>
-            <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
+            <nb-text class="text">{{ formatDate(docs.doc_date_time) }}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button iconLeft transparent :on-press="() => detailDebt(debt.id)">
-            <nb-icon class="text" name="arrow-forward" />
-          </nb-button>
+            <nb-button iconLeft transparent :on-press="() => detailOther(docs.id,docs.client_id)">
+              <nb-icon class="text" name="arrow-forward" />
+            </nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -46,20 +41,9 @@
     </nb-footer>
   </nb-container>
 </template>
-
 <style>
-.headerText {
-  color: white;
-  font-weight: bold;
-}
-.detailText {
-  color: white;
-}
-.marginBottom {
-  margin-bottom: 20px;
-}
 .text {
-  color: #0078ae;
+    color: #0078ae;
 }
 
 .loadingWrapper {
@@ -73,12 +57,10 @@
   width:50;
 }
 </style>
-
 <script>
-import Modal from 'react-native-modal';
-import FooterNav from '../../included/Footer';
+import FooterNav from '../../included/FooterConsultant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DebtDetails from './DebtDetails';
+import {formatDate} from "../utils/dates";
 
 export default {
   props: {
@@ -87,19 +69,20 @@ export default {
     },
     user: {},
   },
-  components: { FooterNav,DebtDetails },
   data() {
     return {
-      isModalVisible: false,
-      clientDebts: {},
-      dataIsReady: false,
+      selectedDoc: '0',
+      clientDocs: {},
+       dataIsReady: false,
+       formatDate
     };
   },
   created() {
-    this.getDebts();
+    this.getOtherDocs();
   },
+  components: { FooterNav },
   methods: {
-    getDebts: async function () {
+    getOtherDocs: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -110,7 +93,7 @@ export default {
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debts', {
+        let response = await fetch('http://api.arsus.nl/consultant/doc/others', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -119,12 +102,13 @@ export default {
           body: JSON.stringify({
             email: this.user.email,
             password: this.user.password,
+            client_id: this.navigation.getParam('id'),
           }),
         });
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientDebts = responseJson.results;
+          this.clientDocs = responseJson.results;
           this.dataIsReady = true;
         } else {
           console.log(responseJson);
@@ -137,16 +121,14 @@ export default {
     goBack: function () {
       this.navigation.goBack();
     },
-    goToPage: function (page) {
-      this.navigation.navigate(page);
-    },
-    detailDebt: function (id) {
+    detailOther: function (id,clientID) {
       this.isModalVisible = true;
-      this.navigation.navigate('DebtDetails', {
-        debtID: id
+      console.log(clientID);
+      this.navigation.navigate('OtherDocsDetails', {
+        docID: id,
+        ClientID:clientID
       });
     },
   },
 };
 </script>
-
