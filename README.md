@@ -1,24 +1,196 @@
-# Lumen PHP Framework
+##GET
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+`/locations`
+`/test`
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+##POST
 
-## Official Documentation
+###GENERAL
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+`/login`
+*request: email, password*
 
-## Contributing
+###CLIENT SIDE
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+`/client`
+*request: email, password*
+**get account**
 
-## Security Vulnerabilities
+`/client/appointments`
+*request: email, password*
+**get appointment list**
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+`/client/appointment`
+*request: email, password, id*
+**get appointment details**
 
-## License
+`/client/docs/debts`
+*request: email, password*
+**get own debt list**
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+`/client/docs/debt`
+*request: email, password, id*
+**get debt details**
+
+`/client/docs/debts/search`
+*request: email, password, search*
+**search existed debt list, it will search in debtor's name, ref, status and notes**
+
+`/consultant/client/debt/create`
+*request: email (required), password (required), client_id (required), due_date (required), reference_id, debtor_id, preference, terms, debt_amount,total_redeemed, redeem_per_month, total_redemption, notes*
+**create new debt**
+
+`/consultant/client/debt/update`
+*request: email (required), password (required), debt_id (required), due_date (required), reference_id, debtor_id, preference, terms, debt_amount,total_redeemed, redeem_per_month, total_redemption, notes*
+**update debt**
+
+`/client/docs/debtors`
+*request: email, password*
+**get document list of debtors**
+
+`/client/docs/debtor`
+*request: email, password, id*
+**get document debtor's details**
+
+`/client/docs/forms`
+*request: email, password*
+**get available forms**
+
+`/client/docs/form`
+*request: email, password, id*
+**download form document**
+
+`/client/docs/others`
+*request: email, password*
+**get other document list**
+
+`/client/docs/other`
+*request: email, password, id*
+**download other document list**
+
+`/client/docs/others/search`
+*request: email, password, search*
+**earching for other documents based on doc name/title**
+
+`/client/sign`
+*required: email, password, document_id, signature (signature image), author (client/partner)*
+
+###CONSULTANT SIDE
+
+`/consultant/clients`
+*request: email, password*
+**get client list**
+
+`/consultant/client`
+*request: email, password, id*
+**get client details**
+
+`/consultant/client/create`
+*request: email, password, initial, firstname, lastname, card_id, gender, birth_date, address, place_id*
+**create new client**
+
+`/consultant/appointments`
+*request: email, password*
+**get appointment list**
+
+`/consultant/appointment`
+*request: email, password, id*
+**get appointment details**
+
+`/consultant/make-appointment`
+*request: email, password, date, time, client_id, location_id, title, notes*
+**make new appointment**
+
+`/consultant/client/debts`
+*request: email, password, client_id*
+**get client's debts**
+
+`/consultant/client/debt/details`
+*request: email, password, client_id, id (debt id)*
+**get client's debt details**
+
+`/consultant/client/debts/search`
+*request: email, password, client_id, search*
+**searching client's debts**
+
+`/consultant/doc/forms`
+*request: email, password, client_id*
+**get client's forms**
+
+`/consultant/doc/form`
+*request: email, password, client_id, id (form id)*
+**get client's form details**
+
+`/consultant/doc/debtors`
+*request: email, password, client_id*
+**get client's debtor forms**
+
+`/consultant/doc/debtor`
+*request: email, password, client_id, id (form id)*
+**get client's debtor form details**
+
+`/consultant/doc/debtor-search`
+*request: email, password, client_id, search*
+**get client's debtor forms search**
+
+`/consultant/doc/others`
+*request: email, password, client_id*
+**get client's other forms**
+
+`/consultant/doc/other`
+*request: email, password, client_id, id (form id)*
+**get client's other form details**
+
+`/consultant/doc/other-search`
+*request: email, password, client_id, search*
+**get client's other forms search**
+
+`/consultant/companies`
+*request: email, password*
+**get company debtor list**
+
+`/consultant/employers`
+*request: email, password*
+**get company debtor list**
+
+`/consultant/client/next`
+*request: email, password, client_id*
+**update client status/step to next status/step**
+
+`/consultant/client/debt/next-steps`
+*request: email, password, client_id, debt_id*
+**list of next debt statuses/steps. Need to be selected for debt to go to next status/step**
+
+`/consultant/client/debt/next-step`
+*request: email, password, client_id, debt_status_id*
+**update debt status**
+
+`/consultant/client/templates`
+*request: email, password, client_id*
+**get pdf template list for specific client**
+
+`/consultant/doc/add`
+*required: email, password, client_id, title
+optional: main (1 or none), file (if upload file), template_id (if pdf otherwise 0)*
+**create/add document for client, could be file/picture or pdf from template.**
+
+`/client/sign`
+*required: email, password, document_id, signature (signature image), client_id, author (client/consultant/partner)*
+
+###DOWNLOAD
+
+`/document/html-preview`
+*request: email, password, client_id (not required as client), document_id*
+**HTML preview client's form**
+
+`/document/pdf-download`
+*request: email, password, client_id (not required as client), document_id*
+**download/stream pdf client's pdf form**
+
+`/document/file-download`
+*request: email, password, client_id (not required as client), document_id*
+**download/stream pdf client's pdf form**
+
+`/document/check-signatures`
+*request: email, password, document_id*
+**Check if document complete signed, or who need to sign**

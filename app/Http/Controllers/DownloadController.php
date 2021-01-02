@@ -98,9 +98,10 @@ class DownloadController extends Controller
         }
 
         $doc = Document::whereId($input['document_id'])->where('client_id', $client_id)->whereNotNull('template_id')->first();
-        return $doc->html->html;
+        
         if($doc){
-            return response()->json(['success' => true, 'results' => $doc->html->html]);
+            /* return response()->json(['success' => true, 'results' => $doc->html->html]); */
+            return response()->json(['success' => true, 'results' => '<h1>Hello World</h1>']);
         }else{
             return response()->json(['success' => false, 'message' => 'filenotfound']);
         }

@@ -42,6 +42,7 @@ $router->post('/client/docs/others/search','ClientController@postSearchOther');
 
 /* consultant */
 /* get data */
+$router->post('/consultant/employers','ConsultantController@employerList');
 $router->post('/consultant/companies','ConsultantController@companyList');
 $router->post('/consultant/clients','ConsultantController@clientList');
 $router->post('/consultant/client','ConsultantController@clientDetails');

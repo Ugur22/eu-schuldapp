@@ -13,7 +13,7 @@ class GeneralController extends Controller
 {
     public function getLocations(Request $request)
     {
-        $items = Place::select('id', 'name')->where('parent', '!=', 0)->get();
+        $items = Place::select('id', 'name')->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{

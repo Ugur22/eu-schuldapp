@@ -40,7 +40,7 @@ class AuthController extends Controller
             if (!$token) {
                 return response()->json(['user_not_found'], 404);
             }else{
-                $user = User::with('role')->find($this->jwt->user()->id);
+                $user = User::with('role')->with('client')->with('consultant')->find($this->jwt->user()->id);
                 $str = bcrypt(Str::random(40));
                 $user->token = $str;
                 $user->last_login = \Carbon\Carbon::now();

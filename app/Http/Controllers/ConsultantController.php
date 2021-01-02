@@ -75,7 +75,7 @@ class ConsultantController extends Controller
         }
 
         $input = $request->all();
-        $results = Client::whereId($input['id'])->with('user')->with('location')->first();
+        $results = Client::whereId($input['id'])->with('children')->with('user')->with('location')->first();
 
         if(!$results){
             return response()->json(['success' => false, 'message' => 'no_client']);
@@ -154,6 +154,23 @@ class ConsultantController extends Controller
         }
     }
 
+    public function employerList(Request $request){
+        if(!$this->loginFirst($request)){
+            return response()->json(['success' => false, 'message' => 'login_error']);
+        }
+
+        $items = Company::where(function($query) {
+            $query->whereHas('types', function($q) {
+                $q->where('slug', 'employer');
+            });
+        })->get();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_company']);
+        }
+    }
+
     public function appointmentList(Request $request)
     {
         if(!$this->loginFirst($request)){
@@ -172,7 +189,18 @@ class ConsultantController extends Controller
         if(!$this->loginFirst($request)){
             return response()->json(['success' => false, 'message' => 'login_error']);
         }
-        $item = Appointment::with('location')->with('client')->whereId($request->id)->get();
+        $input = $request->all();
+        $item = Appointment::with('location')->with('client');
+        if(isset($input['id'])){
+            $item = $item->whereId($input['id'])->first();
+        }else{
+            if(isset($input['event_date'])){
+                $item = $item->where('event_date', '>=', \Carbon\Carbon::parse($input['event_date'])->format('Y-m-d 00:00:00'))->where('event_date', '<=', \Carbon\Carbon::parse($input['event_date'])->format('Y-m-d 23:59:59'));
+            }elseif(isset($input['event_from']) && isset($input['event_to'])){
+                $item = $item->where('event_date', '>=', \Carbon\Carbon::parse($input['event_from'])->format('Y-m-d 00:00:00'))->where('event_date', '<=', \Carbon\Carbon::parse($input['event_to'])->format('Y-m-d 23:59:59'));
+            }
+            $item = $item->where('consultant_id', $this->jwt->user()->id)->get();
+        }
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
@@ -240,7 +268,7 @@ class ConsultantController extends Controller
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
 
-        $item = Debt::whereId($input['id'])->with('client')->first();
+        $item = Debt::whereId($input['id'])->with('client')->with('debtor')->first();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{

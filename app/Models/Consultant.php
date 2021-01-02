@@ -20,7 +20,7 @@ class Consultant extends Model
 
    public function appointments()
    {
-      return $this->hasMany('App\Models\Appointment', 'consultant_id')->with('location');
+      return $this->hasMany('App\Models\Appointment', 'consultant_id')->with('location')->with('client');
    }
 
    public function location()
