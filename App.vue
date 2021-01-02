@@ -47,7 +47,6 @@
   import OtherDocsScreen from "./pages/client/OtherDocs.vue";
   import HelpScreen from "./pages/client/Help.vue";
   import ConsultantScreen from "./pages/consultant/Consultant";
-  import CreateClientScreen from "./pages/consultant/CreateClient";
   import ClientsScreen from "./pages/consultant/Clients";
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
   import FileClientScreen from "./pages/consultant/FileClient";
@@ -86,9 +85,6 @@
       DocsOthers: {
         screen: OtherDocsScreen
       },
-      Help: {
-        screen: CreateClientScreen
-      },
     },
     {
       initialRouteName: 'Home',
@@ -100,9 +96,6 @@
     {
       Consultant: {
         screen: ConsultantScreen
-      },
-      CreateClient: {
-        screen: CreateClientScreen
       },
       Clients: {
         screen: ClientsScreen

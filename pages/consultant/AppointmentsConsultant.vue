@@ -49,9 +49,7 @@
                 <nb-text class="text">{{ appointment.location.name }}</nb-text>
             </nb-body>
             <nb-right>
-              <nb-button iconLeft transparent :style="{ marginTop: 10}" :on-press="() => detailClient(client.id)">
-                <nb-icon class="text" name="arrow-forward" />
-              </nb-button>
+              <nb-icon class="text" name="arrow-forward" />
             </nb-right>
           </nb-list-item>
         </nb-list>
