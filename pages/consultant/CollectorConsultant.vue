@@ -63,7 +63,7 @@
 }
 </style>
 <script>
-import FooterNav from '../../included/Footer';
+import FooterNav from '../../included/FooterConsultant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 
@@ -104,11 +104,7 @@ export default {
             accept: 'application/json',
             'Content-Type': 'application/json',
              'Authorization': `Bearer ${this.user.token}`
-          },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-          }),
+          }
         });
 
         let responseJson = await response.json();
