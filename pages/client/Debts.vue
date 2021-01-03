@@ -16,9 +16,9 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
+      <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
-      </nb-item> -->
+      </nb-item>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id">
           <nb-left>
@@ -34,9 +34,7 @@
           </nb-right>
         </nb-list-item>
       </nb-list>
-      <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
+      <nb-spinner color="#0078ae" v-else />
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -62,16 +60,7 @@
   color: #0078ae;
 }
 
-.loadingWrapper {
-  align-items: center;
-  justify-content: center;
-  flex:1;
-}
 
-.loading {
-  height:50;
-  width:50;
-}
 </style>
 
 <script>

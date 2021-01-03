@@ -15,7 +15,7 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content padder v-if="dataIsReady">
+    <nb-content padder >
       <nb-card :style="{ marginTop: 10 }" v-if="addAppointment"  >
         <nb-card-item header bordered>
           <nb-text class="text">Kies een client om afspraak te maken</nb-text>
@@ -31,7 +31,7 @@
           </nb-right>
         </nb-card-item>
       </nb-card>
-      <nb-card :style="{ marginTop: addAppointment ? 10 : 50 }">
+      <nb-card :style="{ marginTop: addAppointment ? 10 : 50 }" v-if="dataIsReady">
         <nb-card-item header bordered>
           <nb-text class="text">Alle afspraken</nb-text>
         </nb-card-item>
@@ -54,6 +54,7 @@
           </nb-list-item>
         </nb-list>
       </nb-card>
+      <nb-spinner color="#0078ae" v-else /> 
     <nb-button v-if="dataIsReady"
         rounded
         info
@@ -70,9 +71,6 @@
         <nb-icon active :name='addAppointment ? "remove" : "add"'/>
       </nb-button>
     </nb-content>
-    <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
@@ -90,16 +88,7 @@
 	color:#fff;
 }
 
-.loadingWrapper {
-  align-items: center;
-  justify-content: center;
-  flex:1;
-}
 
-.loading {
-  height:50;
-  width:50;
-}
 
 .title {
 	color: #0078ae;

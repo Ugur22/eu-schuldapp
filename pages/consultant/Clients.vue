@@ -15,11 +15,11 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content v-if="dataIsReady">
+    <nb-content >
       <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
       </nb-item>
-      <nb-list>
+      <nb-list v-if="dataIsReady">
       <nb-list-item itemDivider class="list-Header">
           <nb-left>
             <nb-text  class="text header-text">Naam</nb-text>
@@ -32,7 +32,7 @@
           </nb-right>
         </nb-list-item>
       </nb-list>
-      <nb-list >
+      <nb-list v-if="dataIsReady">
         <nb-list-item v-for="client in Clients" :key="client.id">
           <nb-left>
             <nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
@@ -47,10 +47,8 @@
           </nb-right>
         </nb-list-item>
       </nb-list>
+      <nb-spinner color="#0078ae" v-else /> 
     </nb-content>
-    <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	  </nb-card-item>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
@@ -73,17 +71,6 @@
 }
 .text {
   color: #0078ae;
-}
-
-.loadingWrapper {
-  align-items: center;
-  justify-content: center;
-  flex:1;
-}
-
-.loading {
-  height:50;
-  width:50;
 }
 
 .list-Header{

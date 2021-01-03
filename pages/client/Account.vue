@@ -51,9 +51,7 @@
         </nb-card-item>
         <nb-card-item footer> </nb-card-item>
       </nb-card>
-      <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
+        <nb-spinner color="#0078ae" v-else />
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -135,14 +133,5 @@ export default {
   font-size: 24px;
 }
 
-.loadingWrapper {
-  align-items: center;
-  justify-content: center;
-  flex:1;
-}
 
-.loading {
-  height:50;
-  width:50;
-}
 </style>

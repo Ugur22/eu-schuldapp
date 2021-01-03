@@ -1,9 +1,7 @@
 <template>
   <nb-container>
     <nb-content :style="{ marginTop: 80 }">
-      <view
-        :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }"
-      >
+      <view :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
         <image :source="require('../assets/images/logo.png')" />
       </view>
       <nb-form :style="{ paddingLeft: 20, paddingRight: 20 }">
@@ -15,14 +13,8 @@
           <nb-label>{{ $root.lang.t('password') }}</nb-label>
           <nb-input v-model="password" secure-text-entry />
         </nb-item>
-        <nb-button
-          class="btn"
-          block
-          info
-          :style="{ marginTop: 20 }"
-          :on-press="login"
-        >
-          <nb-spinner v-if="logging_in" size="small" />
+        <nb-button class="btn" block info :style="{ marginTop: 20 }" :on-press="login">
+          <!-- <nb-spinner v-if="$root.loggedIn" color="#0078ae" /> -->
           <nb-text>{{ $root.lang.t('login') }}</nb-text>
         </nb-button>
       </nb-form>

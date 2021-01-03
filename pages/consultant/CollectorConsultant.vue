@@ -24,9 +24,7 @@
           </nb-body>
         </nb-list-item>
       </nb-list>
-      <nb-card-item class="loadingWrapper" v-else>
-			  <image :source="require('../../assets/images/loader.gif')" class="loading" />
-	   </nb-card-item>
+      <nb-spinner color="#0078ae" v-else /> 
     </nb-content>
     <nb-footer>
       <footer-nav
@@ -51,16 +49,7 @@
   color: #0078ae;
 }
 
-.loadingWrapper {
-  align-items: center;
-  justify-content: center;
-  flex:1;
-}
 
-.loading {
-  height:50;
-  width:50;
-}
 </style>
 <script>
 import FooterNav from '../../included/FooterConsultant';
