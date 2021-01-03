@@ -164,17 +164,13 @@
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/consultant/client', {
-          method: 'POST',
+        let response = await fetch(`http://api.arsus.nl/consultant/client?id=${this.navigation.getParam('clientID')}`, {
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-            id: this.navigation.getParam('clientID'),
-          }),
+            'Authorization': `Bearer ${this.user.token}`
+          }
         });
 
         let responseJson = await response.json();

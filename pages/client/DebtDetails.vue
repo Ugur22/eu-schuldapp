@@ -101,20 +101,15 @@ export default {
       } catch (error) {
         // Error retrieving data
         console.log(error.message);
-      }
-
+      } 
       try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debt', {
-          method: 'POST',
+        let response = await fetch(`http://api.arsus.nl/client/docs/debt/?id=${this.navigation.getParam('debtID')}`, {
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.user.token}`
           },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-            id: this.navigation.getParam('debtID'),
-          }),
         });
 
         let responseJson = await response.json();

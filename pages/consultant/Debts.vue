@@ -104,23 +104,20 @@ export default {
       try {
         value = await AsyncStorage.getItem('login');
         this.user = JSON.parse(value);
+
       } catch (error) {
         // Error retrieving data
         console.log(error.message);
       }
 
       try {
-        let response = await fetch('http://api.arsus.nl/consultant/client/debts', {
-          method: 'POST',
+        let response = await fetch(`http://api.arsus.nl/consultant/client/debts?client_id=${ this.navigation.getParam('id')}`, {
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-            client_id: this.navigation.getParam('id'),
-          }),
+            'Authorization': `Bearer ${this.user.token}`
+          }
         });
 
         let responseJson = await response.json();

@@ -72,11 +72,12 @@ export default {
         });
 
         let responseJson = await response.json();
-        if (responseJson.id) {
+        if (responseJson.success) {
           let user_updated = {
             email: this.email,
             password: this.password,
-            type:responseJson.role.slug
+            type:responseJson.user.role.slug,
+            token:responseJson.token.token
           };
 
           AsyncStorage.setItem('login', JSON.stringify(this.user), () => {

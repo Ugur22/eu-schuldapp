@@ -67,6 +67,7 @@
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
+import {fetchData} from '../utils/fetch';
 
 export default {
   props: {
@@ -84,7 +85,8 @@ export default {
       selectedDoc: '0',
        clientCollectors: {},
        dataIsReady: false,
-       formatDate
+       formatDate,
+       fetchData
     };
   },
   methods: {
@@ -100,15 +102,12 @@ export default {
 
       try {
         let response = await fetch('http://api.arsus.nl/client/docs/debtors', {
-          method: 'POST',
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
+             'Authorization': `Bearer ${this.user.token}`
           },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-          }),
         });
 
         let responseJson = await response.json();

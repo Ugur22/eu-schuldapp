@@ -188,6 +188,7 @@
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
+             'Authorization': `Bearer ${this.user.token}`
           },
           body: JSON.stringify({
             email: this.user.email,

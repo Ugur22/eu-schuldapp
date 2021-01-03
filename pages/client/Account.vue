@@ -83,6 +83,7 @@ export default {
   },
   created() {
     this.userData();
+   
   },
   methods: {
     userData: async function () {
@@ -97,15 +98,11 @@ export default {
 
       try {
         let response = await fetch('http://api.arsus.nl/client', {
-          method: 'POST',
+          method: 'GET',
           headers: {
-            accept: 'application/json',
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-          }),
+            'Authorization': `Bearer ${this.user.token}`
+          }
         });
 
         let responseJson = await response.json();

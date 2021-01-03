@@ -45,7 +45,7 @@
               </nb-body>
             </nb-left>
             <nb-body>
-                <nb-text class="text">Erik jansen</nb-text>
+                <nb-text class="text">{{appointment.client.firstname}} {{appointment.client.lastname}} </nb-text>
                 <nb-text class="text">{{ appointment.location.name }}</nb-text>
             </nb-body>
             <nb-right>
@@ -148,15 +148,11 @@ export default {
 
     try {
       let response = await fetch('http://api.arsus.nl/consultant/clients', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.user.token}`
         },
-        body: JSON.stringify({
-          email: this.user.email,
-          password: this.user.password,
-        }),
       });
 
       let responseJson = await response.json();
@@ -183,15 +179,12 @@ export default {
 
       try {
         let response = await fetch('http://api.arsus.nl/consultant/appointments', {
-          method: 'POST',
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-          }),
+            'Authorization': `Bearer ${this.user.token}`
+          }
         });
 
         let responseJson = await response.json();

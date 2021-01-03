@@ -20,7 +20,7 @@
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="form in clientForms" :key="form.id">
           <nb-left>
-            <nb-text class="text">{{clientDocs}}</nb-text>
+            <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
           <nb-right>
             <nb-text class="text">{{formatDate(form.doc_date_time)}}</nb-text>
@@ -82,7 +82,7 @@ export default {
   },
   created() {
     this.getForms();
-    this.getDoc();
+    // this.getDoc();
   },
   mounted() { 
     //    this.getDoc().then(val => {
@@ -108,7 +108,7 @@ export default {
       }
       try {
         let response = await fetch('http://api.arsus.nl/document/html-preview', {
-          method: 'POST',
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
@@ -153,15 +153,12 @@ export default {
 
       try {
         let response = await fetch('http://api.arsus.nl/client/docs/forms', {
-          method: 'POST',
+          method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
+             'Authorization': `Bearer ${this.user.token}`
           },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-          }),
         });
 
         let responseJson = await response.json();
