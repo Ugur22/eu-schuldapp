@@ -52,7 +52,7 @@
 
 </style>
 <script>
-import FooterNav from '../../included/FooterConsultant';
+import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 

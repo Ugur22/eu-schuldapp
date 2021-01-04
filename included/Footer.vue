@@ -1,5 +1,5 @@
 <template>
-  <nb-footer-tab>
+  <nb-footer-tab v-if="userType === 'client'">
     <nb-button :active="activeBtn == 'home'" :on-press="() => goToPage('Home')">
       <nb-icon :active="activeBtn == 'home'" name="home" />
       <nb-text>{{ $root.lang.t('home') }}</nb-text>
@@ -17,22 +17,53 @@
       <nb-text >{{ $root.lang.t('file') }}</nb-text>
     </nb-button>
   </nb-footer-tab>
+    <nb-footer-tab v-else>
+    <nb-button class="button" :on-press="() => goToPage('Home')">
+      <nb-icon name="home" />
+      <nb-text>{{ $root.lang.t('home') }}</nb-text>
+    </nb-button>
+    <nb-button :active="activeBtn == 'clients'" :on-press="() => goToPage('Clients')">
+      <nb-icon :active="activeBtn == 'clients'" name="people" />
+      <nb-text>{{ $root.lang.t('clients') }}</nb-text>
+    </nb-button>
+    <nb-button class="button" :active="activeBtn == 'appointments'" :on-press="() => goToPage('AppointmentsConsultant')">
+      <nb-icon :active="activeBtn == 'appointments'" name="calendar" />
+      <nb-text>{{ $root.lang.t('calendar') }}</nb-text>
+    </nb-button>
+  </nb-footer-tab>
 </template>
 
 <script>
+import { AsyncStorage } from "react-native";
   export default {
     props: {
       activeBtn: {
         type: String
-      }
+      },
+      userType: '',
     },
     data() {
       return {};
     },
+      mounted() {
+    this.getUser().then(val => {
+      // got value here
+      this.userType = val.type;
+    }).catch(e => {
+      // error
+      console.log(e);
+    });
+  },
     methods: {
       goToPage: function (page) {
         this.$parent.navigation.navigate(page);
-      }
+      },
+      getUser: async function () {
+        let value = '';
+        value = await AsyncStorage.getItem('login');
+        value = JSON.parse(value);
+        return value;
+    },
     }
   }
 </script>

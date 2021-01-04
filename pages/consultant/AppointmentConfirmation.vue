@@ -48,7 +48,7 @@
 </template>
 
 <script>
-  import FooterNav from '../../included/FooterConsultant';
+  import FooterNav from '../../included/Footer';
   import moment from "moment";
 
   export default {

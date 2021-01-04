@@ -123,7 +123,6 @@ export default {
       }
     },
     openAppointment: function (id) {
-      console.log(id);
       this.navigation.navigate('AppointmentClient',{
         id:id
       });

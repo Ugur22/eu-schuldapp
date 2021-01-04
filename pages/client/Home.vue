@@ -19,7 +19,8 @@
           <nb-text class="text-btn">{{ $root.lang.t('check_document') }}</nb-text>
         </nb-button>
     </view>
-    <view v-else :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
+    <view v-else :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20, marginTop:-110  }">
+      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{name}}</nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
           <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
         </nb-button>
@@ -30,7 +31,7 @@
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
       <image :source="require('../../assets/images/logo.png')" />
     </view>
-        <nb-footer>
+      <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
         activeBtn="home"
@@ -38,7 +39,6 @@
     </nb-footer>
   </nb-container>
 </template>
-
 <script>
 
 import { NavigationActions } from 'vue-native-router';

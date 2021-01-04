@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import FooterNav from '../../included/FooterConsultant';
+  import FooterNav from '../../included/Footer';
   import AsyncStorage from '@react-native-async-storage/async-storage';
   import {formatDate,FormatTime} from "../utils/dates";
 

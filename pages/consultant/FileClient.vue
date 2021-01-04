@@ -118,7 +118,7 @@
 
 <script>
   import { Picker } from "native-base";
-  import FooterNav from '../../included/FooterConsultant';
+  import FooterNav from '../../included/Footer';
   import * as Permissions from 'expo-permissions';
   import { Camera } from 'expo-camera';
   import Modal from 'react-native-modal';

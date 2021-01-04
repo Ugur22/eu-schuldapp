@@ -19,7 +19,7 @@
       <nb-card v-if="dataIsReady">
         <nb-card-item >
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-            <nb-text :style="{ fontSize: 24, color: 'green' }">client: {{Appointment.client.firstname}} {{Appointment.client.lastname}}</nb-text>
+            <nb-text :style="{ fontSize: 24, color: 'green' }">consulent: {{Appointment.consultant.firstname}} {{Appointment.consultant.lastname}}</nb-text>
             <nb-text :style="{ fontSize: 20, color: 'green' }">{{Appointment.title}}</nb-text>
             <nb-card-item>
               <nb-left>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import FooterNav from '../../included/FooterConsultant';
+  import FooterNav from '../../included/Footer';
   import AsyncStorage from '@react-native-async-storage/async-storage';
   import {formatDate,FormatTime} from "../utils/dates";
 

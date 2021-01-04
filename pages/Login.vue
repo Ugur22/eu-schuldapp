@@ -65,16 +65,20 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          let clientName = ''
+          let nameUser = ''
           if(responseJson.user.client){
-            clientName = responseJson.user.client.firstname + ' ' + responseJson.user.client.lastname;
+            nameUser = responseJson.user.client.firstname + ' ' + responseJson.user.client.lastname;
+          }
+
+          if(responseJson.user.consultant){
+            nameUser = responseJson.user.consultant.firstname + ' ' + responseJson.user.consultant.lastname;
           }
           let user_updated = {
             email: this.email,
             password: this.password,
             type:responseJson.user.role.slug,
             token:responseJson.token.token,
-            name:clientName
+            name:nameUser
           };
 
           AsyncStorage.setItem('login', JSON.stringify(this.user), () => {

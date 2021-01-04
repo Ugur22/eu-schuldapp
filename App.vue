@@ -46,7 +46,6 @@
   import CollectorDocsScreen from "./pages/client/Collector.vue";
   import OtherDocsScreen from "./pages/client/OtherDocs.vue";
   import HelpScreen from "./pages/client/Help.vue";
-  import ConsultantScreen from "./pages/consultant/Consultant";
   import ClientsScreen from "./pages/consultant/Clients";
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
   import FileClientScreen from "./pages/consultant/FileClient";
@@ -89,9 +88,6 @@
       },
       DocsOthers: {
         screen: OtherDocsScreen
-      },
-      Consultant: {
-        screen: ConsultantScreen
       },
       Clients: {
         screen: ClientsScreen

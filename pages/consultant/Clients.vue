@@ -28,12 +28,12 @@
             <nb-text  class="text header-text">status</nb-text>
           </nb-body>
           <nb-right>
-            <nb-text  class="text header-text">more</nb-text>
+            <nb-text  class="text header-text">meer</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="client in Clients" :key="client.id">
+        <nb-list-item v-for="client in Clients" :key="client.id" :on-press="() => detailClient(client.id)">
           <nb-left>
             <nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
           </nb-left>
@@ -41,7 +41,7 @@
             <nb-text class="text">{{client.status}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button iconLeft transparent :on-press="() => detailClient(client.id)">
+          <nb-button iconLeft transparent>
             <nb-icon class="text" name="arrow-forward" />
           </nb-button>
           </nb-right>
@@ -84,7 +84,7 @@
 
 <script>
 import Modal from 'react-native-modal';
-import FooterNav from '../../included/FooterConsultant';
+import FooterNav from '../../included/Footer';
 import FileClient from './FileClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
