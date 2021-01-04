@@ -15,25 +15,32 @@
         </nb-button>
       </nb-right>
     </nb-header>
-    <nb-content padder>
-      <nb-card :style="{ marginTop: 20 }" v-if="dataIsReady">
+     <nb-content padder >
+      <nb-card v-if="dataIsReady">
         <nb-card-item header bordered>
-          <nb-text class="title">{{ $root.lang.t('appointments') }}</nb-text>
+          <nb-text class="text">Alle afspraken</nb-text>
         </nb-card-item>
-        <nb-card-item
-          v-for="appointment in appointments"
-          :key="appointment.id">
+        <nb-list>
+          <nb-list-item  v-for="appointment in appointments"
+            :key="appointment.id"  :style="{ padding: 0}" :on-press="() => openAppointment(appointment.id)">
             <nb-left>
-					    <nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
-					    <nb-text class="text">{{ FormatTime(appointment.event_date)}}</nb-text>
+              <nb-body>
+                <nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
+                <nb-text class="text">{{ FormatTime(appointment.event_date)}}</nb-text>
+              </nb-body>
             </nb-left>
-         	  <nb-right>
-            	<nb-text class="text">{{ appointment.location.name }}</nb-text>
-          	</nb-right>
-        </nb-card-item>
+            <nb-body>
+                <nb-text class="text">{{appointment.consultant.firstname}} {{appointment.consultant.lastname}} </nb-text>
+                <nb-text class="text">{{ appointment.location.name }}</nb-text>
+            </nb-body>
+            <nb-right>
+              <nb-icon class="text" name="arrow-forward" />
+            </nb-right>
+          </nb-list-item>
+        </nb-list>
       </nb-card>
-      <nb-spinner color="#0078ae" v-else />   
-    </nb-content>
+      <nb-spinner color="#0078ae" v-else /> 
+     </nb-content>
     <nb-footer>
       <footer-nav
         :style="{ backgroundColor: '#0078ae' }"
@@ -114,6 +121,12 @@ export default {
         console.log(error);
         console.error(error);
       }
+    },
+    openAppointment: function (id) {
+      console.log(id);
+      this.navigation.navigate('AppointmentClient',{
+        id:id
+      });
     },
     goBack: function () {
       this.navigation.goBack();

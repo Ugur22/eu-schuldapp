@@ -31,7 +31,7 @@
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="{ color: '#0078ae' }" name="map"></nb-icon>
+                <nb-icon :style="{ color: '#0078ae' }" name="pin"></nb-icon>
                 <nb-text class="text-account">{{clientData.address}}{{ "\n" }}{{clientData.postal_code}} {{clientData.birth_place}}</nb-text>
               </nb-left>
             </nb-card-item>

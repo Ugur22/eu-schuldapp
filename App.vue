@@ -57,6 +57,7 @@
   import FormsConsultantScreen from "./pages/consultant/FormsConsultant";
   import CollectorConsultantScreen from "./pages/consultant/CollectorConsultant";
   import OtherDocsDetailsScreen from "./pages/consultant/OtherDocsDetails";
+  import AppointmentClientScreen from "./pages/client/AppointmentClient"
 
   let PageStart;
 
@@ -127,6 +128,9 @@
       },
       OtherDocsDetails: {
         screen: OtherDocsDetailsScreen
+      },
+      AppointmentClient: {
+        screen: AppointmentClientScreen
       },
     },
     {

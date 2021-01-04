@@ -15,7 +15,7 @@
         <nb-input placeholder="zoek overige documenten" />
       </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="docs in clientDocs" :key="docs.id">
+        <nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id)">
           <nb-left>
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
@@ -23,7 +23,7 @@
             <nb-text class="text">{{ formatDate(docs.doc_date_time) }}</nb-text>
           </nb-body>
           <nb-right>
-            <nb-button iconLeft transparent :on-press="() => detailOther(docs.id,docs.client_id)">
+            <nb-button iconLeft transparent>
               <nb-icon class="text" name="arrow-forward" />
             </nb-button>
           </nb-right>

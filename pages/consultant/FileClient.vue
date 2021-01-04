@@ -53,29 +53,29 @@
             <nb-input placeholder="Naam schuldeiser" />
           </nb-item>
         </nb-card-item>
-        <nb-button class="btns" block info :on-press="sendFile">
+        <nb-button class="btns" full :on-press="sendFile">
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
       </nb-card>
       <nb-grid :style="{ marginTop: 10 }">
         <nb-col>
-          <nb-button warning full vertical class="btns" :on-press="() => detailPage(Client.id,'Debts')">
+          <nb-button full class="btns" :on-press="() => detailPage(Client.id,'Debts')">
             <nb-text>{{ $root.lang.t('debts') }}</nb-text>
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button primary full vertical class="btns" :on-press="() => detailPage(Client.id,'FormsConsultant')">
+          <nb-button full class="btns" :on-press="() => detailPage(Client.id,'FormsConsultant')">
             <nb-text>{{ $root.lang.t('forms') }}</nb-text>
           </nb-button>
         </nb-col>
       </nb-grid>
         <nb-col>
-          <nb-button danger full vertical class="btns" :on-press="() => detailPage(Client.id,'OtherDocsConsultant')">
+          <nb-button full class="btns" :on-press="() => detailPage(Client.id,'OtherDocsConsultant')">
             <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
           </nb-button>
         </nb-col>
         <nb-col>
-          <nb-button success full vertical class="btns" :on-press="() => detailPage(Client.id,'CollectorConsultant')">
+          <nb-button full class="btns" :on-press="() => detailPage(Client.id,'CollectorConsultant')">
             <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
           </nb-button>
         </nb-col>

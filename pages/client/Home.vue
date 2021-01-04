@@ -1,7 +1,14 @@
 <template>
   <nb-container>
-    <view v-if="userType === 'client'" :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
-      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} </nb-text>
+      <nb-header :style="{elevation:0,backgroundColor: '#FFF'}">
+        <nb-right :style="{flex:1}">
+          <nb-button transparent :on-press="logout">
+            <nb-icon :style="{ color: '#0078ae',fontSize:32 }" name="exit" />
+          </nb-button>
+        </nb-right>
+      </nb-header>
+    <view v-if="userType === 'client'" :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20,marginTop:-70 }">
+          <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{name}}</nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Account')">
           <nb-text class="text-btn">{{ $root.lang.t('my_account') }}</nb-text>
         </nb-button>
@@ -11,25 +18,24 @@
         <nb-button full info class="btns" :on-press="() => goToPage('Documents')">
           <nb-text class="text-btn">{{ $root.lang.t('check_document') }}</nb-text>
         </nb-button>
-        <nb-button full info class="btns" :on-press="logout">
-          <nb-text class="text-btn">Logout</nb-text>
-        </nb-button>
     </view>
     <view v-else :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20 }">
-      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} consulent</nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
           <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
         </nb-button>
         <nb-button full info class="btns" :on-press="() => goToPage('AppointmentsConsultant')">
           <nb-text class="text-btn">{{ $root.lang.t('appointments') }}</nb-text>
         </nb-button>
-        <nb-button full info class="btns" :on-press="logout">
-          <nb-text class="text-btn">Logout</nb-text>
-        </nb-button>
     </view>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
       <image :source="require('../../assets/images/logo.png')" />
     </view>
+        <nb-footer>
+      <footer-nav
+        :style="{ backgroundColor: '#0078ae' }"
+        activeBtn="home"
+      ></footer-nav>
+    </nb-footer>
   </nb-container>
 </template>
 
@@ -37,6 +43,7 @@
 
 import { NavigationActions } from 'vue-native-router';
 import { AsyncStorage } from "react-native";
+import FooterNav from '../../included/Footer';
 
 
 export default {
@@ -45,6 +52,7 @@ export default {
       type: Object
     },
     userType: '',
+    name:''
   },
   data() {
     return {
@@ -56,11 +64,13 @@ export default {
     this.getUser().then(val => {
       // got value here
       this.userType = val.type;
+      this.name = val.name
     }).catch(e => {
       // error
       console.log(e);
     });
   },
+  components: { FooterNav },
   methods: {
     getUser: async function () {
       let value = '';

@@ -20,7 +20,7 @@
         <nb-input placeholder="Search" />
       </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="debt in clientDebts" :key="debt.id">
+        <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id,debt.client.id)">
           <nb-left>
             <nb-text  class="text">{{debt.debtor.name}}</nb-text>
           </nb-left>
@@ -28,7 +28,7 @@
             <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button iconLeft transparent :on-press="() => detailDebt(debt.id,debt.client.id)">
+          <nb-button iconLeft transparent>
             <nb-icon class="text" name="arrow-forward" />
           </nb-button>
           </nb-right>

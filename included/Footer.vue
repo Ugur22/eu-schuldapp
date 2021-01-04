@@ -1,7 +1,7 @@
 <template>
   <nb-footer-tab>
-    <nb-button :on-press="() => goToPage('Home')">
-      <nb-icon name="home" />
+    <nb-button :active="activeBtn == 'home'" :on-press="() => goToPage('Home')">
+      <nb-icon :active="activeBtn == 'home'" name="home" />
       <nb-text>{{ $root.lang.t('home') }}</nb-text>
     </nb-button>
     <nb-button :active="activeBtn == 'account'" :on-press="() => goToPage('Account')">
@@ -12,9 +12,9 @@
       <nb-icon :active="activeBtn == 'appointments'" name="calendar" />
       <nb-text>{{ $root.lang.t('calendar') }}</nb-text>
     </nb-button>
-    <nb-button :active="activeBtn == 'docs'" :on-press="() => goToPage('Documents')">
-      <nb-icon :active="activeBtn == 'docs'" name="laptop" />
-      <nb-text>{{ $root.lang.t('file') }}</nb-text>
+    <nb-button :style="{ padding: 0 }" :active="activeBtn == 'docs'" :on-press="() => goToPage('Documents')">
+      <nb-icon :active="activeBtn == 'docs'" name="folder-open" />
+      <nb-text >{{ $root.lang.t('file') }}</nb-text>
     </nb-button>
   </nb-footer-tab>
 </template>
