@@ -11,9 +11,9 @@
       </nb-body>
     </nb-header>
     <nb-content  >
-      <nb-item :style="{ borderColor: '#62B1F6' }">
+      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="zoek overige documenten" />
-      </nb-item>
+      </nb-item> -->
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="docs in clientDocs" :key="docs.id">
           <nb-left>

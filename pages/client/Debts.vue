@@ -16,9 +16,9 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-item :style="{ borderColor: '#62B1F6' }">
+      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
-      </nb-item>
+      </nb-item> -->
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id)">
           <nb-left>
@@ -28,9 +28,7 @@
             <nb-text class="text">{{ $root.lang.t('currency') }}{{debt.debt_amount}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button iconLeft transparent>
             <nb-icon class="text" name="arrow-forward" />
-          </nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>

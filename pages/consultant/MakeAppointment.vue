@@ -22,7 +22,7 @@
               <nb-label>Title</nb-label>
               <nb-input v-model="title" />
             </nb-item>
-            <nb-item floatingLabel>
+            <nb-item floatingLabel :style="{  marginTop:10 }">
               <nb-label>Notes</nb-label>
               <nb-input v-model="notes" />
             </nb-item>

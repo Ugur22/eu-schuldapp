@@ -41,9 +41,7 @@
             <nb-text class="text">{{client.status}}</nb-text>
           </nb-body>
           <nb-right>
-          <nb-button iconLeft transparent>
             <nb-icon class="text" name="arrow-forward" />
-          </nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>
