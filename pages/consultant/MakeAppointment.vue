@@ -18,7 +18,7 @@
         <nb-card-item>
           <nb-body>
           <nb-body>
-            <nb-item floatingLabel>
+            <nb-item :error="(!title.required)" floatingLabel>
               <nb-label>Title</nb-label>
               <nb-input v-model="title" />
             </nb-item>
@@ -96,6 +96,7 @@
   import moment from "moment";
   import localization from "moment/locale/nl";
   import {formatDate,FormatTime,formatDay} from "../utils/dates";
+  import { Toast } from 'native-base';
   
   export default {
     props: {
@@ -182,41 +183,48 @@
         console.log(error.message);
       }
 
-      try {
-        let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
-          method: 'POST',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-             'Authorization': `Bearer ${this.user.token}`
-          },
-          body: JSON.stringify({
-            email: this.user.email,
-            password: this.user.password,
-            title: this.title,
-            notes: this.notes,
-            date: this.formatDate(this.date),
-            time: this.FormatTime(this.date),
-            client_id: this.navigation.getParam('ClientID'),
-            location_id: this.selectedLocation,
-          }),
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          console.log('afspraak gemaakt');
-          this.navigation.navigate('AppointmentConfirmation', {
-            title: this.title,
-            notes: this.notes,
-            clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
-            date: this.formatDate(this.date),
-            time: this.FormatTime(this.date)
+      if(this.title){
+        try {
+          let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
+            method: 'POST',
+            headers: {
+              accept: 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.user.token}`
+            },
+            body: JSON.stringify({
+              email: this.user.email,
+              password: this.user.password,
+              title: this.title,
+              notes: this.notes,
+              date: this.formatDate(this.date),
+              time: this.FormatTime(this.date),
+              client_id: this.navigation.getParam('ClientID'),
+              location_id: this.selectedLocation,
+            }),
           });
-        } else {
-          console.log(responseJson);
+
+          let responseJson = await response.json();
+          if (responseJson.success) {
+            console.log('afspraak gemaakt');
+            this.navigation.navigate('AppointmentConfirmation', {
+              title: this.title,
+              notes: this.notes,
+              clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
+              date: this.formatDate(this.date),
+              time: this.FormatTime(this.date)
+            });
+          } else {
+            console.log(responseJson);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
+      }else {
+          Toast.show({
+          text: 'vul een titel in!',
+          buttonText: 'ok'
+        })
       }
         
       },

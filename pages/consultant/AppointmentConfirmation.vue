@@ -20,7 +20,7 @@
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
             <nb-icon name="checkmark" :style="{ fontSize: 150, color: 'green' }" />
             <nb-text>{{navigation.getParam('title')}}</nb-text>
-            <nb-text>cient: {{navigation.getParam('clientName')}}</nb-text>
+            <nb-text>client: {{navigation.getParam('clientName')}}</nb-text>
             <nb-card-item>
               <nb-left>
                 <nb-text>tijd: {{navigation.getParam('time')}}</nb-text>

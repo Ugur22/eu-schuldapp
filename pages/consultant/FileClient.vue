@@ -80,25 +80,22 @@
           </nb-button>
         </nb-col>
     </nb-content>
-    <nb-footer>
-      <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="docs"></footer-nav>
-    </nb-footer>
     <modal v-if="displayCam">
       <camera class="camera" v-if="!displayPreview" :type="this.type" ref="useCamera" :style="{ flex: 1,  justifyContent: 'flex-end', alignItems: 'center' }">
         <nb-button info rounded :on-press="takePicture" :style="{ justifyContent: 'center', alignSelf: 'center', width:80, height: 80 }">
           <nb-icon name="camera" />
         </nb-button>
         <nb-button warning rounded :on-press="cancelCamera" :style="{ justifyContent: 'center', alignSelf: 'flex-end', marginBottom:20, marginRight:20 }">
-          <nb-icon name="times" />
+          <nb-icon name="close" />
         </nb-button>
       </camera>
       <image-background class="camera" :source="photo" v-if="displayPreview" :style="{ flex: 1,  backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'center' }">
         <view :style="{ flexDirection:'row', marginBottom: 10 }">
           <nb-button success rounded :on-press="confirmPhoto" :style="{ marginRight:5 }">
-            <nb-icon name="camera" />
+            <nb-icon name="checkmark" />
           </nb-button>
           <nb-button danger rounded :on-press="cancelPreview" :style="{ marginLeft:5 }">
-            <nb-icon name="times" />
+            <nb-icon name="close" />
           </nb-button>
         </view>
       </image-background>
@@ -112,6 +109,9 @@
         </view>
       </image-background>
     </modal>
+    <nb-footer>
+      <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="docs"></footer-nav>
+    </nb-footer>
   </nb-container>
   <nb-spinner color="#0078ae" v-else /> 
 </template>
@@ -123,6 +123,7 @@
   import { Camera } from 'expo-camera';
   import Modal from 'react-native-modal';
   import AsyncStorage from '@react-native-async-storage/async-storage';
+  import { Toast } from 'native-base';
 
   export default {
     props: {
@@ -227,7 +228,10 @@
         this.displayLarge = false;
       },
       sendFile: function () {
-        alert('sent!');
+        Toast.show({
+          text: 'De foto is geupload',
+          buttonText: 'ok'
+        })
       },
       detailPage: function (id,pageName) {
          this.navigation.navigate(pageName, {

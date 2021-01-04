@@ -89,16 +89,16 @@
           <nb-icon name="camera" />
         </nb-button>
         <nb-button warning rounded :on-press="cancelCamera" :style="{ justifyContent: 'center', alignSelf: 'flex-end', marginBottom:20, marginRight:20 }">
-          <nb-icon name="times" />
+          <nb-icon name="close" />
         </nb-button>
       </camera>
       <image-background class="camera" :source="photo" v-if="displayPreview" :style="{ flex: 1,  backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'center' }">
         <view :style="{ flexDirection:'row', marginBottom: 10 }">
           <nb-button success rounded :on-press="confirmPhoto" :style="{ marginRight:5 }">
-            <nb-icon name="camera" />
+            <nb-icon name="check" />
           </nb-button>
           <nb-button danger rounded :on-press="cancelPreview" :style="{ marginLeft:5 }">
-            <nb-icon name="times" />
+            <nb-icon name="close" />
           </nb-button>
         </view>
       </image-background>

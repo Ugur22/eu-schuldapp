@@ -18,8 +18,8 @@
     </nb-button>
   </nb-footer-tab>
     <nb-footer-tab v-else>
-    <nb-button class="button" :on-press="() => goToPage('Home')">
-      <nb-icon name="home" />
+    <nb-button :active="activeBtn == 'home'" :on-press="() => goToPage('Home')">
+      <nb-icon :active="activeBtn == 'home'" name="home" />
       <nb-text>{{ $root.lang.t('home') }}</nb-text>
     </nb-button>
     <nb-button :active="activeBtn == 'clients'" :on-press="() => goToPage('Clients')">

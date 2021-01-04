@@ -88,7 +88,7 @@ export default {
           this.$root.loggedIn = true; 
 
         } else {
-          alert(JSON.stringify(responseJson));
+          alert('De combinatie van het e-mailadres en het wachtwoord is niet bij ons bekend');
         }
       } catch (error) {
          AsyncStorage.removeItem('login');
