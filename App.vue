@@ -57,6 +57,7 @@
   import CollectorConsultantScreen from "./pages/consultant/CollectorConsultant";
   import OtherDocsDetailsScreen from "./pages/consultant/OtherDocsDetails";
   import AppointmentClientScreen from "./pages/client/AppointmentClient"
+  import FormDetailsScreen from "./pages/consultant/FormDetails"
 
   let PageStart;
 
@@ -127,6 +128,9 @@
       },
       AppointmentClient: {
         screen: AppointmentClientScreen
+	  },
+	  FormDetails: {
+        screen: FormDetailsScreen
       },
     },
     {
@@ -134,7 +138,6 @@
       headerMode: 'none'
     }
   );
-
   const AppNavigator = createAppContainer(StackNavigator);
 
   export default { 

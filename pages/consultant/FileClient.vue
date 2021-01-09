@@ -22,8 +22,7 @@
 			mode="dialog"
 			placeholder="Kies een document"
 			:selectedValue="selectedDoc"
-			:onValueChange="onDocChange"
-		  >
+			:onValueChange="onDocChange">
 			<item label="Kies een document" value="0" />
 			<item label="1.0_Inschrijf_form" value="1" />
 			<item label="Contracten met Client" value="2" />
@@ -36,6 +35,7 @@
 			<item label="1.8_Volmacht_verstrekt_door_cliënt_EU" value="9" />
 		  </nb-picker>
 		</nb-card-item>
+			
 		<nb-card-item>
 		  <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
 			<nb-button rounded info :style="{ alignSelf: 'center',backgroundColor:'#0078ae' }" :on-press="getCamera">
@@ -131,11 +131,12 @@
   import AsyncStorage from '@react-native-async-storage/async-storage';
   import { Toast } from 'native-base';
 
+
   export default {
 	props: {
 	  navigation: {
 		type: Object
-	  },
+	  },  
 	  user: {},
 	},
 	data() {
@@ -151,13 +152,13 @@
 		displayLarge: false,
 		Client: {},
 		dataIsReady: false,
-		title:''
+		title:'',
 	  };
 	},
 	  created() {
 		this.clientData();
 	  },
-	components: { FooterNav, Camera, Item: Picker.Item },
+	components: { FooterNav, Camera, Item: Picker.Item},
 	methods: {
 	clientData: async function () {
 	  let value = '';
@@ -279,7 +280,7 @@
 	  },
 	  sendFile: function () {
 		Toast.show({
-		  text: 'De foto is geupload',
+		  text: 'verzonden',
 		  buttonText: 'ok'
 		})
 		this.uploadFile();
