@@ -64,6 +64,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 export default {
   props: {
@@ -76,7 +77,8 @@ export default {
   data() {
     return {
      clientData: {},
-      dataIsReady: false
+      dataIsReady: false,
+      request_source : ''
     };
   },
   created() {
@@ -85,7 +87,11 @@ export default {
   },
   methods: {
     userData: async function () {
+
+      let source = axios.CancelToken.source();
       let value = '';
+      let that = this;
+        that.request_source = source;
       try {
         value = await AsyncStorage.getItem('login');
         this.user = JSON.parse(value);
@@ -93,26 +99,34 @@ export default {
         // Error retrieving data
         console.log(error.message);
       }
+      let headers = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.user.token}`
+        }
+      }
+
+      if(this.source != ''){
+        source.cancel();
+      }
 
       try {
-        let response = await fetch('http://api.arsus.nl/client', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          }
-        });
 
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.clientData = responseJson.results;
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
+        const response = await axios.get('http://api.arsus.nl/client',headers, {
+          cancelToken: that.request_source.token
+        }).then(function (response) {
+            if(response.data.results){
+              that.clientData = response.data.results;
+              that.dataIsReady = true
+            }
+        })
+
       } catch (error) {
-        console.log(error);
-        console.error(error);
+        if(axios.isCancel(error)){
+          console.log('caught cancel');
+        }else {
+          throw error;
+        }
       }
     },
     goBack: function () {

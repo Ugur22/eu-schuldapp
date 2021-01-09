@@ -20,18 +20,18 @@
         <nb-card-item header bordered>
           <nb-text class="text">Alle afspraken</nb-text>
         </nb-card-item>
-        <nb-list>
+        <nb-list v-if="appointments">
           <nb-list-item  v-for="appointment in appointments"
             :key="appointment.id"  :style="{ padding: 0}" :on-press="() => openAppointment(appointment.id)">
             <nb-left>
-              <nb-body>
+              <nb-body v-if="appointment.event_date">
                 <nb-text class="text">{{ formatDate(appointment.event_date)}}</nb-text>
                 <nb-text class="text">{{ FormatTime(appointment.event_date)}}</nb-text>
               </nb-body>
             </nb-left>
             <nb-body>
-                <nb-text class="text">{{appointment.consultant.firstname}} {{appointment.consultant.lastname}} </nb-text>
-                <nb-text class="text">{{ appointment.location.name }}</nb-text>
+                <nb-text v-if="appointment.consultant" class="text">{{appointment.consultant.firstname}} {{appointment.consultant.lastname}} </nb-text>
+                <nb-text v-if="appointment.location" class="text">{{ appointment.location.name }}</nb-text>
             </nb-body>
             <nb-right>
               <nb-icon class="text" name="arrow-forward" />
@@ -57,8 +57,6 @@
 .header {
 	color:#fff;
 }
-
-
 
 .title {
 	color: #0078ae;

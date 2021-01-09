@@ -30,7 +30,7 @@
           <nb-label>{{ $root.lang.t('Township') }}:</nb-label>
             <nb-picker
               mode="dialog"
-              placeholder="gender"
+              placeholder="gemeente"
               :selectedValue="selectedLocation"
               :onValueChange="onLocationChange">
               <item
