@@ -1,42 +1,32 @@
 <template>
   <nb-container>
-	<nb-header :style="{ backgroundColor: '#0078ae' }">
-	  <nb-left :style="{flex:1}">
-		<nb-button transparent :on-press="goBack" >
-		  <nb-icon name="arrow-back"/>
-		</nb-button>
-	  </nb-left>
-	  <nb-body :style="{flex:1}">
-	  	<nb-title>details</nb-title>
-	  </nb-body>
-	  <nb-right :style="{flex:1}">
-		<nb-button transparent>
-		  <nb-icon name="information-circle" />
-		</nb-button>
-	  </nb-right>
-	</nb-header>
-	<nb-content>
-	  <nb-card v-if="dataIsReady" class="debtCard"
-		:style="{
-		  marginLeft: 10,
-		  marginRight: 10,
-		  marginTop: 10,
-		  marginBottom: 10,
-		  backgroundColor: '#0078ae'
-		}"
-	  >
-		  <nb-body>
-				<html-view :value="htmlDoc" :style="style" />
-		  </nb-body>
-	  </nb-card>
+		<nb-header :style="{ backgroundColor: '#0078ae' }">
+			<nb-left :style="{flex:1}">
+			<nb-button transparent :on-press="goBack" >
+				<nb-icon name="arrow-back"/>
+			</nb-button>
+			</nb-left>
+			<nb-body :style="{flex:1}">
+				<nb-title>detail</nb-title>
+			</nb-body>
+			<nb-right :style="{flex:1}">
+			<nb-button transparent>
+				<nb-icon name="information-circle" />
+			</nb-button>
+			</nb-right>
+		</nb-header>
+		<pdf-reader :style="{ padding: 0,margin:0 }" v-if="dataIsReady" :withPinchZoom="true" :withScroll="true"
+		:source="{uri:`http://api.arsus.nl/document/pdf-download?document_id=${navigation.getParam('docID')}
+			&client_id=${navigation.getParam('ClientID')}&user=${user.email}&token=${token}`}"
+	/>
 	<nb-spinner color="#0078ae" v-else /> 
-	</nb-content>
-  </nb-container>
+	</nb-container>
 </template>
 
 <script>
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HTMLView from 'react-native-htmlview';
+import PDFReader from 'rn-pdf-reader-js'
+
 
 export default {
   props: {
@@ -46,20 +36,20 @@ export default {
 	user: {},
   },
   data() {
-	return {
-	  dataIsReady: false,
-	  htmlDoc: {},
-	  style: {
-		backgroundColor:'white'
-	  }
-	};
+		return {
+			dataIsReady: false,
+			token:'',
+		};
   },
   created() {
-	this.GetHTMl();
+		this.getToken();
+	},
+	  mounted() { 
   },
-  	components: { HTMLView },
+  	components: {PDFReader },
   methods: {
-	GetHTMl: async function () {
+	getToken: async function () {
+		let that = this;
 	  let value = '';
 	  try {
 		value = await AsyncStorage.getItem('login');
@@ -70,10 +60,9 @@ export default {
 	  }
 
 	  try {
-		let response = await fetch(`http://api.arsus.nl/document/html-preview?document_id=${this.navigation.getParam('docID')}&client_id=${this.navigation.getParam('ClientID')}`, {
-		  method: 'GET',
+		let response = await fetch(`http://api.arsus.nl/token`, {
+		  method: 'POST',
 		  headers: {
-			accept: 'application/json',
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${this.user.token}`
 		  }
@@ -81,9 +70,8 @@ export default {
 
 		let responseJson = await response.json();
 		if (responseJson.success) {
-		  this.htmlDoc = responseJson.results;
-			// console.log(responseJson.results)
-		  this.dataIsReady = true;
+			this.dataIsReady = true;
+			that.token = responseJson.token;
 		} else {
 		  console.log(responseJson);
 		}

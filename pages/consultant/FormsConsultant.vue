@@ -12,7 +12,7 @@
       <nb-right :style="{flex:1}">
         <nb-button transparent>
           <nb-icon name="information-circle" />
-        </nb-button>
+        </nb-button> 
       </nb-right>
     </nb-header>
     <nb-content>
@@ -73,6 +73,7 @@ export default {
     this.getForms();
   },
   mounted() { 
+		
   },
   components: { FooterNav},
   methods: {
