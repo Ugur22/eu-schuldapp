@@ -43,6 +43,6 @@
   "clients": "müşteriler",
   "status_clients": "durum müşteriler",
   "outbox": "outbox",
-  "income": "income",
-  "expenses": "expenses"
+  "income": "gelirim",
+  "expenses": "masraflar"
 }

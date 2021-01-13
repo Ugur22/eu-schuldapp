@@ -106,7 +106,6 @@ export default {
 	},
 	detailOther: function (id,clientID) {
 	  this.isModalVisible = true;
-	  console.log(clientID);
 	  this.navigation.navigate('OtherDocsDetails', {
 		docID: id,
 		ClientID:clientID

@@ -16,35 +16,16 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-card v-if="dataIsReady" class="debtCard"
-        :style="{
-          marginLeft: 10,
-          marginRight: 10,
-          marginTop: 10,
-          marginBottom: 10,
-          backgroundColor: '#0078ae'
-        }"
-      >
-        <nb-card-item rounded :style="{ backgroundColor: '#0078ae' }">
-          <nb-body>
-            <nb-grid class="marginBottom">
-              <nb-col>
-                <nb-text class="headerText">title</nb-text>
-                <nb-text class="detailText">{{otherDoc.title}}</nb-text>
-              </nb-col>
-              <nb-col>
-                <nb-text class="headerText">date</nb-text>
-                <nb-text class="detailText">{{otherDoc.doc_date_time}}</nb-text>
-              </nb-col>
-            </nb-grid>
-          </nb-body>
-        </nb-card-item>
+      <nb-card v-if="dataIsReady">
+			<image
+			:style="{width: null, height: 500,flex: 1}"
+				:source="{uri: `http://api.arsus.nl/document/file-download?client_id=${navigation.getParam('ClientID')}
+				&document_id=${navigation.getParam('docID')}&user=${user.email}&token=${token}`}"/>
       </nb-card>
-    <nb-spinner color="#0078ae" v-else /> 
+   		 <nb-spinner color="#0078ae" v-else /> 
     </nb-content>
   </nb-container>
 </template>
-
 <script>
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -58,37 +39,82 @@ export default {
   data() {
     return {
       dataIsReady: false,
-      otherDoc: {},
+			otherDoc: '',
+			token:''
     };
   },
   created() {
-    this.GetOther();
+		// this.getToken();
+	},
+	 mounted() {
+    this.getToken().then(val => {
+			// this.GetOther(val);
+    }).catch(e => {
+      // error
+      console.log(e);
+		});
+		
   },
   methods: {
-    GetOther: async function () {
-      let value = '';
+		getToken: async function () {
+		let that = this;
+	  let value = '';
+	  try {
+		value = await AsyncStorage.getItem('login');
+		this.user = JSON.parse(value); 
+	  } catch (error) {
+		// Error retrieving data
+		console.log(error.message);
+	  }
+
+	  try {
+		let response = await fetch(`http://api.arsus.nl/token`, {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${this.user.token}`
+		  }
+		});
+
+		let responseJson = await response.json();
+		if (responseJson.success) {
+			this.dataIsReady = true;
+			that.token = responseJson.token;
+			return responseJson.token;
+		} else {
+		  console.log(responseJson);
+		}
+	  } catch (error) {
+		console.error(error);
+	  }
+	},
+    GetOther: async function (token) {
+			let value = '';
+			let that = this;
       try {
         value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
+				this.user = JSON.parse(value);
+				
       } catch (error) {
         // Error retrieving data
         console.log(error.message);
       }
 
       try {
-        let response = await fetch(`http://api.arsus.nl/consultant/doc/other?id=${this.navigation.getParam('docID')}&client_id=${this.navigation.getParam('ClientID')}`, {
+        let response = await fetch(`http://api.arsus.nl/document/file-download?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}&user=${this.user.email}&token=${token}`, {
           method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
+            'Authorization': `Bearer ${token}`
           }
         });
 
-        let responseJson = await response.json();
+        let responseJson = await response.text();
         if (responseJson.success) {
-          this.otherDoc = responseJson.results;
-          this.dataIsReady = true;
+					that.otherDoc = responseJson;
+					console.log(responseJson);
+					this.dataIsReady = true;
         } else {
           console.log(responseJson);
         }
@@ -104,22 +130,4 @@ export default {
 };
 </script>
 <style>
-.headerText {
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-}
-.detailText {
-  color: white;
-  font-size: 16px;
-}
-
-.marginBottom {
-  margin-bottom: 20px;
-}
-.debtCard {
-  border-radius: 15px;
-}
-
-
 </style>
