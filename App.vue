@@ -16,7 +16,6 @@
   import * as Localization from 'expo-localization';
   import i18n from 'i18n-js';
 	import { AppLoading } from "expo";
-	import { LogBox } from "react-native";
 
   i18n.translations = {
     en: require('./locales/en.json'),
@@ -151,11 +150,6 @@
     },
     components: { AppLoading, Root, AppNavigator, Ionicons, UserStart },
     created() {
-			LogBox.ignoreLogs([
-				'DatePickerIOS has been merged with DatePickerAndroid and will be removed in a future release.',
-				'StatusBarIOS has been merged with StatusBar and will be removed in a future release.',
-				'DatePickerAndroid has been merged with DatePickerIOS and will be removed in a future release.'
-			]);
       this.loadFonts();
     },
     methods: {

@@ -43,7 +43,7 @@
           </nb-body>
         </nb-card-item>
         <nb-card-item v-if="displayThumbnail" >
-          <nb-button
+          <nb-button v-if="photo.uri"
             transparent
             :on-press="largerImage"
             :style="{ flex: 1, justifyContent: 'center', alignSelf: 'center' }"
@@ -239,6 +239,7 @@ export default {
       dataIsReady: false,
       title: '',
 			file: {},
+			signature:'',
 			selectedDocName:'',
 			FileTypes: [
 				{label:"Kies een document", value:"0" },
@@ -253,7 +254,7 @@ export default {
 				{label:"1.8 Volmacht verstrekt door cliënt EU", value:"9"}, 
 				{label:"overige documenten(foto id of passport)", value:"10"} 
 			]
-    };
+		};
   },
   created() {
     this.clientData();
@@ -296,15 +297,14 @@ export default {
         console.error(error);
       }
     },
-
     createFormData: function (file, body) {
       let data = new FormData();
 
       data.append('file', {
         uri:
           Platform.OS === 'android'
-            ? this.finalPic.uri
-            : this.finalPic.uri.replace('file://', ''),
+            ? file.uri
+            : file.uri.replace('file://', ''),
         type: 'image/jpeg',
         name: this.title, 
       });
@@ -314,7 +314,7 @@ export default {
       });
       return data;
     },
-    uploadFile: async function () {
+    uploadImage: async function () {
       let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -344,6 +344,8 @@ export default {
 					Toast.show({
 						text: 'file uploaded',
 					});
+					this.photo.uri = '';
+					this.title ='';
 				} else {
 					console.log(responseJson);
 				}
@@ -449,7 +451,7 @@ export default {
 			if (this.selectedDoc >= 1 && this.selectedDoc < 10) {
 				this.uploadDoc();
 			} else if(this.selectedDoc >= 1 && this.selectedDoc == 10) {
-				this.uploadFile();
+				this.uploadImage();
 			}else {
 				Toast.show({
 					text: 'kies een document',

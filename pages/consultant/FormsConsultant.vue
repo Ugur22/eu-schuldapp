@@ -17,7 +17,7 @@
     </nb-header>
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id" :on-press="() => detailForm(form.id,form.client_id)">
+        <nb-list-item v-for="form in clientForms" :key="form.id" :on-press="() => detailForm(form.id,form.client_id,form.title)">
           <nb-left>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
@@ -112,11 +112,12 @@ export default {
     goBack: function () {
       this.navigation.goBack();
 	},
-	detailForm: function (id,clientID) {
+	detailForm: function (id,clientID,title) {
 	  this.isModalVisible = true;
 	  this.navigation.navigate('FormDetails', {
 		docID: id,
-		ClientID:clientID
+		ClientID:clientID,
+		title:title
 	  });
 	},
   },

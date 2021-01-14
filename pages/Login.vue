@@ -25,6 +25,7 @@
 <script>
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { required, email } from 'vuelidate/lib/validators';
+import { LogBox } from "react-native";
 
 export default {
   data() {
@@ -44,7 +45,14 @@ export default {
   computed: {
     logging_in() {
       // return loggedIn = true;
-    },
+		},
+		created() {
+			LogBox.ignoreLogs([
+				'DatePickerIOS has been merged with DatePickerAndroid and will be removed in a future release.',
+				'StatusBarIOS has been merged with StatusBar and will be removed in a future release.',
+				'DatePickerAndroid has been merged with DatePickerIOS and will be removed in a future release.'
+			]);
+		}
   },
 
   components: {},
