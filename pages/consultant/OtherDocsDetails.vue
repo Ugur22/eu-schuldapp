@@ -17,10 +17,10 @@
     </nb-header>
     <nb-content>
       <nb-card v-if="dataIsReady">
-			<image
-			:style="{width: null, height: 500,flex: 1}"
-				:source="{uri: `http://api.arsus.nl/document/file-download?client_id=${navigation.getParam('ClientID')}
-				&document_id=${navigation.getParam('docID')}&user=${user.email}&token=${token}`}"/>
+				<image
+				:style="{width: null, height: 500,flex: 1}"
+					:source="{uri: otherDoc
+					}"/>
       </nb-card>
    		 <nb-spinner color="#0078ae" v-else /> 
     </nb-content>
@@ -40,80 +40,37 @@ export default {
     return {
       dataIsReady: false,
 			otherDoc: '',
-			token:''
     };
   },
   created() {
-		// this.getToken();
+		this.GetOther();
 	},
-	 mounted() {
-    this.getToken().then(val => {
-			// this.GetOther(val);
-    }).catch(e => {
-      // error
-      console.log(e);
-		});
-		
-  },
   methods: {
-		getToken: async function () {
-		let that = this;
-	  let value = '';
-	  try {
-		value = await AsyncStorage.getItem('login');
-		this.user = JSON.parse(value); 
-	  } catch (error) {
-		// Error retrieving data
-		console.log(error.message);
-	  }
-
-	  try {
-		let response = await fetch(`http://api.arsus.nl/token`, {
-		  method: 'POST',
-		  headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${this.user.token}`
-		  }
-		});
-
-		let responseJson = await response.json();
-		if (responseJson.success) {
-			this.dataIsReady = true;
-			that.token = responseJson.token;
-			return responseJson.token;
-		} else {
-		  console.log(responseJson);
-		}
-	  } catch (error) {
-		console.error(error);
-	  }
-	},
-    GetOther: async function (token) {
+    GetOther: async function () {
 			let value = '';
 			let that = this;
       try {
         value = await AsyncStorage.getItem('login');
-				this.user = JSON.parse(value);
-				
+				that.user = JSON.parse(value);
       } catch (error) {
         // Error retrieving data
         console.log(error.message);
       }
 
       try {
-        let response = await fetch(`http://api.arsus.nl/document/file-download?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}&user=${this.user.email}&token=${token}`, {
+				let response = await fetch(`http://api.arsus.nl/document/file-download?client_id=${this.navigation.getParam('ClientID')}
+				&document_id=${this.navigation.getParam('docID')}`, {
           method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${this.user.token}`
           }
         });
 
         let responseJson = await response.text();
-        if (responseJson.success) {
+        if (responseJson) {
 					that.otherDoc = responseJson;
-					console.log(responseJson);
 					this.dataIsReady = true;
         } else {
           console.log(responseJson);

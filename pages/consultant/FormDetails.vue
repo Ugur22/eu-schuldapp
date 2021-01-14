@@ -15,9 +15,10 @@
 			</nb-button>
 			</nb-right>
 		</nb-header>
+		<nb-text>
+		</nb-text>
 		<pdf-reader :style="{ padding: 0,margin:0 }" v-if="dataIsReady" :withPinchZoom="true" :withScroll="true"
-		:source="{uri:`http://api.arsus.nl/document/pdf-download?document_id=${navigation.getParam('docID')}
-			&client_id=${navigation.getParam('ClientID')}&user=${user.email}&token=${token}`}"
+		:source="{base64:formPDF}"
 	/>
 	<nb-spinner color="#0078ae" v-else /> 
 	</nb-container>
@@ -39,51 +40,53 @@ export default {
 		return {
 			dataIsReady: false,
 			token:'',
+			formPDF:''
 		};
   },
   created() {
-		this.getToken();
+		this.getForm();
+		
 	},
-	  mounted() { 
-  },
-  	components: {PDFReader },
+	components: {PDFReader },
   methods: {
-	getToken: async function () {
-		let that = this;
-	  let value = '';
-	  try {
-		value = await AsyncStorage.getItem('login');
-		this.user = JSON.parse(value); 
-	  } catch (error) {
-		// Error retrieving data
-		console.log(error.message);
-	  }
+		goBack: function () {
+		this.navigation.goBack();
+		},
+		getForm: async function(token) {
+			let that = this;
+			let value = '';
+			try {
+			value = await AsyncStorage.getItem('login');
+			this.user = JSON.parse(value); 
+			} catch (error) {
+			// Error retrieving data
+			console.log(error.message);
+			}
 
-	  try {
-		let response = await fetch(`http://api.arsus.nl/token`, {
-		  method: 'POST',
-		  headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${this.user.token}`
-		  }
-		});
+			try {
+				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${this.navigation.getParam('ClientID')}
+				&document_id=${this.navigation.getParam('docID')}`, {
+					method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.user.token}`
+          },
+				});
 
-		let responseJson = await response.json();
-		if (responseJson.success) {
-			this.dataIsReady = true;
-			that.token = responseJson.token;
-		} else {
-		  console.log(responseJson);
+				let responseJson = await response.text();
+				if (responseJson) {
+					this.dataIsReady = true;
+					that.formPDF = responseJson;
+				} else {
+					console.log(responseJson);
+				}
+			} catch (error) {
+			console.log(error);
+			console.error(error);
+			}
 		}
-	  } catch (error) {
-		console.log(error);
-		console.error(error);
-	  }
 	},
-	goBack: function () {
-	 this.navigation.goBack();
-	},
-  },
 };
 </script>
 <style>
@@ -103,6 +106,4 @@ export default {
 .debtCard {
   border-radius: 15px;
 }
-
-
 </style>

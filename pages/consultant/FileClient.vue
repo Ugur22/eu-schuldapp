@@ -17,7 +17,7 @@
     </nb-header>
     <nb-content padder>
       <nb-card>
-        <nb-card-item   >
+        <nb-card-item>
           <nb-picker
             mode="dialog"
             placeholder="Kies een document"
