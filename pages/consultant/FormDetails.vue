@@ -26,10 +26,7 @@
 				:onOK="handleSignature"
 				imageType="image/jpeg"/>
 		</view>
-		<pdf-reader :style="{ padding: 0,margin:0 }" v-if="dataIsReady" :withPinchZoom="true" :withScroll="true"
-		:source="{base64:formPDF}"
-	/>
-	<nb-spinner color="#0078ae" v-else /> 
+
 	</nb-container>
 </template>
 
@@ -37,7 +34,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PDFReader from 'rn-pdf-reader-js'
 import SignatureScreen from 'react-native-signature-canvas';
-
+import { Dimensions, Platform } from "react-native";
+import { WebView } from 'react-native-webview';
+import * as Print from 'expo-print';
 
 export default {
   props: {
@@ -68,16 +67,26 @@ export default {
 		};
 	},
   created() {
-		this.getForm();
+		// this.getForm();
 		
 	},
-	components: {PDFReader,SignatureScreen },
+	  mounted() {
+    this.getForm().then(val => {
+			// got value here
+			Print.printAsync({uri:val})
+    }).catch(e => {
+      // error
+      console.log(e);
+    });
+  },
+	components: {PDFReader,SignatureScreen,WebView },
   methods: {
 		toggleSignature: function () {
       this.enableSignature = !this.enableSignature;
     },
 		handleSignature: async function(signature) {
 			this.signature = signature;
+			// console.log(this.signature);
 			// onOK(signature);
 			let value = '';
       try {
@@ -89,7 +98,8 @@ export default {
         console.log(error.message);
       }
 			try {
-				let response = await fetch('http://api.arsus.nl/client/sign', {
+
+				let response = await fetch('http://api.arsus.nl/consultant/sign', {
 					method: 'POST',
 					headers: {
 						Accept: 'application/json',
@@ -97,7 +107,7 @@ export default {
 						Authorization: `Bearer ${this.user.token}`,
 					},
 					body: this.createFormData(this.signature, {
-						client_id: this.navigation.getParam('clientID'),
+						client_id: 67,
 						document_id: this.navigation.getParam('docID'),
 						// author: `${this.user.firstname} ${this.user.lastname}`,
 						author: 1,
@@ -120,11 +130,8 @@ export default {
 		createFormData: function (file, body) {
       let data = new FormData();
 
-      data.append('file', {
-        uri:
-          Platform.OS === 'android'
-            ? file.uri
-            : file.uri.replace('file://', ''),
+      data.append('signature', {
+        uri:this.signature,
         type: 'image/jpeg',
         name: 'signature', 
       });
@@ -163,6 +170,7 @@ export default {
 				if (responseJson) {
 					this.dataIsReady = true;
 					that.formPDF = responseJson;
+						return responseJson;
 				} else {
 					console.log(responseJson);
 				}

@@ -46,14 +46,12 @@
           <nb-button v-if="photo.uri"
             transparent
             :on-press="largerImage"
-            :style="{ flex: 1, justifyContent: 'center', alignSelf: 'center' }"
-          >
+            :style="{ flex: 1, justifyContent: 'center', alignSelf: 'center' }">
             <nb-thumbnail :source="photo" />
           </nb-button>
         </nb-card-item>
         <nb-card-item v-if="selectedDoc == 10"
-          :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }"
-        >
+          :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
           <nb-badge :style="{ height: 'auto' }">
             <nb-text :style="{ fontSize: 14, padding: 5 }">{{
               $root.lang.t('upload_message')

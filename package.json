@@ -26,6 +26,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-gesture-handler": "^1.9.0",
+    "react-native-get-random-values": "^1.5.1",
     "react-native-html-to-pdf": "^0.9.1",
     "react-native-htmlview": "^0.16.0",
     "react-native-modal": "^11.5.6",
@@ -43,7 +44,8 @@
     "vue-native-i18n": "0.0.1",
     "vue-native-router": "^0.2.0",
     "vuelidate": "^0.7.6",
-    "vuex": "^3.6.0"
+    "vuex": "^3.6.0",
+    "expo-print": "~9.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
