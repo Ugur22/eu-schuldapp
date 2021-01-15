@@ -24,7 +24,7 @@
 				ref="useSignature"
 				:webStyle="webStyle"
 				:onOK="handleSignature"
-				imageType="image/jpeg"/>
+				imageType="image/jpg"/>
 		</view>
 
 	</nb-container>
@@ -37,6 +37,8 @@ import SignatureScreen from 'react-native-signature-canvas';
 import { Dimensions, Platform } from "react-native";
 import { WebView } from 'react-native-webview';
 import * as Print from 'expo-print';
+import { Toast } from 'native-base';
+import axios from "axios";
 
 export default {
   props: {
@@ -86,43 +88,34 @@ export default {
     },
 		handleSignature: async function(signature) {
 			this.signature = signature;
-			// console.log(this.signature);
 			// onOK(signature);
 			let value = '';
       try {
         value = await AsyncStorage.getItem('login');
 				this.user = JSON.parse(value);
-				console.log(this.user);
       } catch (error) {
         // Error retrieving data
         console.log(error.message);
       }
 			try {
 
-				let response = await fetch('http://api.arsus.nl/consultant/sign', {
-					method: 'POST',
-					headers: {
-						Accept: 'application/json',
-						'Content-type': 'multipart/form-data',
-						Authorization: `Bearer ${this.user.token}`,
-					},
-					body: this.createFormData(this.signature, {
-						client_id: 67,
-						document_id: this.navigation.getParam('docID'),
-						// author: `${this.user.firstname} ${this.user.lastname}`,
-						author: 1,
-					}),
-				});
+			let data = new FormData();
 
-				let responseJson = await response.json();
-				console.log(this.signature);
-				if (responseJson) {
-					Toast.show({
-						text: 'signature added',
-					});
-				} else {
-					console.log(responseJson);
-				}
+			data.append('signature', this.signature);
+      data.append('document_id', this.navigation.getParam('docID'));
+      data.append('client_id', this.navigation.getParam('ClientID'));
+			data.append('author', 'consultant');
+
+			
+			const response = await axios.post('http://api.arsus.nl/consultant/sign',data,{
+				headers: {
+					Accept: 'application/json',
+					'Content-type': 'multipart/form-data',
+					Authorization: `Bearer ${this.user.token}`,
+				},
+				}).then(function(response){
+						console.log(response.data);
+				});
 			} catch (error) {
 				console.error(error);
 			}
