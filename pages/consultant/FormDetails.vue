@@ -7,7 +7,7 @@
 			</nb-button>
 			</nb-left>
 			<nb-body :style="{flex:1}">
-				<nb-title>{{navigation.getParam('title')}}</nb-title>
+				<nb-title>handtekening</nb-title>
 			</nb-body>
 			<nb-right :style="{flex:1}">
 			<nb-button transparent :on-press="toggleSignature">
@@ -15,15 +15,16 @@
 			</nb-button>
 			</nb-right>
 		</nb-header>
-		<view v-if="enableSignature" :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
+		<view  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
 			<signature-screen
-				descriptionText="Plaats uw handtekening"
+				descriptionText="client"
 				clearText="opnieuw"
 				confirmText="bevestig"
 				:autoClear="true" 
 				ref="useSignature"
 				:webStyle="webStyle"
 				:onOK="handleSignature"
+				:onEnd="() => handleEnd('client')"
 				imageType="image/jpg"/>
 		</view>
 
@@ -32,10 +33,7 @@
 
 <script>
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PDFReader from 'rn-pdf-reader-js'
 import SignatureScreen from 'react-native-signature-canvas';
-import { Dimensions, Platform } from "react-native";
-import { WebView } from 'react-native-webview';
 import * as Print from 'expo-print';
 import { Toast } from 'native-base';
 import axios from "axios";
@@ -53,6 +51,7 @@ export default {
 			token:'',
 			formPDF:'',
 			signature:'',
+			author:'',
 			enableSignature:false,
 			webStyle: `
 				.m-signature-pad--footer .save {
@@ -69,24 +68,18 @@ export default {
 		};
 	},
   created() {
-		// this.getForm();
+		this.CheckSignatures();
 		
 	},
-	  mounted() {
-    this.getForm().then(val => {
-			// got value here
-			Print.printAsync({uri:val})
-    }).catch(e => {
-      // error
-      console.log(e);
-    });
-  },
-	components: {PDFReader,SignatureScreen,WebView },
+	components: {SignatureScreen },
   methods: {
 		toggleSignature: function () {
       this.enableSignature = !this.enableSignature;
-    },
-		handleSignature: async function(signature) {
+		},
+		handleEnd: function(author){
+			this.author = author;
+		},
+		handleSignature: async function(signature,author) {
 			this.signature = signature;
 			// onOK(signature);
 			let value = '';
@@ -104,7 +97,7 @@ export default {
 			data.append('signature', this.signature);
       data.append('document_id', this.navigation.getParam('docID'));
       data.append('client_id', this.navigation.getParam('ClientID'));
-			data.append('author', 'consultant');
+			data.append('author', this.author);
 
 			
 			const response = await axios.post('http://api.arsus.nl/consultant/sign',data,{
@@ -120,58 +113,33 @@ export default {
 				console.error(error);
 			}
 		},
-		createFormData: function (file, body) {
-      let data = new FormData();
+		CheckSignatures: async function() {
+			let value = '';
+      try {
+        value = await AsyncStorage.getItem('login');
+				this.user = JSON.parse(value);
+      } catch (error) {
+        // Error retrieving data
+        console.log(error.message);
+      }
+			try {
 
-      data.append('signature', {
-        uri:this.signature,
-        type: 'image/jpeg',
-        name: 'signature', 
-      });
-
-      Object.keys(body).forEach((key) => {
-        data.append(key, body[key]);
-      });
-      return data;
-    },
+			const response = await axios.get(`http://api.arsus.nl/document/signatures?document_id=${this.navigation.getParam('docID')}`,{
+				headers: {
+					Accept: 'application/json',
+					'Content-type': 'application/json',
+					Authorization: `Bearer ${this.user.token}`,
+				},
+				}).then(function(response){
+						console.log(response.data);
+				});
+			} catch (error) {
+				console.error(error);
+			}
+		},
 		goBack: function () {
 		this.navigation.goBack();
 		},
-		getForm: async function(token) {
-			let that = this;
-			let value = '';
-			try {
-			value = await AsyncStorage.getItem('login');
-			this.user = JSON.parse(value); 
-			} catch (error) {
-			// Error retrieving data
-			console.log(error.message);
-			}
-
-			try {
-				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${this.navigation.getParam('ClientID')}
-				&document_id=${this.navigation.getParam('docID')}`, {
-					method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          },
-				});
-
-				let responseJson = await response.text();
-				if (responseJson) {
-					this.dataIsReady = true;
-					that.formPDF = responseJson;
-						return responseJson;
-				} else {
-					console.log(responseJson);
-				}
-			} catch (error) {
-			console.log(error);
-			console.error(error);
-			}
-		}
 	},
 };
 </script>

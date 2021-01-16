@@ -17,7 +17,7 @@
     </nb-header>
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id" :on-press="() => detailForm(form.id,form.client_id,form.title)">
+        <nb-list-item v-for="form in clientForms" :key="form.id" :on-press="() => showPDF(form.id,form.client_id,form.title)">
           <nb-left>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
@@ -25,7 +25,9 @@
             <nb-text class="text">{{formatDate(form.doc_date_time)}}</nb-text>
           </nb-body>
             <nb-right>
-              <nb-icon class="text" name="arrow-forward" />
+							<nb-button iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">
+              	<nb-icon  class="text" name="create" />
+							</nb-button>
             </nb-right>
         </nb-list-item>
       </nb-list>
@@ -52,6 +54,7 @@
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
+import * as Print from 'expo-print';
 
 export default {
   props: {
@@ -72,8 +75,7 @@ export default {
   created() {
     this.getForms();
   },
-  mounted() { 
-		
+ 	  mounted() {
   },
   components: { FooterNav},
   methods: {
@@ -112,14 +114,50 @@ export default {
     goBack: function () {
       this.navigation.goBack();
 	},
-	detailForm: function (id,clientID,title) {
-	  this.isModalVisible = true;
-	  this.navigation.navigate('FormDetails', {
-		docID: id,
-		ClientID:clientID,
-		title:title
-	  });
-	},
+		showPDF: async function (id,clientID,title) {
+			this.isModalVisible = true;
+
+			let that = this;
+			let value = '';
+			try {
+			value = await AsyncStorage.getItem('login');
+			this.user = JSON.parse(value); 
+			} catch (error) {
+			// Error retrieving data
+			console.log(error.message);
+			}
+
+			try {
+				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${clientID}
+				&document_id=${id}`, {
+					method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.user.token}`
+          },
+				});
+
+				let responseJson = await response.text();
+				if (responseJson) {
+					this.dataIsReady = true;
+					Print.printAsync({uri:responseJson});
+				} else {
+					console.log(responseJson);
+				}
+			} catch (error) {
+			console.log(error);
+			console.error(error);
+			}
+		},
+		signature: function (id,clientID,title) {
+			this.isModalVisible = true;
+			this.navigation.navigate('FormDetails', {
+			docID: id,
+			ClientID:clientID,
+			title:title
+			});
+		},
   },
 };
 </script>
