@@ -59,7 +59,7 @@
           </nb-badge>
         </nb-card-item>
         <nb-card-item>
-          <nb-item regular>
+          <nb-item regular> 
             <nb-input v-model="title" placeholder="Vul een titel in" />
           </nb-item>
         </nb-card-item>

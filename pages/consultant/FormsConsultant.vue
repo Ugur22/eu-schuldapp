@@ -26,7 +26,7 @@
           </nb-body>
             <nb-right>
 							<nb-button iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">
-              	<nb-icon  class="text" name="create-sharp" />
+              	<nb-icon  class="text" name="create" />
 							</nb-button>
             </nb-right>
         </nb-list-item>

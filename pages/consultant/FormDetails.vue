@@ -10,24 +10,28 @@
 				<nb-title>handtekening</nb-title>
 			</nb-body>
 			<nb-right :style="{flex:1}">
-			<nb-button transparent :on-press="toggleSignature">
-				<nb-icon :name='enableSignature ? "close" : "create"' />
-			</nb-button>
 			</nb-right>
 		</nb-header>
-		<view  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
-			<signature-screen
-				descriptionText="client"
-				clearText="opnieuw"
-				confirmText="bevestig"
-				:autoClear="true" 
-				ref="useSignature"
-				:webStyle="webStyle"
-				:onOK="handleSignature"
-				:onEnd="() => handleEnd('client')"
-				imageType="image/jpg"/>
-		</view>
 
+		<view v-if="Amountsignatures">
+			<view  v-for="authors in Amountsignatures" :key="authors"  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
+			<nb-text>
+			</nb-text>
+				<signature-screen
+					:descriptionText="authors"
+					clearText="opnieuw"
+					confirmText="bevestig"
+					:autoClear="true" 
+					ref="useSignature"
+					:webStyle="webStyle"
+					:onOK="(sign,author) => handleSignature(sign,authors)"
+					imageType="image/jpg"/>
+			</view>
+		</view>
+		<nb-spinner color="#0078ae" v-if="Amountsignatures == 0 && singatureStatus != 'completed' " /> 
+		<nb-text color="#0078ae" v-if="singatureStatus == 'completed' " >
+			singnature completed	
+		</nb-text> 
 	</nb-container>
 </template>
 
@@ -52,7 +56,8 @@ export default {
 			formPDF:'',
 			signature:'',
 			author:'',
-			enableSignature:false,
+			singatureStatus:'',
+			Amountsignatures:0,
 			webStyle: `
 				.m-signature-pad--footer .save {
 							font-size: 16px;
@@ -76,12 +81,11 @@ export default {
 		toggleSignature: function () {
       this.enableSignature = !this.enableSignature;
 		},
-		handleEnd: function(author){
-			this.author = author;
-		},
 		handleSignature: async function(signature,author) {
 			this.signature = signature;
-			// onOK(signature);
+			this.author = author;
+			let that = this;
+
 			let value = '';
       try {
         value = await AsyncStorage.getItem('login');
@@ -107,14 +111,18 @@ export default {
 					Authorization: `Bearer ${this.user.token}`,
 				},
 				}).then(function(response){
-						console.log(response.data);
+
+				that.CheckSignatures();
+				console.log(that.singatureStatus);
 				});
 			} catch (error) {
 				console.error(error);
 			}
+
 		},
 		CheckSignatures: async function() {
 			let value = '';
+			let that = this;
       try {
         value = await AsyncStorage.getItem('login');
 				this.user = JSON.parse(value);
@@ -131,15 +139,20 @@ export default {
 					Authorization: `Bearer ${this.user.token}`,
 				},
 				}).then(function(response){
-						console.log(response.data);
+						that.singatureStatus = response.data.signature;
+						that.Amountsignatures = response.data.need_signature_by;
+						that.dataIsReady = true;
 				});
 			} catch (error) {
 				console.error(error);
 			}
 		},
 		goBack: function () {
-		this.navigation.goBack();
+			this.navigation.goBack();
 		},
+		goToPage: function (page) {
+    	this.navigation.navigate(page);
+      },
 	},
 };
 </script>
