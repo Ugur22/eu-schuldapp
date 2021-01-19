@@ -10,24 +10,34 @@
         <nb-title>{{ Client.firstname }} {{ Client.lastname }}</nb-title>
       </nb-body>
       <nb-right :style="{ flex: 1 }">
-        <nb-button transparent>
+        <nb-button transparent :on-press="showInfo">
           <nb-icon name="information-circle" />
         </nb-button>
       </nb-right>
     </nb-header>
     <nb-content padder>
       <nb-card>
-        <nb-card-item>
+				<nb-card-item>
+          <nb-picker
+            mode="dialog"
+            placeholder="Kies een document"
+            :selectedValue="selectedfileType"
+            :onValueChange="onfileTypeChange"
+          >
+            <item v-for="filetype in FileTypes" :key="filetype.value" :label="filetype.label" :value="filetype.value" />
+          </nb-picker>
+        </nb-card-item>
+				<nb-card-item v-if="selectedfileType != 'others'">
           <nb-picker
             mode="dialog"
             placeholder="Kies een document"
             :selectedValue="selectedDoc"
             :onValueChange="onDocChange"
           >
-            <item v-for="filetype in FileTypes" :key="filetype.value" :label="filetype.label" :value="filetype.value" />
+            <item v-for="selection in selections" :key="selection.id" :label="selection.slug" :value="selection.id" />
           </nb-picker>
         </nb-card-item>
-        <nb-card-item v-if="selectedDoc == 10">
+        <nb-card-item v-if="selectedfileType == 'others'">
           <nb-body
             :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }"
           >
@@ -50,7 +60,7 @@
             <nb-thumbnail :source="photo" />
           </nb-button>
         </nb-card-item>
-        <nb-card-item v-if="selectedDoc == 10"
+        <nb-card-item v-if="selectedfileType == 'others'"
           :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
           <nb-badge :style="{ height: 'auto' }">
             <nb-text :style="{ fontSize: 14, padding: 5 }">{{
@@ -235,27 +245,22 @@ export default {
       displayLarge: false,
       Client: {},
       dataIsReady: false,
-      title: '',
+      title: '', 
 			file: {},
 			signature:'',
 			selectedDocName:'',
+			selectedfileType:'',
 			FileTypes: [
-				{label:"Kies een document", value:"0" },
-				{label:"1.0 Inschrijfform", value:"1"} ,
-				{label:"Contracten met Client", value:"2"},
-				{label:"1.1 1.2 Akte van Cessie", value:"3"},
-				{label:"1.3 MachtigingSysteem", value:"4"},
-				{label:"1.4 Machtigingsformulier auto Incasso", value:"5"} ,
-				{label:"1.5 Schuldhulp contract", value:"6"} ,
-				{label:"1.6 Stabilisatie Overeenkomst", value:"7"} ,
-				{label:"1.7 Akte_van verpanding", value:"8" },
-				{label:"1.8 Volmacht verstrekt door cliënt EU", value:"9"}, 
-				{label:"overige documenten(foto id of passport)", value:"10"} 
-			]
+				{label:"formulieren", value:"forms"} ,
+				{label:"schulden formulieren", value:"debtor"},
+				{label:"overige documenten", value:"others"},
+			],
+			selections:{}
 		};
   },
   created() {
-    this.clientData();
+		this.clientData();
+		this.clientTemplates();
   },
   components: { FooterNav, Camera, Item: Picker.Item },
   methods: {
@@ -287,14 +292,50 @@ export default {
         let responseJson = await response.json();
         if (responseJson.success) {
           this.Client = responseJson.results;
-          this.dataIsReady = true;
+					this.dataIsReady = true;
         } else {
           console.log(responseJson.results);
         }
       } catch (error) {
         console.error(error);
       }
-    },
+		},
+		clientTemplates:  async function(){
+			  let value = '';
+      try {
+        value = await AsyncStorage.getItem('login');
+        this.user = JSON.parse(value);
+      } catch (error) {
+        // Error retrieving data
+        console.log(error.message);
+      }
+
+      try {
+        let response = await fetch(
+          `http://api.arsus.nl/consultant/client/templates?client_id=${this.navigation.getParam(
+            'clientID'
+          )}&type=${this.selectedfileType}`,
+          {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.user.token}`,
+            },
+          }
+        );
+
+        let responseJson = await response.json();
+        if (responseJson.success) {
+          this.selections = responseJson.results;
+					this.dataIsReady = true;
+        } else {
+          console.log(responseJson.results);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+		},
     createFormData: function (file, body) {
       let data = new FormData();
 
@@ -352,7 +393,7 @@ export default {
 			}
 		},
 		uploadDoc: async function () {
-      let value = '';
+			let value = '';
       try {
         value = await AsyncStorage.getItem('login');
         this.user = JSON.parse(value);
@@ -394,6 +435,9 @@ export default {
 				buttonText: 'ok',
 			});
 		},
+		showInfo: function(){
+      alert("show info about this page");
+		},
     goBack: function () {
       this.navigation.goBack();
     },
@@ -402,7 +446,12 @@ export default {
     },
     onDocChange: function (value,index) {
 			this.selectedDoc = value;
-			this.selectedDocName = this.FileTypes[index].label;
+			this.selectedDocName = this.selections[index].slug;
+		},
+		onfileTypeChange: function (value,index) {
+			this.clientTemplates();
+			this.selectedfileType = value;
+			
     },
     getCamera: function () {
       Permissions.askAsync(Permissions.CAMERA)
@@ -446,9 +495,9 @@ export default {
       this.displayLarge = false;
     },
     sendFile: function () {
-			if (this.selectedDoc >= 1 && this.selectedDoc < 10) {
+			if (this.selectedfileType != 'others') {
 				this.uploadDoc();
-			} else if(this.selectedDoc >= 1 && this.selectedDoc == 10) {
+			} else if(this.selectedfileType == 'others') {
 				this.uploadImage();
 			}else {
 				Toast.show({

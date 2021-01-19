@@ -22,13 +22,12 @@
 	  <nb-list v-if="dataIsReady">
 	  <nb-list-item itemDivider class="list-Header">
 		  <nb-left>
-			<nb-text  class="text header-text">Naam</nb-text>
+			<nb-text  class="text header-text">naam</nb-text>
 		  </nb-left>
 		  <nb-body>
 			<nb-text  class="text header-text">status</nb-text>
 		  </nb-body>
 		  <nb-right>
-			<nb-text  class="text header-text">meer</nb-text>
 		  </nb-right>
 		</nb-list-item>
 	  </nb-list>
@@ -37,8 +36,8 @@
 		  <nb-left>
 			<nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
 		  </nb-left>
-		  <nb-body>
-			<nb-text class="text">{{client.status}}</nb-text>
+		  <nb-body >
+				<nb-text class="text">{{client.status.status}}</nb-text>
 		  </nb-body>
 		  <nb-right>
 			<nb-icon class="text" name="arrow-forward" />
@@ -127,6 +126,37 @@ export default {
 		let responseJson = await response.json();
 		if (responseJson.success) {
 		  this.Clients = responseJson.results;
+		  this.dataIsReady = true;
+		} else {
+		  console.log(responseJson);
+		}
+	  } catch (error) {
+		console.log(error);
+		console.error(error);
+	  }
+	},
+		clientNextStep: async function (clientID) {
+	  let value = '';
+	  try {
+		value = await AsyncStorage.getItem('login');
+		this.user = JSON.parse(value);
+	  } catch (error) {
+		// Error retrieving data
+		console.log(error.message);
+	  }
+
+	  try {
+		let response = await fetch(`http://api.arsus.nl/consultant/client/next&client_id=${clientID}`, {
+		  method: 'POST',
+		  headers: {
+			accept: 'application/json',
+			'Authorization': `Bearer ${this.user.token}`
+		  }
+		});
+
+		let responseJson = await response.json();
+		if (responseJson.success) {
+			console.log(responseJson);
 		  this.dataIsReady = true;
 		} else {
 		  console.log(responseJson);

@@ -31,6 +31,17 @@
             <nb-icon class="text" name="arrow-forward" />
           </nb-right>
         </nb-list-item>
+				<nb-list-item>
+          <nb-left>
+            <nb-text  class="text" :style="{ fontWeight: 'bold' }">Totale schuld:</nb-text>
+          </nb-left>
+          <nb-body>
+            <nb-text :style="{ fontWeight: 'bold' }" class="text">{{ $root.lang.t('currency') }}{{totalDebts}}</nb-text>
+          </nb-body>
+          <nb-right>
+            <!-- <nb-icon class="text" name="arrow-forward" /> -->
+          </nb-right>
+        </nb-list-item>
       </nb-list>
       <nb-spinner color="#0078ae" v-else /> 
     </nb-content>
@@ -78,7 +89,8 @@ export default {
   data() {
     return {
       isModalVisible: false,
-      clientDebts: {},
+			clientDebts: {},
+			totalDebts:0,
       dataIsReady: false,
     };
   },
@@ -87,7 +99,8 @@ export default {
   },
   methods: {
     userData: async function () {
-      let value = '';
+			let value = '';
+			let that = this;
       try {
         value = await AsyncStorage.getItem('login');
         this.user = JSON.parse(value);
@@ -109,7 +122,10 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.clientDebts = responseJson.results;
+					this.clientDebts = responseJson.results;
+					this.clientDebts.map(function(debt){
+						that.totalDebts += parseFloat(debt.debt_amount);
+					})
           this.dataIsReady = true;
         } else {
           console.log(responseJson);

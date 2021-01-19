@@ -12,11 +12,8 @@
 			<nb-right :style="{flex:1}">
 			</nb-right>
 		</nb-header>
-
 		<view v-if="Amountsignatures">
 			<view  v-for="authors in Amountsignatures" :key="authors"  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
-			<nb-text>
-			</nb-text>
 				<signature-screen
 					:descriptionText="authors"
 					clearText="opnieuw"

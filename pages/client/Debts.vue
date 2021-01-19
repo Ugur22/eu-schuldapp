@@ -124,7 +124,7 @@ export default {
         if (responseJson.success) {
 					this.clientDebts = responseJson.results;
 					this.clientDebts.map(function(debt){
-					that.totalDebts += parseFloat(debt.debt_amount);
+						that.totalDebts += parseFloat(debt.debt_amount);
 					})
 				
           this.dataIsReady = true;
