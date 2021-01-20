@@ -16,7 +16,7 @@
       </nb-right>
     </nb-header>
     <nb-content padder>
-      <nb-card>
+      <!-- <nb-card>
         <nb-card-item>
           <nb-picker
             mode="dialog"
@@ -56,8 +56,8 @@
         <nb-button class="btns" full :on-press="sendFile">
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
-      </nb-card>
-      <nb-grid :style="{ marginTop: 20 }">
+      </nb-card> -->
+      <nb-grid :style="{ marginTop: 20}">
         <nb-col>
           <nb-button full class="btns" :on-press="() => goToPage('DebtList')">
             <nb-text>{{ $root.lang.t('debts') }}</nb-text>
@@ -83,7 +83,7 @@
     <nb-footer>
       <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="docs"></footer-nav>
     </nb-footer>
-    <modal v-if="displayCam">
+    <!-- <modal v-if="displayCam">
       <camera class="camera" v-if="!displayPreview" :type="this.type" ref="useCamera" :style="{ flex: 1,  justifyContent: 'flex-end', alignItems: 'center' }">
         <nb-button info rounded :on-press="takePicture" :style="{ justifyContent: 'center', alignSelf: 'center', width:80, height: 80 }">
           <nb-icon name="camera" />
@@ -111,7 +111,7 @@
           </nb-button>
         </view>
       </image-background>
-    </modal>
+    </modal> -->
   </nb-container>
 </template>
 

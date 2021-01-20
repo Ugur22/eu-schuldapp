@@ -33,19 +33,28 @@
     createStackNavigator,
   } from "vue-native-router";
 
+	// Base of the app
   import UserStart from "./pages/Login.vue";
-  import HomeScreen from "./pages/client/Home.vue";
+  import HomeScreen from "./pages/Home.vue";
+
+	// Resuable components for clients and consultants	
+  import OtherDocsDetailsScreen from "./pages/components/OtherDocsDetails";
+
+	// Client components
   import AccountScreen from "./pages/client/Account.vue";
-  import AppointmentsScreen from "./pages/client/Appointments.vue";
-  import AppointmentScreen from "./pages/consultant/Appointment";
-  import DateScreen from "./pages/consultant/MakeAppointment";
+	import AppointmentsScreen from "./pages/client/Appointments.vue";
   import DocumentsScreen from "./pages/client/Documents.vue";
   import DebtsScreen from "./pages/client/Debts.vue";
   import DebtDetailScreen from "./pages/client/DebtDetails.vue";
   import FormsScreen from "./pages/client/Forms.vue";
   import CollectorDocsScreen from "./pages/client/Collector.vue";
   import OtherDocsScreen from "./pages/client/OtherDocs.vue";
-  import HelpScreen from "./pages/client/Help.vue";
+	import HelpScreen from "./pages/client/Help.vue";
+	import AppointmentClientScreen from "./pages/client/AppointmentClient"
+	
+	// Consultant components
+  import DateScreen from "./pages/consultant/MakeAppointment";
+	import AppointmentScreen from "./pages/consultant/Appointment";
   import ClientsScreen from "./pages/consultant/Clients";
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
   import FileClientScreen from "./pages/consultant/FileClient";
@@ -55,9 +64,7 @@
   import OtherDocsConsultantScreen from "./pages/consultant/OtherDocsConsultant";
   import FormsConsultantScreen from "./pages/consultant/FormsConsultant";
   import CollectorConsultantScreen from "./pages/consultant/CollectorConsultant";
-  import OtherDocsDetailsScreen from "./pages/consultant/OtherDocsDetails";
-  import AppointmentClientScreen from "./pages/client/AppointmentClient"
-  import FormDetailsScreen from "./pages/consultant/FormDetails"
+	import FormDetailsScreen from "./pages/consultant/FormDetails";
 
   let PageStart;
 
@@ -128,16 +135,17 @@
       },
       AppointmentClient: {
         screen: AppointmentClientScreen
-	  },
-	  FormDetails: {
-        screen: FormDetailsScreen
-      },
+			},
+			FormDetails: {
+					screen: FormDetailsScreen
+			},
     },
     {
       initialRouteName: 'Home',
       headerMode: 'none'
     }
-  );
+	);
+	
   const AppNavigator = createAppContainer(StackNavigator);
 
   export default { 

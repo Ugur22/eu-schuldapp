@@ -114,7 +114,7 @@ export default {
     goBack: function () {
       this.navigation.goBack();
 	},
-		showPDF: async function (id,clientID,title) {
+		showPDF: async function (id,clientID) {
 			this.isModalVisible = true;
 
 			let that = this;
@@ -150,12 +150,11 @@ export default {
 			console.error(error);
 			}
 		},
-		signature: function (id,clientID,title) {
+		signature: function (id,clientID) {
 			this.isModalVisible = true;
 			this.navigation.navigate('FormDetails', {
 			docID: id,
-			ClientID:clientID,
-			title:title
+			ClientID:clientID
 			});
 		},
   },

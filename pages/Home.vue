@@ -29,7 +29,7 @@
         </nb-button>
     </view>
     <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-      <image :source="require('../../assets/images/logo.png')" />
+      <image :source="require('../assets/images/logo.png')" />
     </view>
       <nb-footer>
       <footer-nav
@@ -43,7 +43,7 @@
 
 import { NavigationActions } from 'vue-native-router';
 import { AsyncStorage } from "react-native";
-import FooterNav from '../../included/Footer';
+import FooterNav from '../included/Footer';
 
 
 export default {

@@ -15,7 +15,7 @@
         <nb-input placeholder="zoek overige documenten" />
       </nb-item> -->
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="docs in clientDocs" :key="docs.id">
+				<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id)">
           <nb-left>
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
@@ -101,7 +101,14 @@ export default {
     },
     goBack: function () {
       this.navigation.goBack();
-    },
+		},
+		detailOther: function (id,clientID) {
+			this.isModalVisible = true;
+			this.navigation.navigate('OtherDocsDetails', {
+			docID: id,
+			ClientID:clientID
+			});
+		},
   },
 };
 </script>
