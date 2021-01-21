@@ -17,12 +17,12 @@
     </nb-header>
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id" :on-press="() => showPDF(form.id,form.client_id)">
+        <nb-list-item v-for="form in clientForms" :key="form.id" :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id)">
           <nb-left>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{formatDate(form.doc_date_time)}}</nb-text>
+            <nb-text class="text">{{formatDate(form.created_at)}}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -66,7 +66,8 @@ export default {
       clientForms: {},
       clientDocs: {},
       dataIsReady: false,
-      formatDate,
+			formatDate,
+			buttonOff: false
     };
   },
   created() {
@@ -76,6 +77,10 @@ export default {
   methods: {
 		showPDF: async function (id,clientID) {
 			this.isModalVisible = true;
+			this.buttonOff = true;
+			 setTimeout(() => this.buttonOff = false, 2000);
+
+			 
 
 			let that = this;
 			let value = '';

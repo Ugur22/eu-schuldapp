@@ -22,7 +22,7 @@
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
           <nb-body >
-            <nb-text class="text">{{formatDate(form.doc_date_time)}}</nb-text>
+            <nb-text class="text">{{formatDate(form.created_at)}}</nb-text>
           </nb-body>
             <nb-right>
 							<nb-button iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">

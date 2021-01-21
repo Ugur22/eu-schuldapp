@@ -20,7 +20,7 @@
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
           <nb-right>
-            <nb-text class="text">{{ formatDate(docs.doc_date_time) }}</nb-text>
+            <nb-text class="text">{{ formatDate(docs.created_at) }}</nb-text>
           </nb-right>
         </nb-list-item>
       </nb-list>

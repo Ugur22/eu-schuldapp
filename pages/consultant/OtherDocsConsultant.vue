@@ -20,7 +20,7 @@
 			<nb-text class="text">{{ docs.title }}</nb-text>
 		  </nb-left>
 		  <nb-body>
-			<nb-text class="text">{{ formatDate(docs.doc_date_time) }}</nb-text>
+			<nb-text class="text">{{ formatDate(docs.created_at) }}</nb-text>
 		  </nb-body>
 		  <nb-right>
 			<nb-icon class="text" name="arrow-forward" />
@@ -37,12 +37,10 @@
 	</nb-footer>
   </nb-container>
 </template>
-<style>
-.text {
+<style> 
+.text { 
 	color: #0078ae;
 }
-
-
 </style>
 <script>
 import FooterNav from '../../included/Footer';
