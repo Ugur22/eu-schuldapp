@@ -16,9 +16,9 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input placeholder="Search" />
-      </nb-item> -->
+      <nb-item :style="{ borderColor: '#62B1F6' }">
+        <nb-input placeholder="zoeken" />
+      </nb-item>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id)">
           <nb-left>
@@ -73,69 +73,37 @@
 </style>
 
 <script>
-import Modal from 'react-native-modal';
 import FooterNav from '../../included/Footer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DebtDetails from './DebtDetails';
-import {sum} from "../utils/Math";
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
     navigation: {
       type: Object,
     },
-    user: {},
   },
   components: { FooterNav,DebtDetails },
   data() {
     return {
-      isModalVisible: false,
 			clientDebts: {},
 			totalDebts:0,
       dataIsReady: false,
     };
   },
   created() {
-    this.getDebts();
-  },
-  methods: {
-    getDebts: async function () {
+	},
+	mounted() {
+		fetchData(`client/docs/debts`).then(val => {
 			let that = this;
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch('http://api.arsus.nl/client/docs/debts', {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-             'Authorization': `Bearer ${this.user.token}`
-          }
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-					this.clientDebts = responseJson.results;
-					this.clientDebts.map(function(debt){
+			this.dataIsReady = true;
+			this.clientDebts = val
+			this.clientDebts.map(function(debt){
 						that.totalDebts += parseFloat(debt.debt_amount);
 					})
-				
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error(error);
-      }
-    },
+			});
+	},
+  methods: {
     goBack: function () {
       this.navigation.goBack();
     },

@@ -17,7 +17,7 @@
     </nb-header>
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id" :on-press="() => showPDF(form.id,form.client_id,form.title)">
+        <nb-list-item v-for="form in clientForms" :key="form.id" :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)">
           <nb-left>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
@@ -46,15 +46,13 @@
 .text {
     color: #0078ae;
 }
-
-
 </style>
-
 <script>
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 import * as Print from 'expo-print';
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
@@ -69,53 +67,24 @@ export default {
       clientForms: {},
       clientDocs: {},
       dataIsReady: false,
-      formatDate,
+			formatDate,
+			buttonOff: false
     };
   },
   created() {
-    this.getForms();
   },
- 	  mounted() {
+ 	mounted() {
+		fetchData(`consultant/doc/forms?client_id=${this.navigation.getParam('id')}`).then(val => {
+			this.dataIsReady = true; this.clientForms = val;});
   },
   components: { FooterNav},
   methods: {
-    getForms: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch(`http://api.arsus.nl/consultant/doc/forms?client_id=${this.navigation.getParam('id')}`, {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          }
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.clientForms = responseJson.results;
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error(error);
-      }
-    },
     goBack: function () {
       this.navigation.goBack();
 	},
 		showPDF: async function (id,clientID) {
-			this.isModalVisible = true;
+			this.buttonOff = true;
+			 setTimeout(() => this.buttonOff = false, 2000);
 
 			let that = this;
 			let value = '';
@@ -151,7 +120,6 @@ export default {
 			}
 		},
 		signature: function (id,clientID) {
-			this.isModalVisible = true;
 			this.navigation.navigate('FormDetails', {
 			docID: id,
 			ClientID:clientID

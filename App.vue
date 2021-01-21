@@ -40,6 +40,7 @@
 	// Resuable components for clients and consultants	
   import OtherDocsDetailsScreen from "./pages/components/OtherDocsDetails";
 
+
 	// Client components
   import AccountScreen from "./pages/client/Account.vue";
 	import AppointmentsScreen from "./pages/client/Appointments.vue";
@@ -49,7 +50,6 @@
   import FormsScreen from "./pages/client/Forms.vue";
   import CollectorDocsScreen from "./pages/client/Collector.vue";
   import OtherDocsScreen from "./pages/client/OtherDocs.vue";
-	import HelpScreen from "./pages/client/Help.vue";
 	import AppointmentClientScreen from "./pages/client/AppointmentClient"
 	
 	// Consultant components
@@ -58,13 +58,13 @@
   import ClientsScreen from "./pages/consultant/Clients";
   import AppointmentsConsultantScreen from "./pages/consultant/AppointmentsConsultant";
   import FileClientScreen from "./pages/consultant/FileClient";
-  import DebtClientScreen from "./pages/consultant/Debts";
-  import DebtClientDetailScreen from "./pages/consultant/DebtDetailsClient";
   import AppointmentConfirmationtScreen from "./pages/consultant/AppointmentConfirmation";
   import OtherDocsConsultantScreen from "./pages/consultant/OtherDocsConsultant";
   import FormsConsultantScreen from "./pages/consultant/FormsConsultant";
   import CollectorConsultantScreen from "./pages/consultant/CollectorConsultant";
 	import FormDetailsScreen from "./pages/consultant/FormDetails";
+	import DebtClientDetailScreen from "./pages/consultant/DebtDetailsClient";
+	import DebtClientScreen from "./pages/consultant/Debts";
 
   let PageStart;
 

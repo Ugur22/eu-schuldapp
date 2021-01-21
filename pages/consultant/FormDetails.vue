@@ -35,9 +35,9 @@
 <script>
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignatureScreen from 'react-native-signature-canvas';
-import * as Print from 'expo-print';
-import { Toast } from 'native-base';
 import axios from "axios";
+import {fetchData} from "../utils/fetch";
+
 
 export default {
   props: {
@@ -70,8 +70,16 @@ export default {
 		};
 	},
   created() {
-		this.CheckSignatures();
 		
+	},
+	mounted() {
+		fetchData(`document/signatures?document_id=
+		${this.navigation.getParam('docID')}`).then(val => {
+			let that = this;
+			that.singatureStatus = val.signature;
+			that.Amountsignatures = val.need_signature_by;
+			that.dataIsReady = true;
+			});
 	},
 	components: {SignatureScreen },
   methods: {
@@ -109,40 +117,17 @@ export default {
 				},
 				}).then(function(response){
 
-				that.CheckSignatures();
-				console.log(that.singatureStatus);
-				});
+			fetchData(`document/signatures?document_id=
+				${that.navigation.getParam('docID')}`).then(val => {
+					that.singatureStatus = val.signature;
+					that.Amountsignatures = val.need_signature_by;
+					that.dataIsReady = true;
+					});
+			});
 			} catch (error) {
 				console.error(error);
 			}
 
-		},
-		CheckSignatures: async function() {
-			let value = '';
-			let that = this;
-      try {
-        value = await AsyncStorage.getItem('login');
-				this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-			try {
-
-			const response = await axios.get(`http://api.arsus.nl/document/signatures?document_id=${this.navigation.getParam('docID')}`,{
-				headers: {
-					Accept: 'application/json',
-					'Content-type': 'application/json',
-					Authorization: `Bearer ${this.user.token}`,
-				},
-				}).then(function(response){
-						that.singatureStatus = response.data.signature;
-						that.Amountsignatures = response.data.need_signature_by;
-						that.dataIsReady = true;
-				});
-			} catch (error) {
-				console.error(error);
-			}
 		},
 		goBack: function () {
 			this.navigation.goBack();

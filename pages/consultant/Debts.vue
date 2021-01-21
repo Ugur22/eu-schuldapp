@@ -16,11 +16,11 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
+      <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
-      </nb-item> -->
+      </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id,debt.client.id)">
+        <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id,debt.client.id )">
           <nb-left>
             <nb-text  class="text">{{debt.debtor.name}}</nb-text>
           </nb-left>
@@ -39,7 +39,6 @@
             <nb-text :style="{ fontWeight: 'bold' }" class="text">{{ $root.lang.t('currency') }}{{totalDebts}}</nb-text>
           </nb-body>
           <nb-right>
-            <!-- <nb-icon class="text" name="arrow-forward" /> -->
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -68,81 +67,51 @@
 .text {
   color: #0078ae;
 }
-
-
 </style>
 
 <script>
-import Modal from 'react-native-modal';
 import FooterNav from '../../included/Footer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DebtDetailsClient from './DebtDetailsClient';
+import {fetchData,getUser} from "../utils/fetch";
 
 export default {
   props: {
-    navigation: {
-      type: Object,
-    },
-    user: {},
+		navigation: {
+			type: Object,
+		}
   },
   components: { FooterNav,DebtDetailsClient },
   data() {
     return {
-      isModalVisible: false,
 			clientDebts: {},
 			totalDebts:0,
-      dataIsReady: false,
+			dataIsReady: false,
+			userType: '',
+			clientid:0,
+			url:''
     };
   },
   created() {
-    this.userData();
-  },
-  methods: {
-    userData: async function () {
-			let value = '';
+	},
+	mounted() {
+		fetchData(`consultant/client/debts/?client_id=${ this.navigation.getParam('id')}`).then(val => {
 			let that = this;
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      } 
-
-      try {
-        let response = await fetch(`http://api.arsus.nl/consultant/client/debts?client_id=${ this.navigation.getParam('id')}`, {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          }
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-					this.clientDebts = responseJson.results;
-					this.clientDebts.map(function(debt){
+			this.dataIsReady = true;
+			this.clientDebts = val
+			this.clientDebts.map(function(debt){
 						that.totalDebts += parseFloat(debt.debt_amount);
 					})
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error(error);
-      }
-    },
+		;});
+  },
+  methods: {
     goBack: function () {
       this.navigation.goBack();
     },
     goToPage: function (page) {
       this.navigation.navigate(page);
     },
-    detailDebt: function (id,clientID) {
-      this.isModalVisible = true;
+		detailDebt: function (id,clientID) {
+		console.log(id);
       this.navigation.navigate('DebtDetailsClient', {
         debtID: id,
         ClientID:clientID

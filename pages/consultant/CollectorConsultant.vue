@@ -55,6 +55,7 @@
 import FooterNav from '../../included/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
@@ -62,51 +63,26 @@ export default {
       type: Object,
     },
     user: {},
-  },
+	},
+	data() {
+		return {
+			selectedDoc: '0',
+			clientCollectors: {},
+			dataIsReady: false,
+			formatDate
+		};
+},
     created() {
-    this.getCollectors();
+	},
+	mounted() {
+		fetchData(`consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`).then(val => {
+			let that = this;
+			this.dataIsReady = true;
+			this.clientCollectors = val
+			;});
   },
   components: { FooterNav },
-  data() {
-    return {
-      selectedDoc: '0',
-       clientCollectors: {},
-       dataIsReady: false,
-       formatDate
-    };
-  },
   methods: {
-    getCollectors: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch(`http://api.arsus.nl/consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`, {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-             'Authorization': `Bearer ${this.user.token}`
-          }
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.clientCollectors = responseJson.results;
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
     goBack: function () {
       this.navigation.goBack();
     },

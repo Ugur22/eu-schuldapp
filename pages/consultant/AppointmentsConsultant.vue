@@ -27,7 +27,7 @@
             </nb-button>
           </nb-body>
           <nb-right>
-            <nb-text class="text">{{client.status}}</nb-text>
+            <nb-text class="text">{{client.status.status}}</nb-text>
           </nb-right>
         </nb-card-item>
       </nb-card>
@@ -80,33 +80,29 @@
   </nb-container>
 </template>
 <style>
-.text {
-  color: #0078ae;
-}
+	.text {
+		color: #0078ae;
+	}
 
-.header {
-	color:#fff;
-}
+	.header {
+		color:#fff;
+	}
 
-
-
-.title {
-	color: #0078ae;
-	font-size:20;
-}
+	.title {
+		color: #0078ae;
+		font-size:20;
+	}
 </style>
 <script>
 import FooterNav from '../../included/Footer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate,FormatTime} from "../utils/dates";
-
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
     navigation: {
       type: Object,
-	},
-  user: {}
+		}
   },
   components: { FooterNav },
   data() {
@@ -120,74 +116,13 @@ export default {
     };
   },
   mounted() {
-    this.getAppointments();
-    this.getClients();
+		  fetchData('consultant/appointments').then(val => {
+				this.dataIsReady = true; this.appointments = val;});
+			fetchData('consultant/clients').then(val => {
+				this.dataIsReady = true; this.Clients = val;});
   },
   components: { FooterNav },
   methods: {
-    getClients: async function () {
-    let value = '';
-    try {
-      value = await AsyncStorage.getItem('login');
-      this.user = JSON.parse(value);
-    } catch (error) {
-      // Error retrieving data
-      console.log(error.message);
-    }
-
-    try {
-      let response = await fetch('http://api.arsus.nl/consultant/clients', {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          'Authorization': `Bearer ${this.user.token}`
-        },
-      });
-
-      let responseJson = await response.json();
-      if (responseJson.success) {
-        this.Clients = responseJson.results;
-        this.dataIsReady = true;
-      } else {
-        console.log(responseJson);
-      }
-    } catch (error) {
-      console.log(error);
-      console.error(error);
-    }
-  },
-    getAppointments: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch('http://api.arsus.nl/consultant/appointments', {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          }
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.appointments = responseJson.results;
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error(error);
-      }
-    },
     goBack: function () {
       this.navigation.goBack();
     },

@@ -84,6 +84,7 @@ import Modal from 'react-native-modal';
 import FooterNav from '../../included/Footer';
 import FileClient from './FileClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
@@ -94,78 +95,22 @@ export default {
   },
   components: { FooterNav,FileClient },
   data() {
-	return {
-	  isModalVisible: false,
-	  Clients: {},
-	  dataIsReady: false,
-	};
+		return {
+			isModalVisible: false,
+			Clients: {},
+			dataIsReady: false,
+		};
   },
   created() {
-	this.getClients();
-  },
+	},
+	mounted() {
+		fetchData(`consultant/clients`).then(val => {
+			let that = this;
+			this.dataIsReady = true;
+			this.Clients = val;
+			});
+	},
   methods: {
-	getClients: async function () {
-	  let value = '';
-	  try {
-		value = await AsyncStorage.getItem('login');
-		this.user = JSON.parse(value);
-	  } catch (error) {
-		// Error retrieving data
-		console.log(error.message);
-	  }
-
-	  try {
-		let response = await fetch('http://api.arsus.nl/consultant/clients', {
-		  method: 'GET',
-		  headers: {
-			accept: 'application/json',
-			'Authorization': `Bearer ${this.user.token}`
-		  }
-		});
-
-		let responseJson = await response.json();
-		if (responseJson.success) {
-		  this.Clients = responseJson.results;
-		  this.dataIsReady = true;
-		} else {
-		  console.log(responseJson);
-		}
-	  } catch (error) {
-		console.log(error);
-		console.error(error);
-	  }
-	},
-		clientNextStep: async function (clientID) {
-	  let value = '';
-	  try {
-		value = await AsyncStorage.getItem('login');
-		this.user = JSON.parse(value);
-	  } catch (error) {
-		// Error retrieving data
-		console.log(error.message);
-	  }
-
-	  try {
-		let response = await fetch(`http://api.arsus.nl/consultant/client/next&client_id=${clientID}`, {
-		  method: 'POST',
-		  headers: {
-			accept: 'application/json',
-			'Authorization': `Bearer ${this.user.token}`
-		  }
-		});
-
-		let responseJson = await response.json();
-		if (responseJson.success) {
-			console.log(responseJson);
-		  this.dataIsReady = true;
-		} else {
-		  console.log(responseJson);
-		}
-	  } catch (error) {
-		console.log(error);
-		console.error(error);
-	  }
-	},
 	goBack: function () {
 	  this.navigation.goBack();
 	},

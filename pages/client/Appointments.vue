@@ -65,15 +65,14 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate,FormatTime} from "../utils/dates";
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
     navigation: {
       type: Object,
-	},
-	user: {},
+		}
   },
   data() {
     return {
@@ -85,41 +84,15 @@ export default {
     };
   },
   created() {
-    this.getAppointments();
-  },
+	},
+	mounted() {
+		fetchData(`client/appointments`).then(val => {
+		this.dataIsReady = true;
+			this.appointments = val;
+			});
+	},
   components: { FooterNav },
   methods: {
-    getAppointments: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch('http://api.arsus.nl/client/appointments ', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-             'Authorization': `Bearer ${this.user.token}`
-          }
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.appointments = responseJson.results;
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error(error);
-      }
-    },
     openAppointment: function (id) {
       this.navigation.navigate('AppointmentClient',{
         id:id

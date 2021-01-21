@@ -42,8 +42,6 @@
     color: #0078ae;
      font-size: 14;
 }
-
-
 </style>
 
 <script>
@@ -52,6 +50,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 import { WebView } from 'react-native-webview';
 import * as Print from 'expo-print';
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
@@ -64,15 +63,19 @@ export default {
     return {
       selectedDoc: '0',
       clientForms: {},
-      clientDocs: {},
       dataIsReady: false,
 			formatDate,
 			buttonOff: false
     };
   },
   created() {
-    this.getForms();
-  },
+	},
+	mounted() {
+		fetchData(`client/docs/forms`).then(val => {
+		this.dataIsReady = true;
+			this.clientForms = val;
+			});
+	},
   components: { FooterNav,"web-view": WebView },
   methods: {
 		showPDF: async function (id,clientID) {

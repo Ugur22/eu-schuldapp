@@ -48,15 +48,14 @@
 
 <script>
   import FooterNav from '../../included/Footer';
-  import AsyncStorage from '@react-native-async-storage/async-storage';
-  import {formatDate,FormatTime} from "../utils/dates";
+	import {formatDate,FormatTime} from "../utils/dates";
+	import {fetchData} from "../utils/fetch";
 
   export default {
 	props: {
 	  navigation: {
-		type: Object
+			type: Object
 	  },
-	  user: {},
 	},
 	components: { FooterNav },
 	data() {
@@ -67,44 +66,13 @@
 		FormatTime
 	  };
 	},
-	created() {
-	  this.GetAppointment();
-	},
+  mounted() {
+		  fetchData(`consultant/appointment?id=${this.navigation.getParam('id')}`).then(val => {
+				this.dataIsReady = true; this.Appointment = val;});
+  },
 	methods: {
 	  goBack: function () {
-		this.navigation.goBack();
-	  },
-	  GetAppointment: async function () {
-		let value = '';
-		try {
-		  value = await AsyncStorage.getItem('login');
-		  this.user = JSON.parse(value);
-		} catch (error) {
-		  // Error retrieving data
-		  console.log(error.message);
-		}
-
-		try {
-		  let response = await fetch(`http://api.arsus.nl/consultant/appointment?id=${this.navigation.getParam('id')}`, {
-			method: 'GET',
-			headers: {
-			  accept: 'application/json',
-			  'Content-Type': 'application/json',
-			   'Authorization': `Bearer ${this.user.token}`
-			}
-		  });
-
-		  let responseJson = await response.json();
-		  if (responseJson.success) {
-			this.Appointment = responseJson.results;
-			this.dataIsReady = true;
-		  } else {
-			console.log(responseJson);
-		  }
-		} catch (error) {
-		  console.log(error);
-		  console.error(error);
-		}
+			this.navigation.goBack();
 	  },
 	}
   }

@@ -224,6 +224,7 @@ import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'native-base';
 import * as ImageManipulator from 'expo-image-manipulator';
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
@@ -259,49 +260,19 @@ export default {
 		};
   },
   created() {
-		this.clientData();
-		this.clientTemplates();
+	},
+	mounted() {
+		fetchData(`consultant/client?id=${this.navigation.getParam(
+					'clientID')}`).then(val => {
+		this.dataIsReady = true; this.Client = val;});
+		fetchData(`consultant/client/templates?client_id=${this.navigation.getParam(
+            'clientID')}&type=${this.selectedfileType}`).then(val => {
+		this.dataIsReady = true; this.selections = val;});
   },
   components: { FooterNav, Camera, Item: Picker.Item },
   methods: {
-    clientData: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch(
-          `http://api.arsus.nl/consultant/client?id=${this.navigation.getParam(
-            'clientID'
-          )}`,
-          {
-            method: 'GET',
-            headers: {
-              accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.user.token}`,
-            },
-          }
-        );
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.Client = responseJson.results;
-					this.dataIsReady = true;
-        } else {
-          console.log(responseJson.results);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-		},
 		clientTemplates:  async function(){
-			  let value = '';
+			let value = '';
       try {
         value = await AsyncStorage.getItem('login');
         this.user = JSON.parse(value);
