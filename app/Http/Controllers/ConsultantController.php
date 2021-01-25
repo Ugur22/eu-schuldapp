@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Debt;
 use App\Models\Form;
 use App\Models\Place;
+use App\Models\Child;
 use App\Models\Client;
 use App\Models\Company;
 use App\Models\DocHtml;
@@ -22,6 +23,7 @@ use App\Helpers\TemplateHelpers;
 use App\Helpers\ControllerHelpers;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\JWTAuth;
 
 class ConsultantController extends Controller
@@ -36,21 +38,8 @@ class ConsultantController extends Controller
         $this->jwt = $jwt;
     }
 
-    private function loginFirst($request) {
-        
-        $login = $this->validate($request, [
-            'email'    => 'required|email|max:255',
-            'password' => 'required',
-        ]);
-
-        return $this->jwt->attempt($request->only('email', 'password'));
-    }
-
     public function clientList(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $results = [];
         foreach ($this->jwt->user()->consultant->clients as $key => $client) {
           $results[$key]['id'] = $client->id;
@@ -58,7 +47,7 @@ class ConsultantController extends Controller
           $results[$key]['firstname'] = $client->firstname;
           $results[$key]['lastname'] = $client->lastname;
           $results[$key]['login'] = $client->user;
-          $results[$key]['status'] = $client->status->status;
+          $results[$key]['status'] = $client->status;
         }
         
         if(!$results){
@@ -70,9 +59,6 @@ class ConsultantController extends Controller
 
     public function clientDetails(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         $results = Client::whereId($input['id'])->with('children')->with('user')->with('location')->first();
@@ -86,9 +72,6 @@ class ConsultantController extends Controller
 
     public function createClient(Request $request)
     {
-      if(!$this->loginFirst($request)){
-        return response()->json(['success' => false, 'message' => 'login_error']);
-      }
       $this->validate($request, [
         'email'    => 'required|email|max:255',
         'card_id' => 'required',
@@ -137,16 +120,150 @@ class ConsultantController extends Controller
       }
     }
 
-    public function companyList(Request $request){
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
+    public function createCompleteClient(Request $request)
+    {
+        $validation = [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'gender' => 'required',
+            'birth_date' => 'required',
+            'birth_place' => 'required',
+            'nationality' => 'required',
+            'id_card_number' => 'required',
+            'id_type' => 'required',
+            'phonenumber' => 'required',
+            'address' => 'required',
+            'place_id' => 'required',
+        ];
+        $input = $request->all();
+        if (!$input['id']) {
+            $validation['password'] = 'required';
+            $validation['email'] = 'required|email|max:255|unique:users';
         }
+        if (isset($input['password']) && $input['password']) {
+            $validation['confirm_password'] = 'required|same:password';
+        }
+        $validator = Validator::make($input, $validation);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'messages'=>$validator->errors()->all()]);
+        }       
+
+      try {
+
+        if($input['id']){
+            $client = Client::find($input['id']);
+            $user = User::find($client->user_id);
+            if($input['password']) {
+                $user->password = Hash::make($input['password']);
+                $user->save();
+            }
+        }else{
+            $user = new User;
+            $user->email = $input['email'];
+            $user->role_id = 1;
+            $user->password = Hash::make($input['password']);
+            if($user->save()){
+                $client = new Client;
+                $client->consultant_id = $this->jwt->user()->id;
+                $client->user_id = $user->id;
+                $client->client_status_id = 1;
+            }
+        }
+        $client->gender = $input['gender'];
+        $client->initial = $input['initial'] ? $input['initial']: null;
+        $client->firstname = $input['firstname'];
+        $client->lastname = $input['lastname'];
+        $client->social_security_id = $input['social_security_id'];
+        $client->birth_date = \Carbon\Carbon::parse($input['birth_date']);
+        $client->birth_place = $input['birth_place'] ? $input['birth_place']: null;
+        $client->nationality = $input['nationality'] ? $input['nationality']: null;
+        $client->id_type = $input['id_type'];
+        $client->id_card_number = $input['id_card_number'];
+        $client->marital_status = $input['marital_status'];
+        $client->partnership_reg = $input['partnership_reg'] ? $input['partnership_reg']: null;
+        $client->address = $input['address'];
+        $client->postal_code = $input['postal_code'];
+        $client->place_id = $input['place_id'];
+        $client->phonenumber = $input['phonenumber'];
+        $client->bank_account = $input['bank_account'];
+        $client->employer_id = $input['employer_id'];
+        $client->authorized_date = \Carbon\Carbon::parse($input['authorized_date']);
+        $client->partner_social_security_id = $input['partner_social_security_id'] ? $input['partner_social_security_id']: null;
+        $client->partner_initial = $input['partner_initial'] ? $input['partner_initial']: null;
+        $client->partner_firstname = $input['partner_firstname'] ? $input['partner_firstname']: null;
+        $client->partner_lastname = $input['partner_lastname'] ? $input['partner_lastname']: null;
+        $client->partner_gender = $input['partner_gender'] ? $input['partner_gender']: null;
+        $client->partner_birth_date = $input['partner_birth_date'] ? \Carbon\Carbon::parse($input['partner_birth_date']): null;
+        $client->partner_birth_place = $input['partner_birth_place'] ? $input['partner_birth_place']: null;
+        $client->partner_nationality = $input['partner_nationality'] ? $input['partner_nationality']: null;
+        $client->partner_id_type = $input['partner_id_type'] ? $input['partner_id_type']: null;
+        $client->partner_id_card_number = $input['partner_id_card_number'] ? $input['partner_id_card_number']: null;
+        if($client->save()) {
+            if (count($input['children'])) {
+                $new_children = [];
+                foreach ($input['children'] as $key => $child) {
+                    if($child['fullname']){
+                        if($child['id']){
+                            $newkid = Child::find($child['id']);
+                        }else{
+                            $newkid = new Child;
+                            $newkid->client_id = $client->id;
+                        }
+                        $newkid->fullname = $child['fullname'];
+                        $newkid->birth_date = \Carbon\Carbon::parse($child['birth_date']);
+                        $newkid->save();
+                    }
+                }
+            }
+            return response()->json(['success' => true, 'results' => ['user_id' => $user->id, 'client_id' => $client->id, 'children' => $client->children]]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'register_failed']);
+        }
+
+      } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+      }
+    }
+
+    public function deleteChild(Request $request)
+    {
+        $id = $request->id;
+        $child = Child::find($id);
+        if($child->delete()){
+            return response()->json(['success' => true, 'results' => $id]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_company']);
+        }
+    }
+
+    public function getCompany(Request $request)
+    {
+        $company = Company::with('location')->with('types')->find($request->id);
+        if($company){
+            return response()->json(['success' => true, 'results' => $company]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no company found']);
+        }
+    }
+
+    public function allCompanyList(Request $request)
+    {
+
+        $items = Company::with('location')->get();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_company']);
+        }
+    }
+
+    public function companyList(Request $request){
 
         $items = Company::where(function($query) {
             $query->whereHas('types', function($q) {
                 $q->where('slug', '!=', 'employer');
             });
-        })->get();
+        })->with('location')->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{
@@ -155,9 +272,6 @@ class ConsultantController extends Controller
     }
 
     public function employerList(Request $request){
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $items = Company::where(function($query) {
             $query->whereHas('types', function($q) {
@@ -171,11 +285,37 @@ class ConsultantController extends Controller
         }
     }
 
+    public function manageCompany(Request $request)
+    {
+        $input = $request->all();
+        if($input['id']){
+            $company = Company::find($input['id']);
+        }else{
+            $company = new Company;
+        }
+
+        $company->name = $input['name'];
+        $company->address = $input['address'];
+        $company->postal_code = $input['postal_code'];
+        $company->place_id = $input['place_id'];
+        $company->phone = $input['phone'];
+        $company->email = $input['email'];
+        $company->bank_account = $input['bank_account'];
+        
+        if($company->save()){
+            if($input['id']){
+                $company->types()->sync($input['types']);
+            }else{
+                $company->types()->attach($input['types']);
+            }
+            return response()->json(['success' => true, 'results' => $company]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'company failed']);
+        }
+    }
+
     public function appointmentList(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $items = $this->jwt->user()->consultant->appointments;
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -186,9 +326,6 @@ class ConsultantController extends Controller
 
     public function appointment(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         $item = Appointment::with('location')->with('client');
         if(isset($input['id'])){
@@ -210,9 +347,6 @@ class ConsultantController extends Controller
 
     public function makeAppointment(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         $item = new Appointment;
@@ -233,21 +367,26 @@ class ConsultantController extends Controller
 
     public function clientDebts(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
-        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+        if($input['client_id'] > 0 && !$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
         $items=[];
-        $debts = Debt::where('client_id', $input['client_id'])->get();
+        $debts = Debt::with('status');
+        if($input['client_id']){
+            $debts = $debts->where('client_id', $input['client_id'])->get();
+        }else{
+            $clients = $this->jwt->user()->consultant->clients()->pluck('id')->toArray();
+            $debts = $debts->whereIn('client_id', $clients)->get();
+        }
         foreach ($debts as $key => $debt) {
             $items[$key]['id'] = $debt->id;
             $items[$key]['reference_id'] = $debt->reference_id;
             $items[$key]['client'] = $debt->client;
+            $items[$key]['status'] = $debt->status;
             $items[$key]['debt_amount'] = $debt->debt_amount;
             $items[$key]['debtor'] = $debt->debtor;
+            $items[$key]['docs'] = $debt->documents;
         }
         
         if(count($items)){
@@ -259,16 +398,13 @@ class ConsultantController extends Controller
 
     public function clientDebt(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
 
-        $item = Debt::whereId($input['id'])->with('client')->with('debtor')->first();
+        $item = Debt::whereId($input['id'])->with('client')->with('status')->with('debtor')->first();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
         }else{
@@ -278,9 +414,6 @@ class ConsultantController extends Controller
 
     public function createClientDebt(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -299,6 +432,7 @@ class ConsultantController extends Controller
         $item->due_date = $input['due_date'];
         $item->preference = $input['preference'];
         $item->terms = $input['terms'];
+        $item->percentage = $input['percentage'];
         $item->debt_amount = $input['debt_amount'];
         $item->total_redeemed = $input['total_redeemed'];
         $item->redeem_per_month = $input['redeem_per_month'];
@@ -314,9 +448,6 @@ class ConsultantController extends Controller
 
     public function updateClientDebt(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -328,12 +459,13 @@ class ConsultantController extends Controller
             'debt_amount' => 'required',
         ]);
 
-        $item = Debt::find($input['debt_id']);
+        $item = Debt::find($input['id']);
         $item->reference_id = $input['reference_id'];
         $item->debtor_id = $input['debtor_id'] ? $input['debtor_id']: null;
         $item->status_id = $input['status_id'];
         $item->due_date = $input['due_date'];
         $item->preference = $input['preference'];
+        $item->percentage = $input['percentage'];
         $item->terms = $input['terms'];
         $item->debt_amount = $input['debt_amount'];
         $item->total_redeemed = $input['total_redeemed'];
@@ -350,9 +482,6 @@ class ConsultantController extends Controller
 
     public function searchClientDebts(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -387,15 +516,16 @@ class ConsultantController extends Controller
 
     public function clientFormList(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
-
-        $items = Document::where('client_id', $input['client_id'])->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('doc_date_time')->get();
+        
+        $items = Document::where('client_id', $input['client_id'])->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('created_at', 'desc');
+        if(isset($input['search']) && strlen($input['search']) > 2){
+            $items = $items->where('title', 'LIKE', '%'. trim($input['search']) .'%');
+        }
+        $items = $items->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{
@@ -405,9 +535,6 @@ class ConsultantController extends Controller
 
     public function clientFormDetails(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
@@ -423,15 +550,12 @@ class ConsultantController extends Controller
 
     public function clientDeptorDocs(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
 
-        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $input['client_id'])->orderBy('doc_date_time')->get();
+        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $input['client_id'])->orderBy('created_at')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -442,9 +566,6 @@ class ConsultantController extends Controller
 
     public function deptorDocDetails(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
@@ -460,9 +581,6 @@ class ConsultantController extends Controller
 
     public function searchDebtorDocs(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
@@ -475,7 +593,7 @@ class ConsultantController extends Controller
             $query->orWhereHas('clientDebt', function($q) use ($debtors) {
                 $q->whereIn('debtor_id', $debtors);
             });
-        })->get();
+        })->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -486,15 +604,16 @@ class ConsultantController extends Controller
 
     public function otherDocList(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
 
-        $items = Document::has('file')->with('file')->whereNull('template_id')->where('client_id', $input['client_id'])->orderBy('doc_date_time')->get();
+        $items = Document::has('file')->with('file');
+        if(isset($input['search'])){
+            $items = $items->where('title', 'LIKE', '%' . trim($input['search']) . '%');
+        }
+        $items = $items->whereNull('template_id')->where('client_id', $input['client_id'])->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -505,9 +624,6 @@ class ConsultantController extends Controller
 
     public function otherDocDetails(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
             return response()->json(['success' => false, 'message' => 'not_client']);
@@ -523,9 +639,6 @@ class ConsultantController extends Controller
 
     public function searchOtherDocs(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -544,9 +657,6 @@ class ConsultantController extends Controller
 
     public function templateList(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -556,8 +666,21 @@ class ConsultantController extends Controller
         $client = Client::find($input['client_id']);
         $client_status = $client->status->id;
         $client_debt_statuses = $client->debts()->pluck('status_id')->toArray();
-        $items = Template::select('id', 'slug', 'filename')->Where('client_status_id', $client_status)->whereNull('client_debt_status_id')->orWhereIn('client_debt_status_id', $client_debt_statuses)->whereNull('client_status_id')->get();
-
+        $items = Template::select('id', 'slug', 'filename');
+        if(isset($input['type'])){
+            switch ($input['type']) {
+                case 'form':
+                    $items = $items->where('client_status_id', $client_status)->whereNull('client_debt_status_id');
+                    break;
+                case 'debtor':
+                    $items = $items->whereIn('client_debt_status_id', $client_debt_statuses)->whereNull('client_status_id');
+                    break;
+                default:
+                    $items = $items->where('client_status_id', $client_status)->whereNull('client_debt_status_id')->orWhereIn('client_debt_status_id', $client_debt_statuses)->whereNull('client_status_id');
+                    break;
+            }
+        }
+        $items = $items->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{
@@ -567,9 +690,6 @@ class ConsultantController extends Controller
 
     public function nextClientStatus(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -589,11 +709,24 @@ class ConsultantController extends Controller
         }
     }
 
+    public function nextDebtStatus(Request $request, ControllerHelpers $helper)
+    {
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $debt = Debt::find($input['debt_id']);
+        $debt->status_id = $input['status_id'];
+        if($debt->save()){
+            return response()->json(['success' => true, 'results' => $debt]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'change status failed']);
+        }
+    }
+
     public function nextDebtStatusList(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -616,9 +749,6 @@ class ConsultantController extends Controller
 
     public function nextClientDebtStatus(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $input = $request->all();
         if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
@@ -637,10 +767,6 @@ class ConsultantController extends Controller
 
     public function addDocument(Request $request, ControllerHelpers $helper)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
-
         $input = $request->all();
         $client_id = $input['client_id'];
         $client = Client::find($client_id);
@@ -649,7 +775,6 @@ class ConsultantController extends Controller
         }
         
         $item = new Document;
-        $item->doc_date_time = \Carbon\Carbon::now();
         $item->client_id = $client_id;
         $item->client_debt_id = isset($input['debt_id']) ? $input['debt_id']: null;
         if(!isset($input['debt_id'])){
@@ -657,7 +782,7 @@ class ConsultantController extends Controller
         }
         $item->title = $input['title'];
         $item->main = isset($input['main']) && $input['main'] ? $input['main']: null;
-        $item->template_id = $input['template_id'] ? $input['template_id']: null;
+        $item->template_id = isset($input['template_id']) && $input['template_id'] ? $input['template_id']: null;
         if($item->save()){
             if($request->hasFile('file')) {
                 $file = new DocFile;
@@ -666,14 +791,15 @@ class ConsultantController extends Controller
                 $filetype = $request->file('file')->extension();
                 $file->filename = $filename;
                 $file->filetype = $filetype;
-                if($request->file('file')->move(storage_path('app/documents'), $filename)){
+                if($request->file('file')->move(storage_path('app/documents/'.str_pad($client_id, 4, '0', STR_PAD_LEFT)), $filename)){
                     $file->save();
                 }
             }else{
                 $template = Template::find($input['template_id']);
                 $templateHelper = new TemplateHelpers;
                 $html = $template->html;
-                $html = $templateHelper->templateToDoc($template->slug, $client, $template->html);
+                $doc = Document::find($item->id);
+                $html = $templateHelper->templateToDoc($template->slug, $client, $doc, $template->html);
                 $file = new DocHtml;
                 $file->html = $html;
                 $file->doc_id = $item->id;
@@ -690,16 +816,13 @@ class ConsultantController extends Controller
 
     public function toSign(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $template = new TemplateHelpers;
         $input = $request->all();
         $doc = Document::whereId($input['document_id'])->where('client_id', $input['client_id'])->first();
         
-        if($request->hasFile('signature')){
-            $signed = $template->uploadSignature($request->file('signature'), $doc, $input['author']);
+        if($input['signature']){
+            $signed = $template->uploadSignature($input['signature'], $doc, $input['author']);
             if(!$signed){
                 return response()->json(['success' => false, 'message' => 'upload_sign_failed']);
             }else{

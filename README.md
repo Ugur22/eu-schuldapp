@@ -1,196 +1,214 @@
 ##GET
 
+###no tokens
+
 `/locations`
-`/test`
+**get locations/place name**
+
+`/client/status`
+**clients' statusses**
+
+`/company-types`
+**get company types: debt collector, employer, enz**
 
 ##POST
 
-###GENERAL
-
 `/login`
-*request: email, password*
+email, password
 
-###CLIENT SIDE
+##With token
+###client
+##GET
 
 `/client`
-*request: email, password*
 **get account**
 
 `/client/appointments`
-*request: email, password*
 **get appointment list**
 
 `/client/appointment`
-*request: email, password, id*
+*request: id*
 **get appointment details**
 
 `/client/docs/debts`
-*request: email, password*
-**get own debt list**
+**get debt list**
 
 `/client/docs/debt`
-*request: email, password, id*
+*request: id*
 **get debt details**
 
-`/client/docs/debts/search`
-*request: email, password, search*
-**search existed debt list, it will search in debtor's name, ref, status and notes**
-
-`/consultant/client/debt/create`
-*request: email (required), password (required), client_id (required), due_date (required), reference_id, debtor_id, preference, terms, debt_amount,total_redeemed, redeem_per_month, total_redemption, notes*
-**create new debt**
-
-`/consultant/client/debt/update`
-*request: email (required), password (required), debt_id (required), due_date (required), reference_id, debtor_id, preference, terms, debt_amount,total_redeemed, redeem_per_month, total_redemption, notes*
-**update debt**
-
-`/client/docs/debtors`
-*request: email, password*
-**get document list of debtors**
-
-`/client/docs/debtor`
-*request: email, password, id*
-**get document debtor's details**
-
 `/client/docs/forms`
-*request: email, password*
-**get available forms**
+**get form list**
 
 `/client/docs/form`
-*request: email, password, id*
-**download form document**
+*request: id*
+**get form details**
+
+`/client/docs/debtors`
+**get debtor document list**
+
+`/client/docs/debtor`
+*request: id*
+**get debtor document details**
 
 `/client/docs/others`
-*request: email, password*
 **get other document list**
 
 `/client/docs/other`
-*request: email, password, id*
-**download other document list**
+*request: id*
+**get other document details**
+
+`/client/docs/debts/search`
+*request: search*
+**search debt list**
+
+`/client/docs/debtors/search`
+*request: search*
+**search debtor document list**
 
 `/client/docs/others/search`
-*request: email, password, search*
-**earching for other documents based on doc name/title**
+*request: search*
+**search other document list**
 
+##POST
 `/client/sign`
-*required: email, password, document_id, signature (signature image), author (client/partner)*
+*request: document_id, author, signature (image file)*
+**upload signature**
 
-###CONSULTANT SIDE
+###consultant
+##GET
+`/consultant/company`
+*request: id*
+**get company details**
+
+`/consultant/companies/all`
+**get all company list**
+
+`/consultant/employers`
+**get company employer list**
+
+`/consultant/companies`
+**get company non-employer list (debt collector, debtor, enz)**
 
 `/consultant/clients`
-*request: email, password*
 **get client list**
 
 `/consultant/client`
-*request: email, password, id*
+*request: client_id*
 **get client details**
 
-`/consultant/client/create`
-*request: email, password, initial, firstname, lastname, card_id, gender, birth_date, address, place_id*
-**create new client**
-
-`/consultant/appointments`
-*request: email, password*
-**get appointment list**
-
-`/consultant/appointment`
-*request: email, password, id*
-**get appointment details**
-
-`/consultant/make-appointment`
-*request: email, password, date, time, client_id, location_id, title, notes*
-**make new appointment**
+`/consultant/client/delete-child`
+*request: id (child ID)*
+**delete client child**
 
 `/consultant/client/debts`
-*request: email, password, client_id*
-**get client's debts**
+*request: client_id*
+**get client debt list**
 
 `/consultant/client/debt/details`
-*request: email, password, client_id, id (debt id)*
-**get client's debt details**
+*request: id, client_id (optional, display all consultant's client debts)*
+**get client debt details**
 
 `/consultant/client/debts/search`
-*request: email, password, client_id, search*
-**searching client's debts**
+*request: client_id, search*
+**get client debt details**
+
+`/consultant/client/incomes`
+*request: client_id*
+**get client income list**
+
+`/consultant/client/outcomes`
+*request: client_id*
+**get client outcome/cost list**
+
+`/consultant/appointments`
+**get appointments**
+
+`/consultant/appointment`
+*request: id*
+**get appointment details**
 
 `/consultant/doc/forms`
-*request: email, password, client_id*
-**get client's forms**
-
 `/consultant/doc/form`
-*request: email, password, client_id, id (form id)*
-**get client's form details**
-
 `/consultant/doc/debtors`
-*request: email, password, client_id*
-**get client's debtor forms**
-
 `/consultant/doc/debtor`
-*request: email, password, client_id, id (form id)*
-**get client's debtor form details**
-
 `/consultant/doc/debtor-search`
-*request: email, password, client_id, search*
-**get client's debtor forms search**
-
 `/consultant/doc/others`
-*request: email, password, client_id*
-**get client's other forms**
-
 `/consultant/doc/other`
-*request: email, password, client_id, id (form id)*
-**get client's other form details**
-
 `/consultant/doc/other-search`
-*request: email, password, client_id, search*
-**get client's other forms search**
-
-`/consultant/companies`
-*request: email, password*
-**get company debtor list**
-
-`/consultant/employers`
-*request: email, password*
-**get company debtor list**
-
-`/consultant/client/next`
-*request: email, password, client_id*
-**update client status/step to next status/step**
 
 `/consultant/client/debt/next-steps`
-*request: email, password, client_id, debt_id*
-**list of next debt statuses/steps. Need to be selected for debt to go to next status/step**
+*request: client_id, debt_id*
+**get client next debt statusses/steps**
 
 `/consultant/client/debt/next-step`
-*request: email, password, client_id, debt_status_id*
-**update debt status**
+*request: client_id, debt_id, status_id*
+**change client's debt to next status**
 
 `/consultant/client/templates`
-*request: email, password, client_id*
-**get pdf template list for specific client**
+*request: client_id, type (form, debtor, other)*
+**get template list of specific document type**
 
+##POST
 `/consultant/doc/add`
-*required: email, password, client_id, title
-optional: main (1 or none), file (if upload file), template_id (if pdf otherwise 0)*
-**create/add document for client, could be file/picture or pdf from template.**
+*request: client_id, debt_id, title, template_id (only for form or debtor doc), file (for upload)*
+**add new document form/debtor/other**
 
-`/client/sign`
-*required: email, password, document_id, signature (signature image), client_id, author (client/consultant/partner)*
+`/consultant/client/create`
+*request: email, password, confirm_password, gender, initial, firstname, lastname, card_id, birth_date, phonenumber, address, place_id*
+**create client (only required fields)**
 
-###DOWNLOAD
+`/consultant/client/create-complete`
+*request: id (by update), email, password, confirm_password, gender, initial, firstname, lastname, card_id, birth_date, phonenumber, address, social_security_id, birth_place, nationality, id_type, id_card_number, marital_status, partnership_reg, address, postal_code, place_id, bank_account, employer_id, authorized_date, partner_social_security_id, partner_initial, partner_firstname, partner_lastname, partner_gender, partner_birth_date, partner_birth_place, partner_nationality, partner_id_type, partner_id_card_number, children[fullname, birth_date, id (by update)]*
+**create/update client details (complete fields)**
+
+`/consultant/client/debt/create`
+*request: client_id, reference_id, debtor_id, due_date, preference, terms, percentage, debt_amount, total_redeemed, redeem_per_month, total_redemption, notes*
+**create debt for a client**
+
+`/consultant/client/debt/update`
+*request: id, client_id, reference_id, debtor_id, due_date, preference, terms, percentage, debt_amount, total_redeemed, redeem_per_month, total_redemption, notes*
+**update debt for a client**
+
+`/consultant/make-appointment`
+*request: date, time, client_id, location_id, title, notes*
+**make appointment**
+
+`/consultant/company/manage`
+*request: id (for update), name, address, postal_code, place_id, phone, email, bank_account, type (/company-types, array id's)*
+**create/update company**
+
+`/consultant/client/next-step`
+*request: client_id*
+**get next client step/status**
+
+`/consultant/client/income/update`
+*request: id (for update), client_id, client_type (client/partner), employer_id, amount, income_id*
+**create/update client income**
+
+`/consultant/client/outcome/update`
+*request: id (for update), client_id, client_type (client/partner), company_id, client_number, amount, outcome_id*
+**create/update client income**
+
+`/consultant/sign`
+*request: document_id, client_id, author, signature (image file)*
+**upload signature**
+
+###download
+##GET
+`/document/file-download`
+*request: document_id, client_id (for consultant)*
+**File download**
+
+`/document/signatures`
+*request: document_id*
+**Check who has to sign the doc**
 
 `/document/html-preview`
-*request: email, password, client_id (not required as client), document_id*
-**HTML preview client's form**
+*request: document_id, client_id (for consultant)*
+**HTML form preview**
 
 `/document/pdf-download`
-*request: email, password, client_id (not required as client), document_id*
-**download/stream pdf client's pdf form**
+*request: document_id, client_id (for consultant)*
+**Pdf form preview**
 
-`/document/file-download`
-*request: email, password, client_id (not required as client), document_id*
-**download/stream pdf client's pdf form**
-
-`/document/check-signatures`
-*request: email, password, document_id*
-**Check if document complete signed, or who need to sign**

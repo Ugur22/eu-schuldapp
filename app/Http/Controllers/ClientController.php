@@ -13,6 +13,7 @@ use App\Models\Document;
 use App\Models\Consultant;
 use App\Models\Appointment;
 use App\Models\ClientDebtStatus;
+use App\Helpers\TemplateHelpers;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\JWTAuth;
 
@@ -28,21 +29,8 @@ class ClientController extends Controller
         $this->jwt = $jwt;
     }
 
-    private function loginFirst($request) {
-        
-        $login = $this->validate($request, [
-            'email'    => 'required|email|max:255',
-            'password' => 'required',
-        ]);
-
-        return $this->jwt->attempt($request->only('email', 'password'));
-    }
-
     public function clientAccount(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $results = Client::with('user')->with('status')->find($this->jwt->user()->client->id);
         
         if(!$results){
@@ -54,9 +42,6 @@ class ClientController extends Controller
 
     public function postDebts(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $debts = $this->jwt->user()->client->debts;
         $items=[];
         foreach ($debts as $key => $debt) {
@@ -75,9 +60,6 @@ class ClientController extends Controller
 
     public function postDebt(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $item = Debt::whereId($request->id)->with('debtor')->with('status')->with('client')->get();
         if($item){
@@ -89,9 +71,6 @@ class ClientController extends Controller
 
     public function postSearchDebt(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $search = trim($request->search);
         $companies = Company::where('name', 'LIKE', '%'.$search.'%')->pluck('id')->toArray();
@@ -121,9 +100,6 @@ class ClientController extends Controller
 
     public function appointments(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $appointments = $this->jwt->user()->client->appointments;
         $items=[];
@@ -147,9 +123,6 @@ class ClientController extends Controller
 
     public function appointment(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $item = Appointment::with('location')->with('client')->with('consultant')->whereId($request->id)->get();
         if($item){
             return response()->json(['success' => true, 'results' => $item]);
@@ -160,12 +133,9 @@ class ClientController extends Controller
 
     public function postForms(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $user = $this->jwt->user()->client;
         
-        $items = Document::where('client_id', $user->id)->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('doc_date_time')->get();
+        $items = Document::where('client_id', $user->id)->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -176,9 +146,6 @@ class ClientController extends Controller
 
     public function postForm(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $input = $request->all();
         $user = $this->jwt->user()->client;
@@ -192,12 +159,9 @@ class ClientController extends Controller
 
     public function postDebtors(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $user = $this->jwt->user()->client;
-        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $user->id)->orderBy('doc_date_time')->get();
+        $items = Document::with('clientDebt')->whereNotNull('client_debt_id')->whereNull('client_status_id')->where('client_id', $user->id)->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -208,9 +172,6 @@ class ClientController extends Controller
 
     public function postDebtor(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $user = $this->jwt->user()->client;
         $input = $request->all();
@@ -225,9 +186,6 @@ class ClientController extends Controller
 
     public function postSearchDebtor(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $client = $this->jwt->user()->client;
         $input = $request->all();
         $search = trim($input['search']);
@@ -237,7 +195,7 @@ class ClientController extends Controller
             $query->orWhereHas('clientDebt', function($q) use ($debtors) {
                 $q->whereIn('debtor_id', $debtors);
             });
-        })->get();
+        })->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -248,11 +206,8 @@ class ClientController extends Controller
 
     public function postOthers(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $client_id = $this->jwt->user()->client->id;
-        $items = Document::has('file')->with('file')->whereNull('template_id')->where('client_id', $client_id)->orderBy('doc_date_time')->get();
+        $items = Document::has('file')->with('file')->whereNull('template_id')->where('client_id', $client_id)->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -263,9 +218,6 @@ class ClientController extends Controller
 
     public function postOther(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         
         $input = $request->all();
         $item = Document::whereId($input['id'])->with('file')->with('clientStatus')->first();
@@ -278,13 +230,10 @@ class ClientController extends Controller
 
     public function postSearchOther(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
         $client_id = $this->jwt->user()->client->id;
         $input = $request->all();
         $search = trim($input['search']);
-        $items = Document::with('file')->whereHas('file')->where('client_id', $client_id)->with('clientStatus')->where('title', 'LIKE', '%'.$search.'%')->get();
+        $items = Document::with('file')->whereHas('file')->where('client_id', $client_id)->with('clientStatus')->where('title', 'LIKE', '%'.$search.'%')->orderBy('created_at', 'desc')->get();
 
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
@@ -295,9 +244,6 @@ class ClientController extends Controller
 
     public function postSign(Request $request)
     {
-        if(!$this->loginFirst($request)){
-            return response()->json(['success' => false, 'message' => 'login_error']);
-        }
 
         $template = new TemplateHelpers;
         $input = $request->all();

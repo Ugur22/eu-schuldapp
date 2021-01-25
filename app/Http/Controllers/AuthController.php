@@ -22,10 +22,17 @@ class AuthController extends Controller
         $this->jwt = $jwt;
     }
 
-    public function testToken($token)
+    public function updateToken()
     {
-        $login = $this->jwt->toUser($token);
-        return $login;
+        $user_id = $this->jwt->user()->id;
+        $token = Hash::make($user_id.\Carbon\Carbon::now()->timestamp);
+        $user = User::find($user_id);
+        $user->download_token = $token;
+        if($user->save()){
+            return response()->json(['success' => true, 'token' => $token]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'update failed']);
+        }
     }
 
     public function postLogin(Request $request)
@@ -41,11 +48,9 @@ class AuthController extends Controller
                 return response()->json(['user_not_found'], 404);
             }else{
                 $user = User::with('role')->with('client')->with('consultant')->find($this->jwt->user()->id);
-                $str = bcrypt(Str::random(40));
-                $user->token = $str;
                 $user->last_login = \Carbon\Carbon::now();
                 $user->save();
-                return $user;
+                return response()->json(['success' => true, 'user' => $user, 'token' => compact('token')]);
             }
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 

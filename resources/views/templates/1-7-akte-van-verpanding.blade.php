@@ -60,10 +60,10 @@
   
   <tr>
     <td colspan="3">Datum</td>
-    <td colspan="2"><!--date_format(date_signed_client)--></td>
+    <td colspan="2"><!--date_signed_by_client--></td>
     <td colspan="1"></td>
     <td colspan="3">Datum</td>
-    <td colspan="2"><!--date_format(date_signed_consultant)--></td>
+    <td colspan="2"><!--date_signed_by_consultant--></td>
   </tr>
   
   <tr><td colspan="11"></td></tr>
@@ -85,10 +85,10 @@
   </tr>
   
   <tr>
-    <td colspan="5"><img width="140" src="<!--signed_client-->"><br/>
+    <td colspan="5"><img width="140" src="<!--sign_client-->"><br/>
     Handtekening..............................</td>
     <td colspan="1"></td>
-    <td colspan="5"><img width="140" src="<!--signed_consultant-->"><br/>
+    <td colspan="5"><img width="140" src="<!--sign_consultant-->"><br/>
     Handtekening..............................</td>
   </tr>
     

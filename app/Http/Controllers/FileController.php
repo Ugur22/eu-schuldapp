@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTAuth;
 use App\Models\User;
 use App\Models\Debt;
 use App\Models\Form;
@@ -17,31 +18,26 @@ use App\Models\ClientDebtStatus;
 use App\Helpers\TemplateHelpers;
 use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\File;
 
-class DownloadController extends Controller
+class FileController extends Controller
 {
-    private $myAuth;
+    /**
+     * @var \Tymon\JWTAuth\JWTAuth
+     */
+    protected $jwt;
 
-    public function __construct(Request $request)
+    public function __construct(JWTAuth $jwt)
     {
-        try {
-            $input = $request->all();
-            $user = User::where('email', $input['user'])->where('download_token', $input['token'])->first();
-            $this->myAuth = $user;
-        } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 404);
-        }
+        $this->jwt = $jwt;
     }
 
     public function formPDF(Request $request)
     {
 
         $input = $request->all();
-        if(!$this->myAuth){
-            return response()->json(['success' => false, 'message' => 'not allowed'], 404);
-        }
-        if ($this->myAuth->role->slug == 'client'){
-            $client_id = $this->myAuth->client->id;
+        if ($this->jwt->user()->role->slug == 'client'){
+            $client_id = $this->jwt->user()->client->id;
         }else{
             $client_id = $input['client_id'];
         }
@@ -49,9 +45,11 @@ class DownloadController extends Controller
         $pdf = Document::whereId($input['document_id'])->where('client_id', $client_id)->first();
         $document = $pdf->html->html;
         if($document){
-            return PDF::loadHTML($document)->stream($pdf->template->filename.'_'.str_pad($client_id, 4, '0', STR_PAD_LEFT).'.pdf');
+          $pdf = PDF::loadHTML($document)->stream($pdf->template->filename.'_'.str_pad($client_id, 4, '0', STR_PAD_LEFT).'.pdf');
+          
+          return 'data:application/pdf;base64,' . base64_encode($pdf);
         }else{
-            return response()->json(['success' => false, 'message' => 'filenotfound'], 404);
+          return response()->json(['success' => false, 'message' => 'filenotfound'], 404);
         }
     }
 
@@ -60,11 +58,8 @@ class DownloadController extends Controller
 
         $input = $request->all();
 
-        if(!$this->myAuth){
-            return response()->json(['success' => false, 'message' => 'not allowed'], 404);
-        }
-        if ($this->myAuth->role->slug == 'client'){
-            $client_id = $this->myAuth->client->id;
+        if ($this->jwt->user()->role->slug == 'client'){
+            $client_id = $this->jwt->user()->client->id;
         }else{
             $client_id = $input['client_id'];
         }
@@ -72,7 +67,12 @@ class DownloadController extends Controller
         $doc = Document::whereId($input['document_id'])->where('client_id', $client_id)->whereNull('template_id')->first();
 
         if($doc){
-            return response()->download(storage_path('app/documents/'. str_pad($client_id, 4, '0', STR_PAD_LEFT) .'/'. $doc->file->filename.'.'.$doc->file->filetype));
+            /* return response()->download(storage_path('app/documents/'. str_pad($client_id, 4, '0', STR_PAD_LEFT) .'/'. $doc->file->filename.'.'.$doc->file->filetype)); */
+            $path = storage_path('app/documents/'. str_pad($client_id, 4, '0', STR_PAD_LEFT) .'/'. $doc->file->filename);
+            $data = file_get_contents($path);
+            $mime = File::mimeType($path);
+            $base64 = 'data:'. $mime . ';base64,' . base64_encode($data);
+            return $base64;
         }else{
             return response()->json(['success' => false, 'message' => 'filenotfound'], 404);
         }
@@ -82,11 +82,8 @@ class DownloadController extends Controller
     {
 
         $input = $request->all();
-        if(!$this->myAuth){
-            return response()->json(['success' => false, 'message' => 'not allowed'], 404);
-        }
-        if ($this->myAuth->role->slug == 'client'){
-            $client_id = $this->myAuth->client->id;
+        if ($this->jwt->user()->role->slug == 'client'){
+            $client_id = $this->jwt->user()->client->id;
         }else{
             $client_id = $input['client_id'];
         }
@@ -100,16 +97,15 @@ class DownloadController extends Controller
         }
     }
 
-    public function checkSignatures()
+    public function checkSignatures(Request $request)
     {
-
         $template = new TemplateHelpers;
         $input = $request->all();
         $doc = Document::find($input['document_id']);
         $signature_required = $template->signatureRequired($doc->html->html);
 
         if($signature_required){
-            return response()->json(['success' => true, 'need_signature_by' => $signature_required]);
+            return response()->json(['success' => true, 'signature' => 'needed', 'need_signature_by' => $signature_required]);
         }else{
             return response()->json(['success' => true, 'signature' => 'completed']);
         }

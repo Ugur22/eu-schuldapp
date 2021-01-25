@@ -32,7 +32,7 @@
 
   <tr>
     <td colspan="3">Datum:</td>
-    <td colspan="8"><!--date_format(signed_date_client)--></td>
+    <td colspan="8"><!--date_format(created_at)--></td>
   </tr>
 
   <tr><td colspan="11"></td></tr>
@@ -85,7 +85,7 @@
   
   <tr><td colspan="11"></td></tr>
 
-  <tr><td colspan="11"><img width="140" src="<!--signed_client-->"><br/>
+  <tr><td colspan="11"><img width="140" src="<!--sign_client-->"><br/>
     Handtekening..............................<br/>
   </td></tr>
   

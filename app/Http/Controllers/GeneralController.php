@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Place;
 use App\Models\Template;
 use App\Models\Client;
+use App\Models\CompanyType;
+use App\Models\ClientStatus;
+use App\Models\ClientDebtStatus;
 use App\Helpers\TemplateHelpers;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -21,14 +24,23 @@ class GeneralController extends Controller
         }
     }
 
-    public function test(){
-        $template = Template::find(1);
-        $user = Client::find(67);
-        $templateHelper = new TemplateHelpers;
-        $html = $template->html;
+    public function getClientStatus()
+    {
+        $items = ClientStatus::all();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_location']);
+        }
+    }
 
-        $html = $templateHelper->findSignaturePlaceholder($html, 'consultant');
-        return $html;
-        /* return PDF::loadHTML($html)->stream('download.pdf'); */
+    public function getCompanyTypes()
+    {
+        $types = CompanyType::all();
+        if($types->count()){
+            return response()->json(['success' => true, 'results' => $types]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no types']);
+        }
     }
 }

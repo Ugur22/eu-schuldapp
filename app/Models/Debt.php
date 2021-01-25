@@ -15,11 +15,16 @@ class Debt extends Model
 
    public function status()
    {
-       return $this->belongsTo('App\Models\ClientDebtStatus', 'status_id');
+       return $this->belongsTo('App\Models\ClientDebtStatus', 'status_id')->with('next');
    }
 
    public function debtor()
    {
        return $this->belongsTo('App\Models\Company', 'debtor_id');
+   }
+
+   public function documents()
+   {
+       return $this->hasMany('App\Models\Document', 'client_debt_id');
    }
 }

@@ -19,62 +19,82 @@ $router->get('/', function () use ($router) {
 
 $router->get('/test','GeneralController@test');
 $router->get('/locations','GeneralController@getLocations');
+$router->get('/client/status','GeneralController@getClientStatus');
+$router->get('/company-types','GeneralController@getCompanyTypes');
 $router->post('/login','AuthController@postLogin');
-/* client */
-/* get data */
-$router->post('/client','ClientController@clientAccount');
-$router->post('/client/consultants','ClientController@postConsultants');
-$router->post('/client/appointments','ClientController@appointments');
-$router->post('/client/appointment','ClientController@appointment');
-$router->post('/client/docs/debts','ClientController@postDebts');
-$router->post('/client/docs/debt','ClientController@postDebt');
-$router->post('/client/docs/forms','ClientController@postForms');
-$router->post('/client/docs/form','ClientController@postForm');
-$router->post('/client/docs/debtors','ClientController@postDebtors');
-$router->post('/client/docs/debtor','ClientController@postDebtor');
-$router->post('/client/docs/others','ClientController@postOthers');
-$router->post('/client/docs/other','ClientController@postOther');
-$router->post('/client/sign','ClientController@postSign');
-/* Search */
-$router->post('/client/docs/debts/search','ClientController@postSearchDebt');
-$router->post('/client/docs/debtors/search','ClientController@postSearchDebtor');
-$router->post('/client/docs/others/search','ClientController@postSearchOther');
 
-/* consultant */
-/* get data */
-$router->post('/consultant/employers','ConsultantController@employerList');
-$router->post('/consultant/companies','ConsultantController@companyList');
-$router->post('/consultant/clients','ConsultantController@clientList');
-$router->post('/consultant/client','ConsultantController@clientDetails');
-$router->post('/consultant/client/create','ConsultantController@createClient');
-$router->post('/consultant/client/debts','ConsultantController@clientDebts');
-$router->post('/consultant/client/debt/details','ConsultantController@clientDebt');
-$router->post('/consultant/client/debt/create','ConsultantController@createClientDebt');
-$router->post('/consultant/client/debt/update','ConsultantController@updateClientDebt');
-$router->post('/consultant/client/debts/search','ConsultantController@searchClientDebts');
+$router->group(['middleware' => 'auth:api'], function($router)
+{
+    /* client */
+    $router->post('/token','AuthController@updateToken');
+    /* get data */
+    $router->get('/client','ClientController@clientAccount');
+    $router->get('/client/client/incomes','IncomesController@clientIncomes');
+    $router->get('/client/client/outcomes','IncomesController@clientOutcomes');
+    $router->get('/client/consultants','ClientController@postConsultants');
+    $router->get('/client/appointments','ClientController@appointments');
+    $router->get('/client/appointment','ClientController@appointment');
+    $router->get('/client/docs/debts','ClientController@postDebts');
+    $router->get('/client/docs/debt','ClientController@postDebt');
+    $router->get('/client/docs/forms','ClientController@postForms');
+    $router->get('/client/docs/form','ClientController@postForm');
+    $router->get('/client/docs/debtors','ClientController@postDebtors');
+    $router->get('/client/docs/debtor','ClientController@postDebtor');
+    $router->get('/client/docs/others','ClientController@postOthers');
+    $router->get('/client/docs/other','ClientController@postOther');
+    /* Search */
+    $router->get('/client/docs/debts/search','ClientController@postSearchDebt');
+    $router->get('/client/docs/debtors/search','ClientController@postSearchDebtor');
+    $router->get('/client/docs/others/search','ClientController@postSearchOther');
+    
+    $router->post('/client/sign','ClientController@postSign');
 
+    /* consultant */
+    /* get data */
+    $router->get('/consultant/company','ConsultantController@getCompany');
+    $router->get('/consultant/employers','ConsultantController@employerList');
+    $router->get('/consultant/companies','ConsultantController@companyList');
+    $router->get('/consultant/companies/all','ConsultantController@allCompanyList');
+    $router->get('/consultant/clients','ConsultantController@clientList');
+    $router->get('/consultant/client/incomes','IncomesController@clientIncomes');
+    $router->get('/consultant/client/outcomes','IncomesController@clientOutcomes');
+    $router->get('/consultant/client','ConsultantController@clientDetails');
+    $router->get('/consultant/client/delete-child','ConsultantController@deleteChild');
+    $router->get('/consultant/client/debts','ConsultantController@clientDebts');
+    $router->get('/consultant/client/debt/details','ConsultantController@clientDebt');
+    $router->get('/consultant/client/debts/search','ConsultantController@searchClientDebts');
 
-$router->post('/consultant/appointments','ConsultantController@appointmentList');
-$router->post('/consultant/appointment','ConsultantController@appointment');
-$router->post('/consultant/make-appointment','ConsultantController@makeAppointment');
-$router->post('/consultant/doc/forms','ConsultantController@clientFormList');
-$router->post('/consultant/doc/form','ConsultantController@clientFormDetails');
-$router->post('/consultant/doc/debtors','ConsultantController@clientDeptorDocs');
-$router->post('/consultant/doc/debtor','ConsultantController@deptorDocDetails');
-$router->post('/consultant/doc/debtor-search','ConsultantController@searchDebtorDocs');
-$router->post('/consultant/doc/others','ConsultantController@otherDocList');
-$router->post('/consultant/doc/other','ConsultantController@otherDocDetails');
-$router->post('/consultant/doc/other-search','ConsultantController@searchOtherDocs');
+    $router->get('/consultant/appointments','ConsultantController@appointmentList');
+    $router->get('/consultant/appointment','ConsultantController@appointment');
+    $router->get('/consultant/doc/forms','ConsultantController@clientFormList');
+    $router->get('/consultant/doc/form','ConsultantController@clientFormDetails');
+    $router->get('/consultant/doc/debtors','ConsultantController@clientDeptorDocs');
+    $router->get('/consultant/doc/debtor','ConsultantController@deptorDocDetails');
+    $router->get('/consultant/doc/debtor-search','ConsultantController@searchDebtorDocs');
+    $router->get('/consultant/doc/others','ConsultantController@otherDocList');
+    $router->get('/consultant/doc/other','ConsultantController@otherDocDetails');
+    $router->get('/consultant/doc/other-search','ConsultantController@searchOtherDocs');
 
-$router->post('/consultant/client/next-step','ConsultantController@nextClientStatus');
-$router->post('/consultant/client/debt/next-steps','ConsultantController@nextDebtStatusList');
-$router->post('/consultant/client/debt/next-step','ConsultantController@nextDebtStatus');
-$router->post('/consultant/client/templates','ConsultantController@templateList');
-$router->post('/consultant/doc/add','ConsultantController@addDocument');
-$router->post('/consultant/sign','ConsultantController@toSign');
+    $router->get('/consultant/client/debt/next-steps','ConsultantController@nextDebtStatusList');
+    $router->get('/consultant/client/debt/next-step','ConsultantController@nextDebtStatus');
+    $router->get('/consultant/client/templates','ConsultantController@templateList');
 
-/* download */
-$router->post('/document/html-preview','DownloadController@htmlPreview');
-$router->post('/document/pdf-download','DownloadController@formPDF');
-$router->post('/document/file-download','DownloadController@clientFile');
-$router->post('/document/signatures','DownloadController@checkSignatures');
+    $router->post('/consultant/doc/add','ConsultantController@addDocument');
+    $router->post('/consultant/client/create','ConsultantController@createClient');
+    $router->post('/consultant/client/create-complete','ConsultantController@createCompleteClient');
+    $router->post('/consultant/client/debt/create','ConsultantController@createClientDebt');
+    $router->post('/consultant/client/debt/update','ConsultantController@updateClientDebt');
+    $router->post('/consultant/make-appointment','ConsultantController@makeAppointment');
+    $router->post('/consultant/company/manage','ConsultantController@manageCompany');
+    $router->post('/consultant/client/next-step','ConsultantController@nextClientStatus');
+    $router->post('/consultant/client/income/update','IncomesController@updateClientIncomes');
+    $router->post('/consultant/client/outcome/update','IncomesController@updateClientOutcomes');
+    $router->post('/consultant/sign','ConsultantController@toSign');
+
+    /* download */
+    $router->get('/document/file-download','FileController@clientFile');
+    $router->get('/document/signatures','FileController@checkSignatures');
+    $router->get('/document/html-preview','FileController@htmlPreview');
+    $router->get('/document/pdf-download','FileController@formPDF');
+
+});

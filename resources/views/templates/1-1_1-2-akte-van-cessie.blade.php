@@ -192,7 +192,7 @@
     
   <tr>
     <td colspan="3">Datum:</td>
-    <td colspan="2"><!--date_format(doc_date_time)--></td>
+    <td colspan="2"><!--date_signed_by_client--></td>
     <td colspan="1"></td>
     <td colspan="3">Plaats:</td>
     <td colspan="2">De Bilt</td>

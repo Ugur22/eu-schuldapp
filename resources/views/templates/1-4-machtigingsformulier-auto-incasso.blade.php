@@ -2,7 +2,7 @@
 <table style="font-size: 9px; text-align: justify; " cellspacing="2" >
 
   <tr>
-    <td colspan="11" style="text-align: center; "><img src="<!--http://api.arsus.nl/images/logo.jpg-->" width="150"><br/>
+    <td colspan="11" style="text-align: center; "><img src="http://api.arsus.nl/images/logo.jpg" width="150"><br/>
       Dorpsstraat vo Steenstraat 12, 3732 HJ De Bilt<br/>
       Bemiddeling & Inkomensbeheer
     </td>
@@ -185,7 +185,7 @@
 
   <tr>
     <td colspan="3">Datum:</td>
-    <td colspan="2"><!--date_format(doc_date_time)--></td>
+    <td colspan="2"><!--date_signed_by_client--></td>
     <td colspan="6"></td>
   </tr>
 
