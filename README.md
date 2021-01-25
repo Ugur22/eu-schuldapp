@@ -5,7 +5,6 @@
 `/locations`
 **get locations/place name**
 
-<<<<<<< HEAD
 `/client/status`
 **clients' statusses**
 
@@ -13,22 +12,13 @@
 **get company types: debt collector, employer, enz**
 
 ##POST
-=======
-## POST
-
-### GENERAL
->>>>>>> 53cc5b3e248b2e61ef8489de376b092cedd3b7fa
 
 `/login`
 email, password
 
-<<<<<<< HEAD
 ##With token
 ###client
 ##GET
-=======
-### CLIENT SIDE
->>>>>>> 53cc5b3e248b2e61ef8489de376b092cedd3b7fa
 
 `/client`
 **get account**
@@ -85,7 +75,6 @@ email, password
 *request: document_id, author, signature (image file)*
 **upload signature**
 
-<<<<<<< HEAD
 ###consultant
 ##GET
 `/consultant/company`
@@ -100,9 +89,6 @@ email, password
 
 `/consultant/companies`
 **get company non-employer list (debt collector, debtor, enz)**
-=======
-### CONSULTANT SIDE
->>>>>>> 53cc5b3e248b2e61ef8489de376b092cedd3b7fa
 
 `/consultant/clients`
 **get client list**
@@ -165,26 +151,16 @@ email, password
 
 ##POST
 `/consultant/doc/add`
-<<<<<<< HEAD
 *request: client_id, debt_id, title, template_id (only for form or debtor doc), file (for upload)*
 **add new document form/debtor/other**
-=======
-*required: email, password, client_id, title*
-*optional: main (1 or none), file (if upload file), template_id (if pdf otherwise 0)*
-**create/add document for client, could be file/picture or pdf from template.**
->>>>>>> 53cc5b3e248b2e61ef8489de376b092cedd3b7fa
 
 `/consultant/client/create`
 *request: email, password, confirm_password, gender, initial, firstname, lastname, card_id, birth_date, phonenumber, address, place_id*
 **create client (only required fields)**
 
-<<<<<<< HEAD
 `/consultant/client/create-complete`
 *request: id (by update), email, password, confirm_password, gender, initial, firstname, lastname, card_id, birth_date, phonenumber, address, social_security_id, birth_place, nationality, id_type, id_card_number, marital_status, partnership_reg, address, postal_code, place_id, bank_account, employer_id, authorized_date, partner_social_security_id, partner_initial, partner_firstname, partner_lastname, partner_gender, partner_birth_date, partner_birth_place, partner_nationality, partner_id_type, partner_id_card_number, children[fullname, birth_date, id (by update)]*
 **create/update client details (complete fields)**
-=======
-### DOWNLOAD
->>>>>>> 53cc5b3e248b2e61ef8489de376b092cedd3b7fa
 
 `/consultant/client/debt/create`
 *request: client_id, reference_id, debtor_id, due_date, preference, terms, percentage, debt_amount, total_redeemed, redeem_per_month, total_redemption, notes*
@@ -236,9 +212,3 @@ email, password
 *request: document_id, client_id (for consultant)*
 **Pdf form preview**
 
-<<<<<<< HEAD
-=======
-`/document/check-signatures`
-*request: email, password, document_id*
-**Check if document complete signed, or who need to sign**
->>>>>>> 53cc5b3e248b2e61ef8489de376b092cedd3b7fa
