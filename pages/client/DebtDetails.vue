@@ -92,7 +92,7 @@ export default {
 		fetchData(`client/docs/debt/?id=${this.navigation.getParam('debtID')}`).then(val => {
 		this.dataIsReady = true;
 			this.Debt = val;
-			});
+			}); 
 	},
   methods: {
     goBack: function () {

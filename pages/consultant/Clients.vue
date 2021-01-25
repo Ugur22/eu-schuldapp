@@ -32,15 +32,20 @@
 		</nb-list-item>
 	  </nb-list>
 	  <nb-list v-if="dataIsReady">
-		<nb-list-item v-for="client in Clients" :key="client.id" :on-press="() => detailClient(client.id)">
-		  <nb-left>
+		<nb-list-item v-for="client in Clients" :key="client.id" >
+		  <nb-left >
 			<nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
 		  </nb-left>
 		  <nb-body >
-				<nb-text class="text">{{client.status.status}}</nb-text>
+				<nb-button :disabled="client.status.status == 'Compleet' ? true : false" iconRight transparent :on-press="() => confirmNextStep(client.id)" >
+					<nb-text  :class="client.status.status == 'Compleet' ? 'disabled': 'text'">{{client.status.status}}</nb-text>
+					<nb-icon v-if="client.status.status !== 'Compleet'" name="arrow-dropright" :style="{ fontSize: 28, color: '#0078ae'}" />
+				</nb-button>
 		  </nb-body>
-		  <nb-right>
-			<nb-icon class="text" name="arrow-forward" />
+		  <nb-right :on-press="() => detailClient(client.id)">
+				<nb-button iconRight transparent :on-press="() => detailClient(client.id)" >
+				<nb-icon class="text" name="arrow-forward" />
+			</nb-button>
 		  </nb-right>
 		</nb-list-item>
 	  </nb-list>
@@ -77,10 +82,14 @@
 .header-text {
   font-weight: bold;
 }
+
+.disabled {
+	color: grey;
+}
 </style>
 
 <script>
-import Modal from 'react-native-modal';
+import { Alert } from "react-native";
 import FooterNav from '../../included/Footer';
 import FileClient from './FileClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -99,18 +108,64 @@ export default {
 			isModalVisible: false,
 			Clients: {},
 			dataIsReady: false,
+			clientStatus: ''
 		};
   },
   created() {
 	},
 	mounted() {
 		fetchData(`consultant/clients`).then(val => {
-			let that = this;
 			this.dataIsReady = true;
 			this.Clients = val;
-			});
+		});
 	},
   methods: {
+		confirmNextStep: function(clientID){
+					Alert.alert(
+						'Weet u het zeker?',
+						'bevestig volgende stap',
+						[
+							{
+								text: 'Nee',
+								style: 'cancel'
+							},
+							{ text: 'Ja', onPress: () => this.clientNextStep(clientID) }
+						],
+						{ cancelable: false }
+					);
+		},
+		clientNextStep: async function (clientID) {
+			let value = '';
+			try {
+				value = await AsyncStorage.getItem('login');
+				this.user = JSON.parse(value);
+			} catch (error) {
+				// Error retrieving data
+				console.log(error.message);
+			}
+			try {
+				let response = await fetch(`http://api.arsus.nl/consultant/client/next-step?client_id=${clientID}`, {
+					method: 'POST',
+					headers: {
+					accept: 'application/json',
+					'Authorization': `Bearer ${this.user.token}`
+					}
+				});
+				let responseJson = await response.json();
+				if (responseJson.success) {
+						fetchData(`consultant/clients`).then(val => {
+							this.dataIsReady = true;
+							this.Clients = val;
+					});
+					this.dataIsReady = true;
+				} else {
+					console.log(responseJson);
+					}
+			} catch (error) {
+				console.log(error);
+				console.error(error);
+			}
+		},
 	goBack: function () {
 	  this.navigation.goBack();
 	},
