@@ -92,8 +92,7 @@
 import { Alert } from "react-native";
 import FooterNav from '../../included/Footer';
 import FileClient from './FileClient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {fetchData} from "../utils/fetch";
+import {fetchData,PostData} from "../utils/fetch";
 
 export default {
   props: {
@@ -129,42 +128,17 @@ export default {
 								text: 'Nee',
 								style: 'cancel'
 							},
-							{ text: 'Ja', onPress: () => this.clientNextStep(clientID) }
+							{ text: 'Ja', onPress: () => 
+									PostData(`consultant/client/next-step?client_id=${clientID}`).then(val => {
+										fetchData(`consultant/clients`).then(val => {
+											this.dataIsReady = true;
+											this.Clients = val;
+									});
+								})
+							}
 						],
 						{ cancelable: false }
 					);
-		},
-		clientNextStep: async function (clientID) {
-			let value = '';
-			try {
-				value = await AsyncStorage.getItem('login');
-				this.user = JSON.parse(value);
-			} catch (error) {
-				// Error retrieving data
-				console.log(error.message);
-			}
-			try {
-				let response = await fetch(`http://api.arsus.nl/consultant/client/next-step?client_id=${clientID}`, {
-					method: 'POST',
-					headers: {
-					accept: 'application/json',
-					'Authorization': `Bearer ${this.user.token}`
-					}
-				});
-				let responseJson = await response.json();
-				if (responseJson.success) {
-						fetchData(`consultant/clients`).then(val => {
-							this.dataIsReady = true;
-							this.Clients = val;
-					});
-					this.dataIsReady = true;
-				} else {
-					console.log(responseJson);
-					}
-			} catch (error) {
-				console.log(error);
-				console.error(error);
-			}
 		},
 	goBack: function () {
 	  this.navigation.goBack();
