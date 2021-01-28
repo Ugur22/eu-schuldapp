@@ -105,12 +105,12 @@ export default {
 					headers: {
 						Accept: 'application/json',
 						'Content-type': 'multipart/form-data',
-						Authorization: `Bearer ${this.$root.user.token}`,
+						Authorization: `Bearer ${that.$root.user.token}`,
 					},
 					}).then(function(response){
 
 				fetchData(`document/signatures?document_id=
-					${that.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
+					${that.navigation.getParam('docID')}`,that.$root.user.token).then(val => {
 						that.singatureStatus = val.signature;
 						that.Amountsignatures = val.need_signature_by;
 						that.dataIsReady = true;

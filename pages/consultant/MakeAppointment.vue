@@ -1,6 +1,6 @@
 <template>
   <nb-container>
-   <nb-header :style="{backgroundColor:'#0078ae'}">
+   <nb-header :style="styles.background">
       <nb-left>
         <nb-button transparent :on-press="goBack">
           <nb-icon name="arrow-back" />
@@ -12,23 +12,34 @@
     </nb-header>
 		<Agenda
 			:minDate="formatDateReverse(minimumDate)"
-			 :renderEmptyDate="renderEmptyDate"
-			 :renderItem="(item) => renderItems(item)"
-			 :enableSwipeMonths="true"
-			  :items="testItems"
-				:style="{     borderWidth: 1,
-    borderColor: 'gray',
-    height: 350 }"
-
+			:renderEmptyDate="renderEmptyDate"
+			:renderItem="(item) => renderItems(item)"
+			:enableSwipeMonths="true"
+			:onDayPress="(day)=>{console.log(day.dateString)}"
+			:items="appointments"
+			:style="styleAppointments.agenda"
+			:theme="{
+				backgroundColor:'#fff',
+				calendarBackground:'#fff',
+				agendaDayTextColor: '#fff',
+				dayTextColor:'#0078ae',
+				agendaTodayColor:'#0078ae',
+				agendaDayNumColor: '#0078ae',
+				agendaKnobColor: '#0078ae',
+				textSectionTitleColor:'#0078ae',
+				selectedDayBackgroundColor: '#0078ae',
+				dotColor: '#0078ae',
+				dayTextColor: '#2d4150',
+  		}"
 		/>
     <nb-content padder>
-      <nb-card> 
+      <nb-card transparent> 
         <nb-card-item header>
           <nb-text>Afspraak maken met {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} </nb-text>
         </nb-card-item>
         <nb-card-item>
           <nb-body>
-          <!-- <nb-body>
+          <nb-body>
             <nb-item :error="(!title.required)" floatingLabel>
               <nb-label>Title</nb-label>
               <nb-input v-model="title" />
@@ -44,53 +55,26 @@
               placeholder="gemeente"
               :selectedValue="selectedLocation"
               :onValueChange="onLocationChange">
-              <it	em
+              <item
                 v-for="location in locations"
                 :key="location.id"
                 :label="location.name"
                 :value="location.id"/>
             </nb-picker>
         </nb-card-item>
-          </nb-body> -->
-            <!-- <nb-text :style="{ fontSize: 20 }">{{ formatDay(date)}}</nb-text>
-            <view :style="{ flexDirection:'row', paddingTop:10 }">
-              <nb-text :style="{ fontSize: 30 }">{{ formatDate(date) }}</nb-text>
-              <nb-button rounded info :on-press="showDatepicker" :style="{ marginLeft: 10,backgroundColor:'#0078ae' }">
-                <nb-icon active name="calendar" />
-              </nb-button>
-            </view> -->
-            <!-- <view :style="{ flexDirection:'row',paddingTop:10 }">
-              <nb-text :style="{ fontSize: 28 }">{{ FormatTime(date)}}</nb-text>
-              <nb-button rounded info :on-press="showTimepicker" :style="{ justifyContent: 'center',marginLeft: 10, alignSelf: 'flex-end',backgroundColor:'#0078ae' }">
-                <nb-icon active name="clock"/>
-              </nb-button>
-            </view> -->
           </nb-body>            
         </nb-card-item>
-        <nb-card-item footer :style="{ flex: 1,  backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }">
-          <!-- <view :style="{ flexDirection:'row' }">
+        <nb-card-item  footer :style="styles.center">
+          <view :style="{ flexDirection:'row' }">
             <nb-button rounded success :on-press="appointmentMake" :style="{marginRight: 5,backgroundColor:'#008551'}">
               <nb-icon active name="checkmark" />
             </nb-button>
             <nb-button rounded danger :on-press="appointmentCancel" :style="{marginLeft: 5}">
               <nb-icon active name="close" />
             </nb-button>
-          </view> -->
+          </view>
         </nb-card-item>
       </nb-card>
-      <view>
-        <date-time-picker
-          v-if="show"
-          testID="dateTimePicker"
-          :value="date"
-          :mode="mode"
-          :is24Hour=true
-          display="default"
-          :minimumDate="minimumDate"
-          :minuteInterval="10"
-          :onChange="getDateTime"
-        />
-      </view>
     </nb-content>
     <nb-footer>
       <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="appointments"></footer-nav>
@@ -99,32 +83,19 @@
 </template>
 <script>
   import FooterNav from '../../included/Footer';
-  import DateTimePicker from '@react-native-community/datetimepicker';
-  import { Platform,View,Text,TouchableOpacity,StyleSheet,Alert} from 'react-native';
+  import { Platform,View,Text,TouchableOpacity,Alert} from 'react-native';
   import { Picker } from "native-base";
   import AsyncStorage from '@react-native-async-storage/async-storage';
-  import moment from "moment";
   import {formatDate,FormatTime,formatDay,formatDateReverse} from "../utils/dates";
 	import { Toast } from 'native-base';
 	import {fetchData} from "../utils/fetch";
-	import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+	import { Agenda,LocaleConfig} from 'react-native-calendars';
 	import React from 'react'
+	import {styleAppointments,styles} from '../styling/style';
+
+
 	
-	const styles = StyleSheet.create({
-  item: {
-    backgroundColor: 'white',
-    flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17
-  },
-  emptyDate: {
-    height: 15,
-    flex: 1,
-    paddingTop: 30
-  }
-});
+	
   export default {
     props: {
       navigation: {
@@ -132,7 +103,7 @@
       },
       user: {},
     },
-    components: { FooterNav, DateTimePicker,Item: Picker.Item,Agenda },
+    components: { FooterNav,Item: Picker.Item,Agenda },
     data() {
       return {
         date: this.addDays(1),
@@ -148,32 +119,28 @@
 				formatDay,
 				formatDateReverse,
 				appointments: {},
-				testItems:{
-					'2021-01-29': [{name: '10:00: 11:00 - ugur ertas'},{name: '11:00-12:00'}],
-					'2021-01-27': [{name: 'item 2 - any js object'}],
-					'2021-01-28': [{name: 'item 2 - any js object'}],
-					'2021-01-30': [{name: 'afspraak met ugur'}],
-  			}
+				styles,
+				styleAppointments
       };
     },
-    created() {
-			moment.locale('nl'); 
-		},
 		mounted() {
+
+			LocaleConfig.locales['nl'] = {
+				monthNames: ['januari','februari','maart','april','mei','juni','juli','augustus','September','oktober','November','december'],
+				monthNamesShort: ['jan.','feb.','mrt','apr','mei','jun','jul.','aug','sep.','okt.','nov.','dec'],
+				dayNames: ['maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag','zondag'],
+				dayNamesShort: ['ma','di','wo','do','vr','za','zo'],
+				today: 'vandaag'
+			};
+
+			LocaleConfig.defaultLocale = 'nl';
+			
 			fetchData(`locations`,this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.locations = val;
 			});
-			fetchData('consultant/appointments',this.$root.user.token).then(val => {
+			fetchData('appointment-dates',this.$root.user.token).then(val => {
 				this.dataIsReady = true; 
-				let that = this;
-				val.map(function(appointment){
-				return {
-					[formatDateReverse(appointment.event_date)]:
-								[{name: appointment.title}]
-						}
-
-			})
-			// console.log(this.appointments);
+				this.appointments = val;
 		});
 	},
     methods: {
@@ -182,21 +149,22 @@
 			},
 			renderEmptyDate: function() {
 				return (
-					 <View style={styles.emptyDate}>
-						<Text>This is empty date!</Text>
+					 <View style={styleAppointments.emptyDate}>
+						<Text>This is empty date</Text>
 					</View>
 				);
 			},
 			renderItems: function(item) {
 				return (
-      <TouchableOpacity
-        style={[styles.item, {height: item.height}]}
-        onPress={() => Alert.alert(item.name)}
-      >
-					<View >
-						<Text>{item.name}</Text>
-					</View>
-					 </TouchableOpacity>
+      	<TouchableOpacity
+					style={[styleAppointments.item, {height: item.height}]}
+					onPress={() => Alert.alert(item.client)}>
+						<View >
+							<Text style={{color:'#fff'}}>{item.client}</Text>
+							<Text style={{color:'#fff'}}>{item.time}</Text>
+							<Text style={{color:'#fff'}}>{item.notes}</Text>
+						</View>
+					</TouchableOpacity>
 				);
 			},
       getDateTime: function (event, selectedDate) {

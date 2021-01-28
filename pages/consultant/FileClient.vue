@@ -220,8 +220,6 @@ import { Picker } from 'native-base';
 import FooterNav from '../../included/Footer';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
-import Modal from 'react-native-modal';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'native-base';
 import * as ImageManipulator from 'expo-image-manipulator';
 import {fetchData} from "../utils/fetch";

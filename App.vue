@@ -28,12 +28,8 @@
   Vue.component("ionicons", Ionicons);
   Vue.use(VueNativeBase);
 
-  import {
-    createAppContainer,
-    createStackNavigator,
-	} from "vue-native-router";
+  import {createAppContainer,createStackNavigator,} from "vue-native-router";
 	import {getUser} from "./pages/utils/fetch";
-
 
 	// Base of the app
   import UserStart from "./pages/Login.vue";
@@ -41,7 +37,6 @@
 
 	// Resuable components for clients and consultants	
   import OtherDocsDetailsScreen from "./pages/components/OtherDocsDetails";
-
 
 	// Client components
   import AccountScreen from "./pages/client/Account.vue";
@@ -164,18 +159,16 @@
 		mounted() {
 			getUser().then(val => {
 				// got value here
-				console.log(val);
 				if(val != null){
 					this.user = val;
 					this.loggedIn = true;
-						console.log(val);
 				}
 
 			}).catch(e => {
 				// error
 				console.log(e);
 			});
-  },
+  	},
     methods: {
        loadFonts: async function () {
         try {

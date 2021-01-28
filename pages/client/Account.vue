@@ -25,25 +25,25 @@
           <nb-body>
             <nb-card-item >
               <nb-left >
-                <nb-icon :style="styles.icon" name="person"></nb-icon>
+                <nb-icon :style="styles.text" name="person"></nb-icon>
                 <nb-text :style="styles.text">{{ $root.lang.t('BSN') }}: {{clientData.social_security_id}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="styles.icon" name="pin"></nb-icon>
+                <nb-icon :style="styles.text" name="pin"></nb-icon>
                 <nb-text :style="styles.text">{{clientData.address}}{{ "\n" }}{{clientData.postal_code}} {{clientData.birth_place}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="styles.icon" name="mail"></nb-icon>
+                <nb-icon :style="styles.text" name="mail"></nb-icon>
                 <nb-text :style="styles.text">{{ clientData.user.email }}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="styles.icon" name="call"></nb-icon>
+                <nb-icon :style="styles.text" name="call"></nb-icon>
                 <nb-text :style="styles.text">{{clientData.phonenumber}}</nb-text>
               </nb-left>
 							<nb-right>

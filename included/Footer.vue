@@ -28,7 +28,7 @@
 	</nb-button>
 	<nb-button class="button" :active="activeBtn == 'appointments'" :on-press="() => goToPage('AppointmentsConsultant')">
 	  <nb-icon :active="activeBtn == 'appointments'" name="calendar" />
-	  <nb-text>{{ $root.lang.t('calendar') }}</nb-text>
+	  <nb-text>calendar</nb-text>
 	</nb-button>
   </nb-footer-tab>
 </template>
