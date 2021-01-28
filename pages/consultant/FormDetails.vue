@@ -74,7 +74,7 @@ export default {
 	},
 	mounted() {
 		fetchData(`document/signatures?document_id=
-		${this.navigation.getParam('docID')}`).then(val => {
+		${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
 			let that = this;
 			that.singatureStatus = val.signature;
 			that.Amountsignatures = val.need_signature_by;
@@ -91,39 +91,31 @@ export default {
 			this.author = author;
 			let that = this;
 
-			let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-				this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
 			try {
 
-			let data = new FormData();
+				let data = new FormData();
 
-			data.append('signature', this.signature);
-      data.append('document_id', this.navigation.getParam('docID'));
-      data.append('client_id', this.navigation.getParam('ClientID'));
-			data.append('author', this.author);
+				data.append('signature', this.signature);
+				data.append('document_id', this.navigation.getParam('docID'));
+				data.append('client_id', this.navigation.getParam('ClientID'));
+				data.append('author', this.author);
 
-			
-			const response = await axios.post('http://api.arsus.nl/consultant/sign',data,{
-				headers: {
-					Accept: 'application/json',
-					'Content-type': 'multipart/form-data',
-					Authorization: `Bearer ${this.user.token}`,
-				},
-				}).then(function(response){
+				
+				const response = await axios.post('http://api.arsus.nl/consultant/sign',data,{
+					headers: {
+						Accept: 'application/json',
+						'Content-type': 'multipart/form-data',
+						Authorization: `Bearer ${this.$root.user.token}`,
+					},
+					}).then(function(response){
 
-			fetchData(`document/signatures?document_id=
-				${that.navigation.getParam('docID')}`).then(val => {
-					that.singatureStatus = val.signature;
-					that.Amountsignatures = val.need_signature_by;
-					that.dataIsReady = true;
-					});
-			});
+				fetchData(`document/signatures?document_id=
+					${that.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
+						that.singatureStatus = val.signature;
+						that.Amountsignatures = val.need_signature_by;
+						that.dataIsReady = true;
+						});
+				});
 			} catch (error) {
 				console.error(error);
 			}

@@ -31,7 +31,9 @@
   import {
     createAppContainer,
     createStackNavigator,
-  } from "vue-native-router";
+	} from "vue-native-router";
+	import {getUser} from "./pages/utils/fetch";
+
 
 	// Base of the app
   import UserStart from "./pages/Login.vue";
@@ -65,8 +67,6 @@
 	import FormDetailsScreen from "./pages/consultant/FormDetails";
 	import DebtClientDetailScreen from "./pages/consultant/DebtDetailsClient";
 	import DebtClientScreen from "./pages/consultant/Debts";
-
-  let PageStart;
 
   const StackNavigator = createStackNavigator(
     {
@@ -153,13 +153,29 @@
       return {
         lang: i18n,
         loggedIn: false,
-        isAppReady: false
+				isAppReady: false,
+				user: {}
       };
     },
     components: { AppLoading, Root, AppNavigator, Ionicons, UserStart },
     created() {
       this.loadFonts();
-    },
+		},
+		mounted() {
+			getUser().then(val => {
+				// got value here
+				console.log(val);
+				if(val != null){
+					this.user = val;
+					this.loggedIn = true;
+						console.log(val);
+				}
+
+			}).catch(e => {
+				// error
+				console.log(e);
+			});
+  },
     methods: {
        loadFonts: async function () {
         try {

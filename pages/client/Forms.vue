@@ -43,12 +43,9 @@
      font-size: 14;
 }
 </style>
-
 <script>
 import FooterNav from '../../included/Footer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
-import { WebView } from 'react-native-webview';
 import * as Print from 'expo-print';
 import {fetchData} from "../utils/fetch";
 
@@ -71,38 +68,26 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`client/docs/forms`).then(val => {
+		fetchData(`client/docs/forms`,this.$root.user.token).then(val => {
 		this.dataIsReady = true;
 			this.clientForms = val;
 			});
 	},
-  components: { FooterNav,"web-view": WebView },
+  components: { FooterNav},
   methods: {
 		showPDF: async function (id,clientID) {
 			this.isModalVisible = true;
 			this.buttonOff = true;
 			 setTimeout(() => this.buttonOff = false, 2000);
 
-			 
-
-			let that = this;
-			let value = '';
-			try {
-			value = await AsyncStorage.getItem('login');
-			this.user = JSON.parse(value); 
-			} catch (error) {
-			// Error retrieving data
-			console.log(error.message);
-			}
-
 			try {
 				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${clientID}
-				&document_id=${id}`, {
+				&document_id=${id}`,{
 					method: 'GET',
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
+            'Authorization': `Bearer ${this.$root.user.token}`
           },
 				});
 
@@ -118,38 +103,6 @@ export default {
 			console.error(error);
 			}
 		},
-    getForms: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
-
-      try {
-        let response = await fetch('http://api.arsus.nl/client/docs/forms', {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-             'Authorization': `Bearer ${this.user.token}`
-          },
-        });
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-          this.clientForms = responseJson.results;
-          this.dataIsReady = true;
-        } else {
-          console.log(responseJson);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error(error);
-      }
-    },
     goBack: function () {
       this.navigation.goBack();
     },

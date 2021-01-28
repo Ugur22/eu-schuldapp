@@ -49,7 +49,6 @@
 
 <script>
   import FooterNav from '../../included/Footer';
-  import moment from "moment";
 
   export default {
     props: {
@@ -60,7 +59,6 @@
     components: { FooterNav },
     data() {
       return {
-        conslutant: 'Erik Jansen'
       };
     },
     methods: {

@@ -16,16 +16,12 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-card v-if="dataIsReady" class="debtCard"
+      <nb-card v-if="dataIsReady" transparent
         :style="{
-          marginLeft: 10,
-          marginRight: 10,
-          marginTop: 10,
-          marginBottom: 10,
           backgroundColor: '#0078ae'
         }"
       >
-        <nb-card-item rounded :style="{ backgroundColor: '#0078ae' }">
+        <nb-card-item rounded >
           <nb-body>
             <nb-grid class="marginBottom">
               <nb-col>
@@ -40,7 +36,7 @@
             <nb-grid class="marginBottom">
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('status') }}</nb-text>
-                <nb-text class="detailText">Bedrag Akkoord</nb-text>
+                <nb-text class="detailText">{{Debt.status.status}}</nb-text>
               </nb-col>
               <nb-col>
                 <nb-text class="headerText">{{ $root.lang.t('total_repaid') }}</nb-text>
@@ -96,7 +92,7 @@ export default {
   created() {
 	},
 	mounted() {
-			fetchData(`consultant/client/debt/details?id=${this.navigation.getParam('debtID')}&client_id=${this.navigation.getParam('ClientID')}`).then(val => {
+			fetchData(`consultant/client/debt/details?id=${this.navigation.getParam('debtID')}&client_id=${this.navigation.getParam('ClientID')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 				this.Debt = val;
 				});
@@ -110,20 +106,17 @@ export default {
 </script>
 <style>
 .headerText {
-  color: white;
+  color: #0078ae;
   font-weight: bold;
   font-size: 20px;
 }
 .detailText {
-  color: white;
+  color: #0078ae;
   font-size: 16px;
 }
 
 .marginBottom {
   margin-bottom: 20px;
-}
-.debtCard {
-  border-radius: 15px;
 }
 
 

@@ -46,7 +46,7 @@ export default {
 	},
 	mounted() {
 		fetchData(`document/file-download?client_id=${this.navigation.getParam('ClientID')}
-				&document_id=${this.navigation.getParam('docID')}`,'file').then(val => {
+				&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token,'file').then(val => {
 			let that = this;
 			this.dataIsReady = true;
 			that.otherDoc = val;

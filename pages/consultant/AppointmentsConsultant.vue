@@ -116,9 +116,9 @@ export default {
     };
   },
   mounted() {
-		  fetchData('consultant/appointments').then(val => {
+		  fetchData('consultant/appointments',this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.appointments = val;});
-			fetchData('consultant/clients').then(val => {
+			fetchData('consultant/clients',this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.Clients = val;});
   },
   components: { FooterNav },

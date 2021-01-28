@@ -113,7 +113,7 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`consultant/clients`).then(val => {
+		fetchData(`consultant/clients`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 			this.Clients = val;
 		});
@@ -130,7 +130,7 @@ export default {
 							},
 							{ text: 'Ja', onPress: () => 
 									PostData(`consultant/client/next-step?client_id=${clientID}`).then(val => {
-										fetchData(`consultant/clients`).then(val => {
+										fetchData(`consultant/clients`,this.$root.user.token).then(val => {
 											this.dataIsReady = true;
 											this.Clients = val;
 									});

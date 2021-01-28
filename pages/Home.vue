@@ -7,8 +7,8 @@
           </nb-button>
         </nb-right>
       </nb-header>
-    <view v-if="userType === 'client'" :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20,marginTop:-70 }">
-          <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{name}}</nb-text>
+    <view v-if="$root.user.type === 'client'" :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20,marginTop:-70 }">
+          <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{$root.user.name}}</nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Account')">
           <nb-text class="text-btn">{{ $root.lang.t('my_account') }}</nb-text>
         </nb-button>
@@ -20,7 +20,7 @@
         </nb-button>
     </view>
     <view v-else :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20, marginTop:-110  }">
-      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{name}}</nb-text>
+      <nb-text :style="{ padding: 10, fontSize: 22 }">{{ $root.lang.t('welcome') }} {{$root.user.name}}</nb-text>
         <nb-button full info class="btns" :on-press="() => goToPage('Clients')">
           <nb-text class="text-btn">{{ $root.lang.t('clients') }}</nb-text>
         </nb-button>
@@ -41,7 +41,6 @@
 </template>
 <script>
 
-import { NavigationActions } from 'vue-native-router';
 import { AsyncStorage } from "react-native";
 import FooterNav from '../included/Footer';
 
@@ -51,33 +50,13 @@ export default {
     navigation: {
       type: Object
     },
-    userType: '',
-    name:''
   },
   data() {
     return {
     };
   },
-    computed: {
-  },
-  mounted() {
-    this.getUser().then(val => {
-      // got value here
-      this.userType = val.type;
-      this.name = val.name
-    }).catch(e => {
-      // error
-      console.log(e);
-    });
-  },
   components: { FooterNav },
   methods: {
-    getUser: async function () {
-      let value = '';
-      value = await AsyncStorage.getItem('login');
-      value = JSON.parse(value);
-      return value;
-    },
     goToPage: function (page) {
       this.navigation.navigate(page);
     },
@@ -88,7 +67,6 @@ export default {
   },
 };
 </script>
-
 <style>
 .btns {
   padding:10px;

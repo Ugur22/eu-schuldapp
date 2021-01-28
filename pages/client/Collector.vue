@@ -65,7 +65,7 @@ export default {
     created() {
 	},
 	mounted() {
-		fetchData(`client/docs/debtors`).then(val => {
+		fetchData(`client/docs/debtors`,this.$root.user.token).then(val => {
 		this.dataIsReady = true;
 			this.clientCollectors = val;
 			});

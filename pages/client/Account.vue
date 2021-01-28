@@ -18,33 +18,33 @@
           header
           bordered
           :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
-          <nb-text class="text-account header"
+          <nb-text :style="styles.header"
             >{{clientData.firstname}} {{clientData.lastname}}</nb-text >
         </nb-card-item>
         <nb-card-item>
           <nb-body>
             <nb-card-item >
               <nb-left >
-                <nb-icon :style="{ color: '#0078ae' }" name="person"></nb-icon>
-                <nb-text class="text-account">{{ $root.lang.t('BSN') }}: {{clientData.social_security_id}}</nb-text>
+                <nb-icon :style="styles.icon" name="person"></nb-icon>
+                <nb-text :style="styles.text">{{ $root.lang.t('BSN') }}: {{clientData.social_security_id}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="{ color: '#0078ae' }" name="pin"></nb-icon>
-                <nb-text class="text-account">{{clientData.address}}{{ "\n" }}{{clientData.postal_code}} {{clientData.birth_place}}</nb-text>
+                <nb-icon :style="styles.icon" name="pin"></nb-icon>
+                <nb-text :style="styles.text">{{clientData.address}}{{ "\n" }}{{clientData.postal_code}} {{clientData.birth_place}}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="{ color: '#0078ae' }" name="mail"></nb-icon>
-                <nb-text class="text-account">{{ clientData.user.email }}</nb-text>
+                <nb-icon :style="styles.icon" name="mail"></nb-icon>
+                <nb-text :style="styles.text">{{ clientData.user.email }}</nb-text>
               </nb-left>
             </nb-card-item>
             <nb-card-item >
               <nb-left>
-                <nb-icon :style="{ color: '#0078ae' }" name="call"></nb-icon>
-                <nb-text class="text-account">{{clientData.phonenumber}}</nb-text>
+                <nb-icon :style="styles.icon" name="call"></nb-icon>
+                <nb-text :style="styles.text">{{clientData.phonenumber}}</nb-text>
               </nb-left>
 							<nb-right>
 
@@ -58,7 +58,7 @@
     </nb-content>
     <nb-footer>
       <footer-nav
-        :style="{ backgroundColor: '#0078ae' }"
+        :style="styles.footer"
         activeBtn="account"
       ></footer-nav>
     </nb-footer>
@@ -67,6 +67,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import {fetchData} from "../utils/fetch";
+import {styles} from '../styling/style';
 
 export default {
   props: {
@@ -78,13 +79,14 @@ export default {
   data() {
     return {
      clientData: {},
-      dataIsReady: false,
+			dataIsReady: false,
+			styles
     };
   },
   created() {
 	},
 	mounted() {
-		fetchData(`client`).then(val => {
+		fetchData(`client`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 			this.clientData = val;
 			});
@@ -99,14 +101,3 @@ export default {
   },
 };
 </script>
-<style>
-.text-account {
-  color: #0078ae;
-}
-.header {
-  font-weight: bold;
-  font-size: 24px;
-}
-
-
-</style>

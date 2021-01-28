@@ -94,7 +94,7 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`consultant/client/debts/?client_id=${ this.navigation.getParam('id')}`).then(val => {
+		fetchData(`consultant/client/debts/?client_id=${ this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			let that = this;
 			this.dataIsReady = true;
 			this.clientDebts = val
@@ -111,7 +111,6 @@ export default {
       this.navigation.navigate(page);
     },
 		detailDebt: function (id,clientID) {
-		console.log(id);
       this.navigation.navigate('DebtDetailsClient', {
         debtID: id,
         ClientID:clientID

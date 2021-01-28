@@ -11,9 +11,9 @@
       </nb-body>
     </nb-header>
     <nb-content>
-      <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
+      <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="zoek schuldeiser documenten" />
-      </nb-item> -->
+      </nb-item>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="collector in clientCollectors" :key="collector.id">
           <nb-left>
@@ -53,7 +53,6 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
 
@@ -75,8 +74,7 @@ export default {
     created() {
 	},
 	mounted() {
-		fetchData(`consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`).then(val => {
-			let that = this;
+		fetchData(`consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 			this.clientCollectors = val
 			;});

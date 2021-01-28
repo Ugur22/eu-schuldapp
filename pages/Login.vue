@@ -24,8 +24,7 @@
 
 <script>
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { required, email } from 'vuelidate/lib/validators';
-import { LogBox } from "react-native";
+import { LogBox,Alert } from "react-native";
 
 export default {
   data() {
@@ -34,12 +33,12 @@ export default {
       loaded: false,
       email: '',
       password: '',
-      user: {
-        email: '',
-        password: '',
-        type:''
-      },
-      dataIsReady: false,
+			dataIsReady: false,
+			user: {
+				email: '',
+				password: '',
+				type:''
+		},
     };
   },
   computed: {
@@ -58,6 +57,7 @@ export default {
   components: {},
   methods: {
     login: async function () {
+			let that = this;
       try {
         let response = await fetch('http://api.arsus.nl/login', {
           method: 'POST',
@@ -67,7 +67,7 @@ export default {
           },
           body: JSON.stringify({
             email: this.email,
-            password: this.password,
+						password: this.password,
           }),
         });
 
@@ -89,14 +89,27 @@ export default {
             name:nameUser
           };
 
-          AsyncStorage.setItem('login', JSON.stringify(this.user), () => {
+          AsyncStorage.setItem('login', JSON.stringify(that.user), () => {
             AsyncStorage.mergeItem('login', JSON.stringify(user_updated));
-          });
+					});
+					
 
+				this.$root.user = user_updated;
+				console.log(this.$root.user );
           this.$root.loggedIn = true; 
 
         } else {
-          alert('De combinatie van het e-mailadres en het wachtwoord is niet bij ons bekend');
+					Alert.alert(
+						'login mislukt',
+						'De combinatie van het e-mailadres en het wachtwoord is niet bij ons bekend',
+						[
+							{
+								text: 'ok',
+								style: 'cancel'
+							}
+						],
+						{ cancelable: false }
+					);
         }
       } catch (error) {
          AsyncStorage.removeItem('login');

@@ -16,6 +16,10 @@
 			 :renderItem="(item) => renderItems(item)"
 			 :enableSwipeMonths="true"
 			  :items="testItems"
+				:style="{     borderWidth: 1,
+    borderColor: 'gray',
+    height: 350 }"
+
 		/>
     <nb-content padder>
       <nb-card> 
@@ -93,17 +97,10 @@
     </nb-footer>
   </nb-container>
 </template>
-<style lang="stylus" scoped>
-  emptyDate: {
-    height: 15,
-    flex: 1,
-    paddingTop: 30
-  }
-</style>
 <script>
   import FooterNav from '../../included/Footer';
   import DateTimePicker from '@react-native-community/datetimepicker';
-  import { Platform,View,Text} from 'react-native';
+  import { Platform,View,Text,TouchableOpacity,StyleSheet,Alert} from 'react-native';
   import { Picker } from "native-base";
   import AsyncStorage from '@react-native-async-storage/async-storage';
   import moment from "moment";
@@ -112,7 +109,22 @@
 	import {fetchData} from "../utils/fetch";
 	import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 	import React from 'react'
-  
+	
+	const styles = StyleSheet.create({
+  item: {
+    backgroundColor: 'white',
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17
+  },
+  emptyDate: {
+    height: 15,
+    flex: 1,
+    paddingTop: 30
+  }
+});
   export default {
     props: {
       navigation: {
@@ -137,7 +149,7 @@
 				formatDateReverse,
 				appointments: {},
 				testItems:{
-					'2021-01-29': [{name: 'item 1 - any js object'}],
+					'2021-01-29': [{name: '10:00: 11:00 - ugur ertas'},{name: '11:00-12:00'}],
 					'2021-01-27': [{name: 'item 2 - any js object'}],
 					'2021-01-28': [{name: 'item 2 - any js object'}],
 					'2021-01-30': [{name: 'afspraak met ugur'}],
@@ -145,17 +157,17 @@
       };
     },
     created() {
-				moment.locale('nl'); 
+			moment.locale('nl'); 
 		},
 		mounted() {
-			fetchData(`locations`).then(val => {
+			fetchData(`locations`,this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.locations = val;
 			});
-			fetchData('consultant/appointments').then(val => {
+			fetchData('consultant/appointments',this.$root.user.token).then(val => {
 				this.dataIsReady = true; 
 				let that = this;
 				val.map(function(appointment){
-				return that.appointments = {
+				return {
 					[formatDateReverse(appointment.event_date)]:
 								[{name: appointment.title}]
 						}
@@ -170,16 +182,21 @@
 			},
 			renderEmptyDate: function() {
 				return (
-					<View class="emptyDate">
+					 <View style={styles.emptyDate}>
 						<Text>This is empty date!</Text>
 					</View>
 				);
 			},
 			renderItems: function(item) {
 				return (
+      <TouchableOpacity
+        style={[styles.item, {height: item.height}]}
+        onPress={() => Alert.alert(item.name)}
+      >
 					<View >
 						<Text>{item.name}</Text>
 					</View>
+					 </TouchableOpacity>
 				);
 			},
       getDateTime: function (event, selectedDate) {

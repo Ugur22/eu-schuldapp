@@ -94,7 +94,7 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`client/docs/debts`).then(val => {
+		fetchData(`client/docs/debts`,this.$root.user.token).then(val => {
 			let that = this;
 			this.dataIsReady = true;
 			this.clientDebts = val

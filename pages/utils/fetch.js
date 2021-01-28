@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export async function fetchData(url,datatype='') {
+export async function fetchData(url,usertoken,datatype='') {
 
 		let responseJson;
+
 		let value = '';
-		let user = {};
-    try {
-      value = await AsyncStorage.getItem('login');
-      user = JSON.parse(value);
-    } catch (error) {
-      // Error retrieving data
-      console.log(error.message);
+		try {
+			value = await usertoken;
+
+		} catch (error) {
+			// Error retrieving data
+			console.log(error.message);
 		}
 
     try {
@@ -19,7 +19,7 @@ export async function fetchData(url,datatype='') {
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
-           'Authorization': `Bearer ${user.token}`
+           'Authorization': `Bearer ${usertoken}`
         },
       });
 

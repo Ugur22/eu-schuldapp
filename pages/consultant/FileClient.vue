@@ -263,23 +263,15 @@ export default {
 	},
 	mounted() {
 		fetchData(`consultant/client?id=${this.navigation.getParam(
-					'clientID')}`).then(val => {
+					'clientID')}`,this.$root.user.token).then(val => {
 		this.dataIsReady = true; this.Client = val;});
 		fetchData(`consultant/client/templates?client_id=${this.navigation.getParam(
-            'clientID')}&type=${this.selectedfileType}`).then(val => {
+            'clientID')}&type=${this.selectedfileType}`,this.$root.user.token).then(val => {
 		this.dataIsReady = true; this.selections = val;});
   },
   components: { FooterNav, Camera, Item: Picker.Item },
   methods: {
 		clientTemplates:  async function(){
-			let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
 
       try {
         let response = await fetch(
@@ -291,7 +283,7 @@ export default {
             headers: {
               accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.user.token}`,
+              Authorization: `Bearer ${this.$root.user.token}`,
             },
           }
         );
@@ -325,21 +317,14 @@ export default {
       return data;
     },
     uploadImage: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
+
 			try {
 				let response = await fetch('http://api.arsus.nl/consultant/doc/add', {
 					method: 'POST',
 					headers: {
 						Accept: 'application/json',
 						'Content-type': 'multipart/form-data',
-						Authorization: `Bearer ${this.user.token}`,
+						Authorization: `Bearer ${this.$root.user.token}`,
 					},
 					body: this.createFormData(this.finalPic, {
 						title: this.title,
@@ -364,21 +349,14 @@ export default {
 			}
 		},
 		uploadDoc: async function () {
-			let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
+
 			try {
 				let response = await fetch('http://api.arsus.nl/consultant/doc/add', {
 					method: 'POST',
 					headers: {
 						Accept: 'application/json',
 						'Content-type': 'application/json',
-						Authorization: `Bearer ${this.user.token}`,
+						Authorization: `Bearer ${this.$root.user.token}`,
 					},
 					body: JSON.stringify({
 						title: this.title ? this.title : this.selectedDocName,

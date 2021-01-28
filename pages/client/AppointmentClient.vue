@@ -69,7 +69,7 @@
     created() {
 		},
 		mounted() {
-			fetchData(`client/appointments`).then(val => {
+			fetchData(`client/appointments`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 				this.Appointment = val[0];
 				});

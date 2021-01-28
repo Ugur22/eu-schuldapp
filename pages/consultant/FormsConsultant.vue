@@ -74,7 +74,7 @@ export default {
   created() {
   },
  	mounted() {
-		fetchData(`consultant/doc/forms?client_id=${this.navigation.getParam('id')}`).then(val => {
+		fetchData(`consultant/doc/forms?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true; this.clientForms = val;});
   },
   components: { FooterNav},

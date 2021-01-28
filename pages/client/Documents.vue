@@ -184,16 +184,11 @@
       },
       removeLargerImage: function () {
         this.displayLarge = false;
-      },
-      sendFile: function () {
-        alert('sent!');
       }
     }
   }
 </script>
-
 <style>
-
 .btns {
   padding:10px;
   background-color:#0078ae;

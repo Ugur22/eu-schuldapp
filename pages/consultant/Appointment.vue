@@ -67,7 +67,7 @@
 	  };
 	},
   mounted() {
-		  fetchData(`consultant/appointment?id=${this.navigation.getParam('id')}`).then(val => {
+		  fetchData(`consultant/appointment?id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.Appointment = val;});
   },
 	methods: {

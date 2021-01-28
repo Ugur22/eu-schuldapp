@@ -16,16 +16,8 @@
       </nb-right>
     </nb-header>
     <nb-content>
-      <nb-card v-if="dataIsReady" class="debtCard"
-        :style="{
-          marginLeft: 10,
-          marginRight: 10,
-          marginTop: 10,
-          marginBottom: 10,
-          backgroundColor: '#0078ae'
-        }"
-      >
-        <nb-card-item rounded :style="{ backgroundColor: '#0078ae' }">
+      <nb-card v-if="dataIsReady" transparent>
+        <nb-card-item>
           <nb-body  v-for="debt in Debt" :key="debt.id">
             <nb-grid class="marginBottom">
               <nb-col>
@@ -89,7 +81,7 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`client/docs/debt/?id=${this.navigation.getParam('debtID')}`).then(val => {
+		fetchData(`client/docs/debt/?id=${this.navigation.getParam('debtID')}`,this.$root.user.token).then(val => {
 		this.dataIsReady = true;
 			this.Debt = val;
 			}); 
@@ -103,12 +95,12 @@ export default {
 </script>
 <style>
 .headerText {
-  color: white;
+  color: #0078ae;
   font-weight: bold;
   font-size: 20px;
 }
 .detailText {
-  color: white;
+  color: #0078ae;
   font-size: 16px;
 }
 
