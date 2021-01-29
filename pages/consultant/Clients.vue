@@ -129,7 +129,7 @@ export default {
 								style: 'cancel'
 							},
 							{ text: 'Ja', onPress: () => 
-									PostData(`consultant/client/next-step?client_id=${clientID}`).then(val => {
+									PostData(`consultant/client/next-step?client_id=${clientID}`,this.$root.user.token).then(val => {
 										fetchData(`consultant/clients`,this.$root.user.token).then(val => {
 											this.dataIsReady = true;
 											this.Clients = val;

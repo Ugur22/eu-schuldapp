@@ -192,14 +192,7 @@
       this.selectedLocation = value;
     },
       appointmentMake: async function () {
-      let value = '';
-      try {
-        value = await AsyncStorage.getItem('login');
-        this.user = JSON.parse(value);
-      } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
-      }
+
 
       if(this.title){
         try {
@@ -208,11 +201,9 @@
             headers: {
               accept: 'application/json',
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.user.token}`
+              'Authorization': `Bearer ${this.$root.user.token}`
             },
             body: JSON.stringify({
-              email: this.user.email,
-              password: this.user.password,
               title: this.title,
               notes: this.notes,
               date: this.formatDate(this.date),
@@ -246,7 +237,7 @@
         
       },
       appointmentCancel: function () {
-        this.navigation.navigate('Appointments');
+        this.navigation.navigate('AppointmentsConsultant');
       }
     }
   }

@@ -39,21 +39,22 @@ export async function fetchData(url,usertoken,datatype='') {
     }
 }
 
-export async function PostData(url,datatype='', ) {
+export async function PostData(url,usertoken) {
 	let value = '';
 	try {
-		value = await AsyncStorage.getItem('login');
-		this.user = JSON.parse(value);
+		value = await usertoken;
+
 	} catch (error) {
 		// Error retrieving data
 		console.log(error.message);
 	}
+
 	try {
 		let response = await fetch(`http://api.arsus.nl/${url}/`, {
 			method: 'POST',
 			headers: {
 			accept: 'application/json',
-			'Authorization': `Bearer ${this.user.token}`
+			'Authorization': `Bearer ${usertoken}`
 			}
 		});
 		let responseJson = await response.json();
