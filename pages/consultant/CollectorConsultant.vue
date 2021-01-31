@@ -17,10 +17,10 @@
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="collector in clientCollectors" :key="collector.id">
           <nb-left>
-            <nb-text class="text">{{collector.title}}</nb-text>
+            <nb-text class="text">{{collector.debtor}}</nb-text>
           </nb-left>
           <nb-body>
-            <nb-text class="text">{{formatDate(collector.doc_date_time)}}</nb-text>
+            <!-- <nb-text class="text">{{formatDate(collector.doc_date_time)}}</nb-text> -->
           </nb-body>
         </nb-list-item>
       </nb-list>
@@ -74,7 +74,7 @@ export default {
     created() {
 	},
 	mounted() {
-		fetchData(`consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
+		fetchData(`consultant/doc/debtor-list?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 			this.clientCollectors = val
 			;});

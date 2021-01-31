@@ -15,10 +15,11 @@
 			:renderEmptyDate="renderEmptyDate"
 			:renderItem="(item) => renderItems(item)"
 			:enableSwipeMonths="true"
-			:onDayPress="(day)=>{console.log(day.dateString)}"
+			:onDayPress="(day) =>  getSelectedDate(day)"
+			:onDayChange="(day) =>  getSelectedDate(day)"
 			:items="appointments"
 			:style="styleAppointments.agenda"
-			:theme="{
+			:theme="{ 
 				backgroundColor:'#fff',
 				calendarBackground:'#fff',
 				agendaDayTextColor: '#fff',
@@ -39,7 +40,20 @@
         </nb-card-item>
         <nb-card-item>
           <nb-body>
-          <nb-body>
+						  <nb-card-item floatingLabel>
+					<nb-label>tijd</nb-label>
+            <nb-picker
+              mode="dialog"
+              placeholder="tijd"
+              :selectedValue="selectedTime"
+              :onValueChange="onTimeChange">
+              <item
+                v-for="hour in GetHours()"
+                :key="hour"
+                :label="hour"
+                :value="hour"/>
+            </nb-picker>
+						  </nb-card-item>
             <nb-item :error="(!title.required)" floatingLabel>
               <nb-label>Title</nb-label>
               <nb-input v-model="title" />
@@ -85,17 +99,15 @@
   import FooterNav from '../../included/Footer';
   import { Platform,View,Text,TouchableOpacity,Alert} from 'react-native';
   import { Picker } from "native-base";
-  import AsyncStorage from '@react-native-async-storage/async-storage';
   import {formatDate,FormatTime,formatDay,formatDateReverse} from "../utils/dates";
 	import { Toast } from 'native-base';
 	import {fetchData} from "../utils/fetch";
+	import {GetHours} from "../utils/dates";
 	import { Agenda,LocaleConfig} from 'react-native-calendars';
 	import React from 'react'
 	import {styleAppointments,styles} from '../styling/style';
+	import moment from "moment";
 
-
-	
-	
   export default {
     props: {
       navigation: {
@@ -106,25 +118,26 @@
     components: { FooterNav,Item: Picker.Item,Agenda },
     data() {
       return {
-        date: this.addDays(1),
+        date: this.addDays(0),
         mode: 'date',
         show: false,
         minimumDate: this.addDays(0), 
         title:'',
         notes:'',
         locations: {},
-        selectedLocation: '0',
+				selectedLocation: '0',
+				selectedTime: '0',
         formatDate,
         FormatTime,
 				formatDay,
+				GetHours,
 				formatDateReverse,
 				appointments: {},
 				styles,
-				styleAppointments
+				styleAppointments,
       };
     },
 		mounted() {
-
 			LocaleConfig.locales['nl'] = {
 				monthNames: ['januari','februari','maart','april','mei','juni','juli','augustus','September','oktober','November','december'],
 				monthNamesShort: ['jan.','feb.','mrt','apr','mei','jun','jul.','aug','sep.','okt.','nov.','dec'],
@@ -159,7 +172,7 @@
       	<TouchableOpacity
 					style={[styleAppointments.item, {height: item.height}]}
 					onPress={() => Alert.alert(item.client)}>
-						<View >
+						<View>
 							<Text style={{color:'#fff'}}>{item.client}</Text>
 							<Text style={{color:'#fff'}}>{item.time}</Text>
 							<Text style={{color:'#fff'}}>{item.notes}</Text>
@@ -167,34 +180,24 @@
 					</TouchableOpacity>
 				);
 			},
-      getDateTime: function (event, selectedDate) {
-        let currentDate = selectedDate || date;
-        this.date = currentDate;
-        this.show = Platform.OS === 'ios';
-        
-      },
-      showMode: function (currentMode) {
-        this.show = true;
-        this.mode = currentMode;
-      },
-      showDatepicker: function () {
-        this.showMode('date');
-      },
-      showTimepicker: function () {
-        this.showMode('time');
-      },
       addDays: function (days) {
         let date = new Date();
         date.setDate(date.getDate() + days);
         return date;
-      },
+			},
+			getSelectedDate: function (day){
+				this.date = day.dateString;
+			},
       onLocationChange: function (value) {
-      this.selectedLocation = value;
+			this.selectedLocation = value;
+    },
+      onTimeChange: function (value) {
+      this.selectedTime = value;
     },
       appointmentMake: async function () {
 
-
       if(this.title){
+
         try {
           let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
             method: 'POST',
@@ -206,8 +209,8 @@
             body: JSON.stringify({
               title: this.title,
               notes: this.notes,
-              date: this.formatDate(this.date),
-              time: this.FormatTime(this.date),
+              date: this.formatDateReverse(this.date),
+              time: this.selectedTime,
               client_id: this.navigation.getParam('ClientID'),
               location_id: this.selectedLocation,
             }),
@@ -220,7 +223,7 @@
               notes: this.notes,
               clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
               date: this.formatDate(this.date),
-              time: this.FormatTime(this.date)
+              time: this.FormatTime(this.selectedTime)
             });
           } else {
             console.log(responseJson);

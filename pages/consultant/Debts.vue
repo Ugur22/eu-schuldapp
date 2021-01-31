@@ -72,7 +72,7 @@
 <script>
 import FooterNav from '../../included/Footer';
 import DebtDetailsClient from './DebtDetailsClient';
-import {fetchData,getUser} from "../utils/fetch";
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
