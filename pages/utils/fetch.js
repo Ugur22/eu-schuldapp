@@ -14,21 +14,23 @@ export async function fetchData(url,usertoken,datatype='') {
 		}
 
     try {
-      let response = await fetch(`http://api.arsus.nl/${url}/`, {
+      let response = await fetch(`http://api.arsus.nl/${url}`, {
         method: 'GET',
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
            'Authorization': `Bearer ${usertoken}`
         },
-      });
-
+			});
+		
 			if(datatype == 'file'){
 				responseJson = await response.text();
 			}else {
 				responseJson = await response.json();
+
 			}
       if (responseJson.success ? responseJson.success : responseJson) {
+			
 
         return responseJson.results ?  responseJson.results : responseJson;
       } else {
