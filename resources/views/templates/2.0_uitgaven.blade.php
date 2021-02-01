@@ -18,9 +18,18 @@
 
 </table>
 
+<table cellpadding="3" cellspacing="0" border="0" class="table" width="100%">
+  <tr>
+    <td class="th">Uitgave</td>
+    <td class="th">Instantie</td>
+    <td class="th">Klantnummer</td>
+    <td class="th">Bedrag</td>
+  </tr>
+  <!--client_outcomes-->
+</table>
 <style>
 
-    table {
+    table.table {
       font-size: 9px;
       border: solid 1px #000000;
       border-collapse: collapse;
@@ -34,7 +43,6 @@
     td.group {
       border-top: solid 1px #000000;
       border-bottom: solid 1px #000000;
-      padding: 8px;
       font-weight: bold;
     }
 
@@ -51,5 +59,3 @@
     }
 
 </style>
-
-<!--client_uitcomes-->

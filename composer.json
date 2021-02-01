@@ -8,6 +8,7 @@
         "php": "^7.3|^8.0",
         "barryvdh/laravel-dompdf": "^0.8.7",
         "flipbox/lumen-generator": "^8.2",
+        "illuminate/mail": "^8.25",
         "irazasyed/larasupport": "^1.7",
         "laravel/lumen-framework": "^8.0",
         "tymon/jwt-auth": "^1.0@dev"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Debt;
@@ -9,6 +10,8 @@ use App\Models\Form;
 use App\Models\Place;
 use App\Models\Child;
 use App\Models\Client;
+use App\Models\Income;
+use App\Models\Outcome;
 use App\Models\Company;
 use App\Models\DocHtml;
 use App\Models\DocFile;
@@ -21,8 +24,10 @@ use App\Models\ClientStatus;
 use App\Models\ClientDebtStatus;
 use App\Helpers\TemplateHelpers;
 use App\Helpers\ControllerHelpers;
+use App\Mail\Appointments;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\JWTAuth;
 
@@ -291,6 +296,10 @@ class ConsultantController extends Controller
         if($input['id']){
             $company = Company::find($input['id']);
         }else{
+            $existed = Company::where('name', $input['name'])->count();
+            if($existed){
+                return response()->json(['success' => false, 'message' => 'duplicate entry']);
+            }
             $company = new Company;
         }
 
@@ -314,9 +323,211 @@ class ConsultantController extends Controller
         }
     }
 
+    public function managePlace(Request $request){
+        $input = $request->all();
+        if($input['id']){
+            $place = Place::find($input['id']);
+        }else{
+            $existed = Place::where('name', $input['name'])->count();
+            if($existed){
+                return response()->json(['success' => false, 'message' => 'duplicate entry']);
+            }
+            $place = new Place;
+        }
+
+        $place->name = $input['name'];
+        if($place->save()){
+            return response()->json(['success' => true, 'results' => $place]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'failed']);
+        }
+    }
+
+    public function addPlaces(Request $request){
+        $input = $request->all();
+
+        $places = explode(',', $input['places']);
+        foreach ($places as $key => $value) {
+            $place = new Place;
+            $place->name = trim($value);
+            $place->save();
+        }
+        return response()->json(['success' => true, 'message' => 'places added']);
+    }
+
+    public function manageIncomeTypes(Request $request){
+        $input = $request->all();
+        if($input['id']){
+            $income = Income::find($input['id']);
+        }else{
+            $existed = Income::where('name', $input['name'])->count();
+            if($existed){
+                return response()->json(['success' => false, 'message' => 'duplicate entry']);
+            }
+            $income = new Income;
+            $income->slug = Str::slug($input['name']);
+        }
+
+        $income->name = $input['name'];
+        if($income->save()){
+            return response()->json(['success' => true, 'results' => $place]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'failed']);
+        }
+    }
+
+    public function addIncomesTypes(Request $request){
+        $input = $request->all();
+
+        $incomes = explode(',', $input['incomes']);
+        foreach ($incomes as $key => $value) {
+            $income = new Income;
+            $income->name = trim($value);
+            $income->save();
+        }
+        return response()->json(['success' => true, 'message' => 'incomes added']);
+    }
+
+    public function incomeUp(Request $request){
+        $input = $request->all();
+        $pos = $input['sort'];
+        $upPos = $pos - 1;
+
+        $upper = Income::where('sort', '<', $pos)->orderBy('sort', 'desc')->first();
+        if($upper){
+            $upper->sort = $pos;
+            $upper->save();
+        }
+
+        $incomeUp = Income::find($input['id']);
+        $incomeUp->sort = $upPos;
+        if($incomeUp->save()){
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function incomeDown(Request $request){
+        $input = $request->all();
+        $pos = $input['sort'];
+        $downPos = $pos + 1;
+
+        $downer = Income::where('sort', '>', $pos)->orderBy('sort')->first();
+        if($downer){
+            $downer->sort = $pos;
+            $downer->save();
+        }
+
+        $incomeUp = Income::find($input['id']);
+        $incomeUp->sort = $downPos;
+        if($incomeUp->save()){
+            
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function manageOutcomeTypes(Request $request){
+        $input = $request->all();
+        if($input['id']){
+            $outcome = Outcome::find($input['id']);
+        }else{
+            $existed = Outcome::where('name', $input['name'])->count();
+            if($existed){
+                return response()->json(['success' => false, 'message' => 'duplicate entry']);
+            }
+            $outcome = new Outcome;
+            $outcome->slug = Str::slug($input['name']);
+        }
+
+        $outcome->name = $input['name'];
+        if($outcome->save()){
+            return response()->json(['success' => true, 'results' => $place]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'failed']);
+        }
+    }
+
+    public function addOutcomesTypes(Request $request){
+        $input = $request->all();
+
+        $outcomes = explode(',', $input['outcomes']);
+        foreach ($outcomes as $key => $value) {
+            $outcome = new Outcome;
+            $outcome->name = trim($value);
+            $outcome->save();
+        }
+        return response()->json(['success' => true, 'message' => 'incomes added']);
+    }
+
+    public function outcomeUp(Request $request){
+        $input = $request->all();
+        $pos = $input['sort'];
+        $upPos = $pos - 1;
+
+        $upper = Outcome::where('sort', '<', $pos)->orderBy('sort', 'desc')->first();
+        if($upper){
+            $upper->sort = $pos;
+            $upper->save();
+        }
+
+        $outcomeUp = Outcome::find($input['id']);
+        $outcomeUp->sort = $upPos;
+        if($outcomeUp->save()){
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function outcomeDown(Request $request){
+        $input = $request->all();
+        $pos = $input['sort'];
+        $downPos = $pos + 1;
+
+        $downer = Outcome::where('sort', '>', $pos)->orderBy('sort')->first();
+        if($downer){
+            $downer->sort = $pos;
+            $downer->save();
+        }
+
+        $outcomeUp = Outcome::find($input['id']);
+        $outcomeUp->sort = $downPos;
+        if($outcomeUp->save()){
+            
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function manageCompanyType(Request $request)
+    {
+        $input = $request->all();
+        if($input['id']){
+            $type = CompanyType::find($input['id']);
+        }else{
+            $existed = CompanyType::where('type', $input['type'])->count();
+            if($existed){
+                return response()->json(['success' => false, 'message' => 'duplicate entry']);
+            }
+            $type = new CompanyType;
+            $type->slug = Str::slug($input['type']);
+        }
+
+        $type->type = $input['type'];
+        if($type->save()){
+            return response()->json(['success' => true, 'results' => $type]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'failed']);
+        }
+    }
+
     public function appointmentList(Request $request)
     {
-        $items = $this->jwt->user()->consultant->appointments;
+        $items = $this->jwt->user()->consultant->appointments()->orderBy('event_date', 'desc')->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{
@@ -354,11 +565,11 @@ class ConsultantController extends Controller
         $item->client_id = $input['client_id'];
         $item->location_id = $input['location_id'];
         $item->consultant_id = $this->jwt->user()->id;
-        $item->title = $input['title'];
         $item->notes = $input['notes'];
         $item->status = 'pending';
 
         if($item->save()){
+            Mail::to($item->client->user->email)->send(new Appointments($item));
             return response()->json(['success' => true, 'results' => $item]);
         }else{
             return response()->json(['success' => false, 'message' => 'add_failed']);
@@ -564,6 +775,35 @@ class ConsultantController extends Controller
         }
     }
 
+    public function docsOfDebtors(Request $request, ControllerHelpers $helper)
+    {
+        $input = $request->all();
+        if(!$helper->myClient($this->jwt->user(), $input['client_id'])) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+
+        $debtors = Debt::where('client_id', $input['client_id'])->pluck('debtor_id')->toArray();
+        $debtors = array_values(array_unique($debtors));
+        $results = [];
+        foreach($debtors as $i=>$debtor_id){
+            $debtor = Company::find($debtor_id);
+            $results[$i]['debtor'] = $debtor->name;
+            $results[$i]['debts'] = Debt::with('documents')->where('client_id', $input['client_id'])->where('debtor_id', $debtor_id)->get();
+            /* if($debts->documents->first()){
+                foreach ($debts->documents as $k => $doc) {
+                    $results[$i]['title'] = $doc->title;
+                    $results[$i]['date'] = \Carbon\Carbon::parse($doc->created_at)->format('j M Y, H:i');
+                }
+            } */
+        }
+
+        if(count($results)){
+            return response()->json(['success' => true, 'results' => $results]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no debtor doc']);
+        }
+    }
+
     public function deptorDocDetails(Request $request, ControllerHelpers $helper)
     {
         $input = $request->all();
@@ -655,6 +895,18 @@ class ConsultantController extends Controller
         }
     }
 
+    public function templates(Request $request)
+    {
+        $input = $request->all();
+        $templates = Template::with('clientStep')->with('debtStep')->get();
+        
+        if($templates->count()){
+            return response()->json(['success' => true, 'results' => $templates]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_template']);
+        }
+    }
+
     public function templateList(Request $request, ControllerHelpers $helper)
     {
 
@@ -685,6 +937,17 @@ class ConsultantController extends Controller
             return response()->json(['success' => true, 'results' => $items]);
         }else{
             return response()->json(['success' => false, 'message' => 'no_template']);
+        }
+    }
+
+    public function templateDetails(Request $request)
+    {
+        $input = $request->all();
+        $template = Template::find($input['id']);
+        if($template){
+            return response()->json(['success' => true, 'results' => $template]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no template found']);
         }
     }
 

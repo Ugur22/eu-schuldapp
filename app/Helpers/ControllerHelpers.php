@@ -112,39 +112,41 @@ class ControllerHelpers
     foreach ($outcomes as $key => $c_outcome) {
       if($key == 0){
         $table .= '<tr>';
-        $table .= '<td colspan="3" class="th">Client</td>';
+        $table .= '<td colspan="4" class="th">Client</td>';
         $table .= '</tr>';
       }
       $clientOutcome = $c_outcome->client()->where('client_id', $client_id)->where('client_type', 'client')->first();
       $outcome_client = $clientOutcome ? $clientOutcome->amount: 0;
       $table .= '<tr>';
       $table .= '<td>'. $c_outcome->name .'</td>';
-      $table .= '<td>'. $clientOutcome && $clientOutcome->employer ? $clientOutcome->employer->name: '-' .'</td>';
+      $table .= '<td>'. ($clientOutcome && $clientOutcome->company ? $clientOutcome->company->name: '-') .'</td>';
+      $table .= '<td>'. ($clientOutcome ? $clientOutcome->client_number: '-') .'</td>';
       $table .= '<td align="right">'. number_format($outcome_client, 2, '.', ',') .'</td>';
       $table .= '</tr>';
       $total_outcome_client = $outcome_client + $total_outcome_client;
     }
-    $table .= '<tr><td colspan="2" class="group"></td><td class="group" align="right">'. number_format($total_outcome_client, 2, '.', ',') .'</td></tr>';
+    $table .= '<tr><td colspan="3" class="group"></td><td class="group" align="right">'. number_format($total_outcome_client, 2, '.', ',') .'</td></tr>';
     if($client->partner_lastname){
       foreach ($outcomes as $key => $p_outcome) {
         if($key == 0){
           $table .= '<tr>';
-          $table .= '<td colspan="3" class="th">Partner</td>';
+          $table .= '<td colspan="4" class="th">Partner</td>';
           $table .= '</tr>';
         }
-        $partnerOutcome = $outcome->client()->where('client_id', $client_id)->where('client_type', 'partner')->first();
+        $partnerOutcome = $p_outcome->client()->where('client_id', $client_id)->where('client_type', 'partner')->first();
         $outcome_partner = $partnerOutcome ? $partnerOutcome->amount: 0;
         $table .= '<tr>';
         $table .= '<td>'. $p_outcome->name .'</td>';
-        $table .= '<td>'. $partnerOutcome && $partnerOutcome->employer ? $partnerOutcome->employer->name: '-' .'</td>';
+        $table .= '<td>'. ($partnerOutcome && $partnerOutcome->company ? $partnerOutcome->company->name: '-') .'</td>';
+        $table .= '<td>'. ($clientOutcome ? $clientOutcome->client_number: '-') .'</td>';
         $table .= '<td align="right">'. number_format($outcome_partner, 2, '.', ',') .'</td>';
         $table .= '</tr>';
         $total_outcome_partner = $outcome_partner + $total_outcome_partner;
       }
-      $table .= '<tr><td colspan="2" class="group"></td><td class="group" align="right">'. number_format($total_outcome_partner, 2, '.', ',') .'</td></tr>';
+      $table .= '<tr><td colspan="3" class="group"></td><td class="group" align="right">'. number_format($total_outcome_partner, 2, '.', ',') .'</td></tr>';
     }
     $total = $total_outcome_client + $total_outcome_partner;
-    $table .= '<tr><td colspan="2" class="grand-summary"></td><td align="right" class="grand-summary">'. number_format($total, 2, '.', ',') .'</td></tr>';
+    $table .= '<tr><td colspan="3" class="grand-summary"></td><td align="right" class="grand-summary">'. number_format($total, 2, '.', ',') .'</td></tr>';
 
     return $table;
   }

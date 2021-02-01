@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Place;
+use App\Models\Income;
+use App\Models\Outcome;
 use App\Models\Template;
 use App\Models\Client;
 use App\Models\CompanyType;
+use App\Models\Appointment;
 use App\Models\ClientStatus;
 use App\Models\ClientDebtStatus;
 use App\Helpers\TemplateHelpers;
@@ -17,6 +20,26 @@ class GeneralController extends Controller
     public function getLocations(Request $request)
     {
         $items = Place::select('id', 'name')->get();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_location']);
+        }
+    }
+    
+    public function getIncomeTypes(Request $request)
+    {
+        $items = Income::orderBy('sort')->get();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no_location']);
+        }
+    }
+    
+    public function getOutcomeTypes(Request $request)
+    {
+        $items = Outcome::orderBy('sort')->get();
         if($items->count()){
             return response()->json(['success' => true, 'results' => $items]);
         }else{
@@ -42,5 +65,10 @@ class GeneralController extends Controller
         }else{
             return response()->json(['success' => false, 'message' => 'no types']);
         }
+    }
+
+    public function test()
+    {
+        //
     }
 }

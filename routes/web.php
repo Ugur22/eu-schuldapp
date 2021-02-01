@@ -19,12 +19,15 @@ $router->get('/', function () use ($router) {
 
 $router->get('/test','GeneralController@test');
 $router->get('/locations','GeneralController@getLocations');
+$router->get('/income-types','GeneralController@getIncomeTypes');
+$router->get('/outcome-types','GeneralController@getOutcomeTypes');
 $router->get('/client/status','GeneralController@getClientStatus');
 $router->get('/company-types','GeneralController@getCompanyTypes');
 $router->post('/login','AuthController@postLogin');
 
 $router->group(['middleware' => 'auth:api'], function($router)
 {
+    $router->get('/appointment-dates','CalendarController@appointments');
     /* client */
     $router->post('/token','AuthController@updateToken');
     /* get data */
@@ -69,6 +72,7 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->get('/consultant/doc/forms','ConsultantController@clientFormList');
     $router->get('/consultant/doc/form','ConsultantController@clientFormDetails');
     $router->get('/consultant/doc/debtors','ConsultantController@clientDeptorDocs');
+    $router->get('/consultant/doc/debtor-list','ConsultantController@docsOfDebtors');
     $router->get('/consultant/doc/debtor','ConsultantController@deptorDocDetails');
     $router->get('/consultant/doc/debtor-search','ConsultantController@searchDebtorDocs');
     $router->get('/consultant/doc/others','ConsultantController@otherDocList');
@@ -78,7 +82,20 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->get('/consultant/client/debt/next-steps','ConsultantController@nextDebtStatusList');
     $router->get('/consultant/client/debt/next-step','ConsultantController@nextDebtStatus');
     $router->get('/consultant/client/templates','ConsultantController@templateList');
+    $router->get('/consultant/template-details','ConsultantController@templateDetails');
+    $router->get('/consultant/all-templates','ConsultantController@templates');
 
+    $router->post('/consultant/income/up','ConsultantController@incomeUp');
+    $router->post('/consultant/income/down','ConsultantController@incomeDown');
+    $router->post('/consultant/income/manage','ConsultantController@manageIncomeTypes');
+    $router->post('/consultant/incomes/add','ConsultantController@addOutcomesTypes');
+    $router->post('/consultant/outcome/up','ConsultantController@outcomeUp');
+    $router->post('/consultant/outcome/down','ConsultantController@outcomeDown');
+    $router->post('/consultant/outcome/manage','ConsultantController@manageOutcomeTypes');
+    $router->post('/consultant/outcomes/add','ConsultantController@addOutcomesTypes');
+    $router->post('/consultant/company-type/manage','ConsultantController@manageCompanyType');
+    $router->post('/consultant/place/manage','ConsultantController@managePlace');
+    $router->post('/consultant/places/add','ConsultantController@addPlaces');
     $router->post('/consultant/doc/add','ConsultantController@addDocument');
     $router->post('/consultant/client/create','ConsultantController@createClient');
     $router->post('/consultant/client/create-complete','ConsultantController@createCompleteClient');
