@@ -10,10 +10,12 @@
         <nb-title>Afspraak maken</nb-title>
       </nb-body>
     </nb-header>
-		<Agenda
+		<Agenda 
 			:minDate="formatDateReverse(minimumDate)"
 			:renderEmptyDate="renderEmptyDate"
-			:renderItem="(item) => renderItems(item)"
+			:renderEmptyData ="renderEmptyData"
+			:renderDay ="(day) => renderDay(day)"
+			:renderItem="(item,day) => renderItems(item,day)"
 			:enableSwipeMonths="true"
 			:onDayPress="(day) =>  getSelectedDate(day)"
 			:onDayChange="(day) =>  getSelectedDate(day)"
@@ -36,7 +38,7 @@
     <nb-content padder>
       <nb-card transparent> 
         <nb-card-item header>
-          <nb-text>Afspraak maken met {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} </nb-text>
+          <nb-text>Afspraak maken met {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} op {{formatDate(date)}} om {{selectedTime}} </nb-text>
         </nb-card-item>
         <nb-card-item>
           <nb-body>
@@ -123,10 +125,11 @@
         show: false,
         minimumDate: this.addDays(0), 
         title:'',
-        notes:'',
+				notes:'',
+				dataIsReady: false,
         locations: {},
 				selectedLocation: '0',
-				selectedTime: '0',
+				selectedTime: '12:00',
         formatDate,
         FormatTime,
 				formatDay,
@@ -161,15 +164,25 @@
         this.navigation.goBack();
 			},
 			renderEmptyDate: function() {
+				return (<View><Text>Text</Text></View>);
+			},
+			renderDay: function(day) {
 				return (
 					 <View style={styleAppointments.emptyDate}>
-						<Text>This is empty date</Text>
+						<Text></Text>
+					</View>
+				);
+			},
+			renderEmptyData: function() {
+				return (
+					 <View style={styleAppointments.emptyDate}>
+						<Text>Er zijn geen afspraken op deze datum</Text>
 					</View>
 				);
 			},
 			renderItems: function(item) {
 				return (
-      	<TouchableOpacity
+      	<TouchableOpacity 
 					style={[styleAppointments.item, {height: item.height}]}
 					onPress={() => Alert.alert(item.client)}>
 						<View>
@@ -192,12 +205,12 @@
 			this.selectedLocation = value;
     },
       onTimeChange: function (value) {
-      this.selectedTime = value;
+			this.selectedTime = value;
     },
       appointmentMake: async function () {
 
       if(this.title){
-
+				console.log(this.selectedTime);
         try {
           let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
             method: 'POST',
@@ -223,7 +236,7 @@
               notes: this.notes,
               clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
               date: this.formatDate(this.date),
-              time: this.FormatTime(this.selectedTime)
+              time: this.selectedTime
             });
           } else {
             console.log(responseJson);

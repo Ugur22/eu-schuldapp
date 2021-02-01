@@ -34,9 +34,9 @@ export const styleAppointments = StyleSheet.create({
 		marginTop: 17,
 	},
 	emptyDate: {
-		height: 15,
-		flex: 1,
-		paddingTop: 30
+		padding: 10,
+		marginRight: 10,
+		marginTop: 17,
 	},
 	agenda: {
 		height: 350,
