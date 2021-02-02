@@ -95,7 +95,6 @@ export default {
 					
 
 				this.$root.user = user_updated;
-				console.log(this.$root.user );
           this.$root.loggedIn = true; 
 
         } else {

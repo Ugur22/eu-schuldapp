@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left  :style="{flex:1}">
-        <nb-button transparent :on-press="goBack">
-          <nb-icon name="arrow-back" />
-        </nb-button>
-      </nb-left>
-      <nb-body  :style="{flex:1}">
-        <nb-title>{{ $root.lang.t('debts') }}</nb-title>
-      </nb-body>
-      <nb-right  :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+    <header :pageTitle="$root.lang.t('debts')" :method="goBack" />
     <nb-content>
       <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="Search" />
@@ -71,6 +57,7 @@
 
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import DebtDetailsClient from './DebtDetailsClient';
 import {fetchData} from "../utils/fetch";
 
@@ -80,7 +67,7 @@ export default {
 			type: Object,
 		}
   },
-  components: { FooterNav,DebtDetailsClient },
+  components: { FooterNav,DebtDetailsClient,Header },
   data() {
     return {
 			clientDebts: {},
@@ -94,7 +81,7 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`consultant/client/debts/?client_id=${ this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
+		fetchData(`consultant/client/debts?client_id=${ this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			let that = this;
 			this.dataIsReady = true;
 			this.clientDebts = val

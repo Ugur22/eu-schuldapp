@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>{{ $root.lang.t('appointments') }}</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+	<header :pageTitle="$root.lang.t('appointments')" :method="goBack" />
      <nb-content padder >
       <nb-card v-if="dataIsReady">
         <nb-card-item header bordered>
@@ -53,18 +39,10 @@
 .text {
   color: #0078ae;
 }
-
-.header {
-	color:#fff;
-}
-
-.title {
-	color: #0078ae;
-	font-size:20;
-}
 </style>
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import {formatDate,FormatTime} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
 
@@ -91,7 +69,7 @@ export default {
 			this.appointments = val;
 			});
 	},
-  components: { FooterNav },
+  components: { FooterNav,Header },
   methods: {
     openAppointment: function (id) {
       this.navigation.navigate('AppointmentClient',{

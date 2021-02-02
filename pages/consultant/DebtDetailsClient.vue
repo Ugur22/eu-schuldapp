@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>details</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+     <header :pageTitle="$root.lang.t('details')" :method="goBack" />
     <nb-content>
       <nb-card v-if="dataIsReady" transparent
         :style="{
@@ -74,7 +60,8 @@
 </template>
 
 <script>
-import {fetchData,getUser} from "../utils/fetch";
+import {fetchData} from "../utils/fetch";
+import Header from '../../included/Header';
 
 export default {
   props: {
@@ -83,6 +70,7 @@ export default {
     },
     user: {},
   },
+    components: {Header },
   data() {
     return {
       dataIsReady: false,

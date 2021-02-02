@@ -28,7 +28,7 @@
   "other_documents": "overige documenten",
   "upload_message": "zorg ervoor dat uw foto duidelijk zichtbaar is",
   "file": "dossier",
-  "name_creditor": "Naam schuldeiser",
+  "name_creditor": "schuldeisers",
   "upload": "upload",
   "home": "home",
   "calendar": "kalender",
@@ -44,5 +44,8 @@
   "status_clients": "status clienten",
   "outbox": "outbox",
   "income": "inkomsten",
-  "expenses": "uitgaven"
+  "expenses": "uitgaven",
+  "details": "details",
+  "your_appointment": "uw afspraak",
+  "make_appointment":"maak afspraak"
 }

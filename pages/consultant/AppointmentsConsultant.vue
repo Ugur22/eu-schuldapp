@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>{{ $root.lang.t('appointments') }}</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+    <header :pageTitle="$root.lang.t('appointments')" :method="goBack" />
     <nb-content padder >
       <nb-card :style="{ marginTop: 10 }" v-if="addAppointment"  >
         <nb-card-item header bordered>
@@ -95,6 +81,7 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import {formatDate,FormatTime} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
 
@@ -104,7 +91,6 @@ export default {
       type: Object,
 		}
   },
-  components: { FooterNav },
   data() {
     return {
       addAppointment: false,
@@ -121,7 +107,7 @@ export default {
 			fetchData('consultant/clients',this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.Clients = val;});
   },
-  components: { FooterNav },
+   components: { FooterNav,Header},
   methods: {
     goBack: function () {
       this.navigation.goBack();

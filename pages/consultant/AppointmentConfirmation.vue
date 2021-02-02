@@ -1,16 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{backgroundColor:'#0078ae'}">
-      <nb-left>
-        <nb-button transparent :on-press="goBack">
-          <nb-icon name="arrow-back" />
-        </nb-button>
-      </nb-left>
-      <nb-body>
-        <nb-title>Uw afspraak</nb-title>
-      </nb-body>
-      <nb-right />
-    </nb-header>
+	<header :pageTitle="$root.lang.t('your_appointment')" :method="goBack" />
     <nb-content padder>
       <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
         <nb-h1>Uw afspraak is gemaak</nb-h1>
@@ -49,6 +39,7 @@
 
 <script>
   import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 
   export default {
     props: {
@@ -56,7 +47,7 @@
         type: Object
       }
     },
-    components: { FooterNav },
+    components: { FooterNav,Header },
     data() {
       return {
       };
