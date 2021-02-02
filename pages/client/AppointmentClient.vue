@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>{{ $root.lang.t('appointment') }} detail</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+	<header :pageTitle="$root.lang.t('appointments')" :method="goBack" />
     <nb-content padder>
       <nb-card v-if="dataIsReady">
         <nb-card-item >
@@ -48,6 +34,7 @@
 
 <script>
   import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 	import {formatDate,FormatTime} from "../utils/dates";
 	import {fetchData} from "../utils/fetch";
 
@@ -57,7 +44,7 @@
         type: Object
       }
     },
-    components: { FooterNav },
+    components: { FooterNav,Header },
     data() {
       return {
         Appointment:{},
@@ -81,6 +68,3 @@
     }
   }
 </script>
-<style scoped>
-
-</style>

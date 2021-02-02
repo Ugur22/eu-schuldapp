@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>{{ $root.lang.t('forms') }}</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button> 
-      </nb-right>
-    </nb-header>
+      <header :pageTitle="$root.lang.t('forms')" :method="goBack" />
     <nb-content>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="form in clientForms" :key="form.id" :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)">
@@ -49,6 +35,7 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 import * as Print from 'expo-print';
@@ -77,7 +64,7 @@ export default {
 		fetchData(`consultant/doc/forms?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true; this.clientForms = val;});
   },
-  components: { FooterNav},
+  components: { FooterNav,Header},
   methods: {
     goBack: function () {
       this.navigation.goBack();

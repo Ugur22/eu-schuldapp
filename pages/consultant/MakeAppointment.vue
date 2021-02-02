@@ -1,15 +1,6 @@
 <template>
   <nb-container>
-   <nb-header :style="styles.background">
-      <nb-left>
-        <nb-button transparent :on-press="goBack">
-          <nb-icon name="arrow-back" />
-        </nb-button>
-      </nb-left>
-      <nb-body>
-        <nb-title>Afspraak maken</nb-title>
-      </nb-body>
-    </nb-header>
+      <header :pageTitle="$root.lang.t('make_appointment')" :method="goBack" />
 		<Agenda 
 			:minDate="formatDateReverse(minimumDate)"
 			:renderEmptyDate="renderEmptyDate"
@@ -48,6 +39,7 @@
               mode="dialog"
               placeholder="tijd"
               :selectedValue="selectedTime"
+              :iosIcon="getIosIcon()"
               :onValueChange="onTimeChange">
               <item
                 v-for="hour in GetHours()"
@@ -70,6 +62,7 @@
               mode="dialog"
               placeholder="gemeente"
               :selectedValue="selectedLocation"
+              :iosIcon="getIosIcon()"
               :onValueChange="onLocationChange">
               <item
                 v-for="location in locations"
@@ -99,8 +92,9 @@
 </template>
 <script>
   import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
   import { Platform,View,Text,TouchableOpacity,Alert} from 'react-native';
-  import { Picker } from "native-base";
+  import { Picker,Icon } from "native-base";
   import {formatDate,FormatTime,formatDay,formatDateReverse} from "../utils/dates";
 	import { Toast } from 'native-base';
 	import {fetchData} from "../utils/fetch";
@@ -108,7 +102,6 @@
 	import { Agenda,LocaleConfig} from 'react-native-calendars';
 	import React from 'react'
 	import {styleAppointments,styles} from '../styling/style';
-	import moment from "moment";
 
   export default {
     props: {
@@ -117,7 +110,7 @@
       },
       user: {},
     },
-    components: { FooterNav,Item: Picker.Item,Agenda },
+    components: { FooterNav,Item: Picker.Item,Agenda,Header },
     data() {
       return {
         date: this.addDays(0),
@@ -128,7 +121,7 @@
 				notes:'',
 				dataIsReady: false,
         locations: {},
-				selectedLocation: '0',
+				selectedLocation: '4',
 				selectedTime: '12:00',
         formatDate,
         FormatTime,
@@ -160,6 +153,9 @@
 		});
 	},
     methods: {
+         getIosIcon: function() {
+      return <Icon name="arrow-down" />;
+    },
       goBack: function () {
         this.navigation.goBack();
 			},
@@ -202,7 +198,7 @@
 				this.date = day.dateString;
 			},
       onLocationChange: function (value) {
-			this.selectedLocation = value;
+      this.selectedLocation = value;
     },
       onTimeChange: function (value) {
 			this.selectedTime = value;

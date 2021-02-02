@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-      	<nb-title>mijn {{ $root.lang.t('file') }}</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-        <nb-button transparent>
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+	<header :pageTitle="$root.lang.t('file')" :method="goBack" />
     <nb-content padder>
       <!-- <nb-card>
         <nb-card-item>
@@ -118,6 +104,7 @@
 <script>
   import { Picker } from "native-base";
   import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
   import * as Permissions from 'expo-permissions';
   import { Camera } from 'expo-camera';
 
@@ -140,7 +127,7 @@
         displayLarge: false
       };
     },
-    components: { FooterNav, Camera, Item: Picker.Item },
+    components: { FooterNav, Camera, Item: Picker.Item,Header },
     methods: {
       goBack: function () {
         this.navigation.goBack();

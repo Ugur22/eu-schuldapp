@@ -1,19 +1,10 @@
 <template>
   <nb-container>
-	<nb-header :style="{ backgroundColor: '#0078ae' }">
-	  <nb-left >
-		<nb-button transparent :on-press="goBack" >
-		  <nb-icon name="arrow-back"/>
-		</nb-button>
-	  </nb-left>
-	  <nb-body >
-	  	<nb-title>{{ $root.lang.t('other_documents') }}</nb-title>
-	  </nb-body>
-	</nb-header>
-	<nb-content  >
-	  <!-- <nb-item :style="{ borderColor: '#62B1F6' }">
+	<header :pageTitle="$root.lang.t('other_documents')" :method="goBack" />
+	<nb-content >
+	  <nb-item :style="{ borderColor: '#62B1F6' }">
 		<nb-input placeholder="zoek overige documenten" />
-	  </nb-item> -->
+	  </nb-item>
 	  <nb-list v-if="dataIsReady">
 		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id)">
 		  <nb-left>
@@ -44,6 +35,7 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
 
@@ -67,7 +59,7 @@ export default {
 		fetchData(`consultant/doc/others?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true; this.clientDocs = val;});
   },
-  components: { FooterNav },
+  components: { FooterNav,Header },
   methods: {
 	goBack: function () {
 	  this.navigation.goBack();

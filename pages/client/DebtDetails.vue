@@ -3,15 +3,15 @@
     <nb-header :style="{ backgroundColor: '#0078ae' }">
       <nb-left :style="{flex:1}">
         <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
+          <nb-icon :style="{color:'#fff'}" name="arrow-back"/>
         </nb-button>
       </nb-left>
       <nb-body :style="{flex:1}">
-      	<nb-title>details</nb-title>
+      	<nb-title :style="{color:'#fff'}">details</nb-title>
       </nb-body>
       <nb-right :style="{flex:1}">
         <nb-button transparent>
-          <nb-icon name="information-circle" />
+          <nb-icon :style="{color:'#fff'}" name="information-circle" />
         </nb-button>
       </nb-right>
     </nb-header>
@@ -81,9 +81,9 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`client/docs/debt/?id=${this.navigation.getParam('debtID')}`,this.$root.user.token).then(val => {
-		this.dataIsReady = true;
-			this.Debt = val;
+		fetchData(`client/docs/debt?id=${this.navigation.getParam('debtID')}`,this.$root.user.token).then(val => {
+    this.dataIsReady = true;
+      this.Debt = val;
 			}); 
 	},
   methods: {

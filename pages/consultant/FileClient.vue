@@ -1,41 +1,29 @@
 <template>
   <nb-container v-if="dataIsReady">
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{ flex: 1 }">
-        <nb-button transparent :on-press="goBack">
-          <nb-icon name="arrow-back" />
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{ flex: 1 }">
-        <nb-title>{{ Client.firstname }} {{ Client.lastname }}</nb-title>
-      </nb-body>
-      <nb-right :style="{ flex: 1 }">
-        <nb-button transparent :on-press="showInfo">
-          <nb-icon name="information-circle" />
-        </nb-button>
-      </nb-right>
-    </nb-header>
+    	<header :pageTitle="`${Client.firstname} ${Client.lastname} `" :method="goBack" />
     <nb-content padder>
       <nb-card>
-				<nb-card-item>
-          <nb-picker
+				<nb-card-item >
+          <nb-picker :style="{width: Platform.OS === 'android' ? width-60 : width-40}"
             mode="dialog"
-            placeholder="Kies een document"
+            placeholder="Kies een document type"
             :selectedValue="selectedfileType"
+            :iosIcon="getIosIcon()"
             :onValueChange="onfileTypeChange"
-          >
+            >
             <item v-for="filetype in FileTypes" :key="filetype.value" :label="filetype.label" :value="filetype.value" />
           </nb-picker>
         </nb-card-item>
-				<nb-card-item v-if="selectedfileType != 'others'">
-          <nb-picker
+				<nb-card-item v-if="selectedfileType != 'others'" >
+          <nb-picker :style="{width: Platform.OS === 'android' ? width-60 : width-40}"
             mode="dialog"
             placeholder="Kies een document"
             :selectedValue="selectedDoc"
+            :iosIcon="getIosIcon()"
             :onValueChange="onDocChange"
           >
             <item v-for="selection in selections" :key="selection.id" :label="selection.slug" :value="selection.id" />
-          </nb-picker>
+          </nb-picker >
         </nb-card-item>
         <nb-card-item v-if="selectedfileType == 'others'">
           <nb-body
@@ -216,13 +204,16 @@
 </template>
 
 <script>
-import { Picker } from 'native-base';
+import {Dimensions,Platform} from 'react-native';
+import { Picker,Icon } from 'native-base';
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { Toast } from 'native-base';
 import * as ImageManipulator from 'expo-image-manipulator';
 import {fetchData} from "../utils/fetch";
+import React from 'react'
 
 export default {
   props: {
@@ -244,11 +235,13 @@ export default {
       displayLarge: false,
       Client: {},
       dataIsReady: false,
+      width: Dimensions.get('window').width,
       title: '', 
+      Platform,
 			file: {},
 			signature:'',
 			selectedDocName:'',
-			selectedfileType:'',
+			selectedfileType:'forms',
 			FileTypes: [
 				{label:"formulieren", value:"forms"} ,
 				{label:"schulden formulieren", value:"debtor"},
@@ -267,8 +260,11 @@ export default {
             'clientID')}&type=${this.selectedfileType}`,this.$root.user.token).then(val => {
 		this.dataIsReady = true; this.selections = val;});
   },
-  components: { FooterNav, Camera, Item: Picker.Item },
+  components: { FooterNav, Camera, Item: Picker.Item ,Header},
   methods: {
+   getIosIcon: function() {
+      return <Icon name="arrow-down" />;
+    },
 		clientTemplates:  async function(){
 
       try {

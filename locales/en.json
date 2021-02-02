@@ -43,5 +43,8 @@
   "status_clients": "status clients",
   "outbox": "outbox",
   "income": "income",
-  "expenses": "expenses"
+  "expenses": "expenses",
+  "details": "details",
+  "your_appointment": "your appointment",
+  "make_appointment":"make appointment"
 }

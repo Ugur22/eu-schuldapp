@@ -1,23 +1,12 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left :style="{flex:1}">
-        <nb-button transparent  :on-press="goBack">
-          <nb-icon name="arrow-back" />
-        </nb-button>
-      </nb-left>
-      <nb-body :style="{flex:1}">
-        <nb-title>{{ $root.lang.t('my_account') }}</nb-title>
-      </nb-body>
-      <nb-right :style="{flex:1}">
-      <nb-right />
-    </nb-header>
+	<header :pageTitle="$root.lang.t('my_account')" :method="goBack" />
     <nb-content padder>
       <nb-card v-if="dataIsReady">
         <nb-card-item
           header
           bordered
-          :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
+          :style="styles.center">
           <nb-text :style="styles.header"
             >{{clientData.firstname}} {{clientData.lastname}}</nb-text >
         </nb-card-item>
@@ -47,7 +36,6 @@
                 <nb-text :style="styles.text">{{clientData.phonenumber}}</nb-text>
               </nb-left>
 							<nb-right>
-
 							</nb-right>
             </nb-card-item>
           </nb-body>
@@ -58,7 +46,7 @@
     </nb-content>
     <nb-footer>
       <footer-nav
-        :style="styles.footer"
+        :style="styles.background"
         activeBtn="account"
       ></footer-nav>
     </nb-footer>
@@ -66,6 +54,7 @@
 </template>
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import {fetchData} from "../utils/fetch";
 import {styles} from '../styling/style';
 
@@ -75,7 +64,7 @@ export default {
       type: Object,
     }
   },
-  components: { FooterNav },
+  components: { FooterNav,Header },
   data() {
     return {
      clientData: {},

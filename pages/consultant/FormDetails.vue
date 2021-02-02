@@ -1,17 +1,6 @@
 <template>
   <nb-container>
-		<nb-header :style="{ backgroundColor: '#0078ae' }">
-			<nb-left :style="{flex:1}">
-			<nb-button transparent :on-press="goBack" >
-				<nb-icon name="arrow-back"/>
-			</nb-button>
-			</nb-left>
-			<nb-body :style="{flex:1}">
-				<nb-title>handtekening</nb-title>
-			</nb-body>
-			<nb-right :style="{flex:1}">
-			</nb-right>
-		</nb-header>
+     <header :pageTitle="$root.lang.t('details')" :method="goBack" />
 		<view v-if="Amountsignatures">
 			<view  v-for="authors in Amountsignatures" :key="authors"  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
 				<signature-screen
@@ -33,8 +22,8 @@
 </template>
 
 <script>
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import SignatureScreen from 'react-native-signature-canvas';
+import Header from '../../included/Header';
 import axios from "axios";
 import {fetchData} from "../utils/fetch";
 
@@ -79,9 +68,10 @@ export default {
 			that.singatureStatus = val.signature;
 			that.Amountsignatures = val.need_signature_by;
 			that.dataIsReady = true;
+			console.log(val);
 			});
 	},
-	components: {SignatureScreen },
+	components: {SignatureScreen,Header },
   methods: {
 		toggleSignature: function () {
       this.enableSignature = !this.enableSignature;

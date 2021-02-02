@@ -1,15 +1,6 @@
 <template>
   <nb-container>
-    <nb-header :style="{ backgroundColor: '#0078ae' }">
-      <nb-left >
-        <nb-button transparent :on-press="goBack" >
-          <nb-icon name="arrow-back"/>
-        </nb-button>
-      </nb-left>
-      <nb-body >
-      	<nb-title>{{ $root.lang.t('creditors_documents') }}</nb-title>
-      </nb-body>
-    </nb-header>
+	<header :pageTitle="$root.lang.t('name_creditor')" :method="goBack" />
     <nb-content>
       <nb-item :style="{ borderColor: '#62B1F6' }">
         <nb-input placeholder="zoek schuldeiser documenten" />
@@ -53,6 +44,7 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
 
@@ -79,7 +71,7 @@ export default {
 			this.clientCollectors = val
 			;});
   },
-  components: { FooterNav },
+  components: { FooterNav, Header },
   methods: {
     goBack: function () {
       this.navigation.goBack();

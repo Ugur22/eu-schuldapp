@@ -1,20 +1,6 @@
 <template>
   <nb-container>
-	<nb-header :style="{ backgroundColor: '#0078ae' }">
-	  <nb-left :style="{flex:1}">
-		<nb-button transparent :on-press="goBack" >
-		  <nb-icon name="arrow-back"/>
-		</nb-button>
-	  </nb-left>
-	  <nb-body :style="{flex:1}">
-	  	<nb-title>{{ $root.lang.t('clients') }}</nb-title>
-	  </nb-body>
-	  <nb-right :style="{flex:1}">
-		<nb-button transparent>
-		  <nb-icon name="information-circle" />
-		</nb-button>
-	  </nb-right>
-	</nb-header>
+	    <header :pageTitle="$root.lang.t('clients')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
 		<nb-input placeholder="Search" />
@@ -91,6 +77,7 @@
 <script>
 import { Alert } from "react-native";
 import FooterNav from '../../included/Footer';
+import Header from '../../included/Header';
 import FileClient from './FileClient';
 import {fetchData,PostData} from "../utils/fetch";
 
@@ -101,7 +88,7 @@ export default {
 	},
 	user: {},
   },
-  components: { FooterNav,FileClient },
+  components: { FooterNav,FileClient,Header },
   data() {
 		return {
 			isModalVisible: false,

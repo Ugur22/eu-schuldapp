@@ -21,6 +21,29 @@ export const styles = StyleSheet.create({
 		flex: 1, 
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	button: {
+		backgroundColor:'#0078ae',
+	},
+	btn: {
+		padding:10,
+		backgroundColor:'#0078ae',
+		margin:10,
+		borderRadius: 10,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	btnText: {
+		fontWeight: 'bold'
+	},
+	icon: {
+		color:'#fff'
+	},
+	textHeader: {
+		color:'#fff'
+	},
+	position: {
+		flex:1
 	}
 });
 

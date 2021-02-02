@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export async function fetchData(url,usertoken,datatype='') {
 
 		let responseJson;
-
 		let value = '';
 		try {
 			value = await usertoken;
@@ -30,7 +29,6 @@ export async function fetchData(url,usertoken,datatype='') {
 
 			}
       if (responseJson.success ? responseJson.success : responseJson) {
-			
 
         return responseJson.results ?  responseJson.results : responseJson;
       } else {

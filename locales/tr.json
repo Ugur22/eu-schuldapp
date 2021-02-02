@@ -44,5 +44,8 @@
   "status_clients": "durum müşteriler",
   "outbox": "outbox",
   "income": "gelirim",
-  "expenses": "masraflar"
+  "expenses": "masraflar",
+  "details": "detaylar",
+  "your_appointment": "Randevu",
+  "make_appointment":"Randevu yap"
 }
