@@ -70,7 +70,7 @@ export default {
       type: Object,
     },
   },
-  components: { FooterNav,DebtDetails },
+  components: { FooterNav,DebtDetails,Header },
   data() {
     return {
 			clientDebts: {},

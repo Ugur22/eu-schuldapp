@@ -267,7 +267,7 @@ export default {
     },
 		clientTemplates:  async function(){
 
-      try {
+      try {			
         let response = await fetch(
           `http://api.arsus.nl/consultant/client/templates?client_id=${this.navigation.getParam(
             'clientID'
@@ -284,7 +284,7 @@ export default {
 
         let responseJson = await response.json();
         if (responseJson.success) {
-          this.selections = responseJson.results;
+					this.selections = responseJson.results;
 					this.dataIsReady = true;
         } else {
           console.log(responseJson.results);
@@ -391,9 +391,9 @@ export default {
 			this.selectedDoc = value;
 			this.selectedDocName = this.selections[index].slug;
 		},
-		onfileTypeChange: function (value,index) {
-			this.clientTemplates();
+		onfileTypeChange: function (value) {
 			this.selectedfileType = value;
+			this.clientTemplates();
 			
     },
     getCamera: function () {

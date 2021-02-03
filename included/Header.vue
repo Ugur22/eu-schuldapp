@@ -2,7 +2,7 @@
     <nb-header :style="styles.background">
       <nb-left  :style="styles.position">
         <nb-button transparent :on-press="goBack"  >
-          <nb-icon :style="styles.icon"  :name="Platform.OS === 'android' ? 'arrow-back' : 'arrow-round-back'" />
+          <nb-icon :style="styles.icon" :name="Platform.OS === 'android' ? 'arrow-back' : 'arrow-round-back'" />
         </nb-button>
       </nb-left>
       <nb-body  :style="styles.position">
@@ -10,7 +10,7 @@
       </nb-body>
       <nb-right :style="styles.position">
         <nb-button transparent>
-          <nb-icon :style="styles.icon" name="information-circle" />
+          <nb-icon :style="styles.icon" name="information-circle" /> 
         </nb-button>
       </nb-right>
     </nb-header>

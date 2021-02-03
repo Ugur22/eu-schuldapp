@@ -1,6 +1,6 @@
 <template>
   <nb-container>
-	<header :pageTitle="$root.lang.t('appointments')" :method="goBack" />
+	<header :pageTitle="$root.lang.t('appointment')" :method="goBack" />
     <nb-content padder>
       <nb-card v-if="dataIsReady">
         <nb-card-item >
