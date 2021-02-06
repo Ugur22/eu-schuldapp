@@ -58,12 +58,10 @@ export default {
 				}`	
 		};
 	},
-  created() {
-		
+  created() {	
 	},
 	mounted() {
-		fetchData(`document/signatures?document_id=
-		${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
+		fetchData(`document/signatures?document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
 			let that = this;
 			that.singatureStatus = val.signature;
 			that.Amountsignatures = val.need_signature_by;
@@ -72,9 +70,9 @@ export default {
 			});
 	},
 	components: {SignatureScreen,Header },
-  methods: {
+  	methods: {
 		toggleSignature: function () {
-      this.enableSignature = !this.enableSignature;
+      		this.enableSignature = !this.enableSignature;
 		},
 		handleSignature: async function(signature,author) {
 			this.signature = signature;
@@ -99,8 +97,7 @@ export default {
 					},
 					}).then(function(response){
 
-				fetchData(`document/signatures?document_id=
-					${that.navigation.getParam('docID')}`,that.$root.user.token).then(val => {
+				fetchData(`document/signatures?document_id=${that.navigation.getParam('docID')}`,that.$root.user.token).then(val => {
 						that.singatureStatus = val.signature;
 						that.Amountsignatures = val.need_signature_by;
 						that.dataIsReady = true;

@@ -388,12 +388,18 @@ export default {
       this.navigation.navigate(page);
     },
     onDocChange: function (value,index) {
-			this.selectedDoc = value;
-			this.selectedDocName = this.selections[index].slug;
+      this.selectedDoc = value;
+      if(Platform.OS === 'android'){
+        this.selectedDocName = this.selections[index].slug;
+      }else {
+         this.selectedDocName = this.selections[index-1].slug;
+      }
+     
 		},
 		onfileTypeChange: function (value) {
 			this.selectedfileType = value;
-			this.clientTemplates();
+      this.clientTemplates();
+      
 			
     },
     getCamera: function () {
