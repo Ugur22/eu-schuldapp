@@ -1,11 +1,18 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<p><span style="font-family: trebuchet ms;">De Bilt,<!--date_format(created_at)--></span></p>
-<div><span style="font-family: trebuchet ms;">Geachte <!--gender--> <!--firstname--> <!--lastname-->,</span></div>
-<div><span style="font-family: trebuchet ms;">Graag wil ik u vragen de volgende stukken aan uw zaakbehandelaar te sturen:<br /> <br /> * Vaste lasten lijst incl. Instantie / Kenmerk / Rekeningnummer<br /> * Bankafschriften van de afgelopen 3 maanden<br /> * Inkomen specificatie van de afgelopen 3 maanden<br /> * Digi-D - gebruikersnaam en wachtwoord<br /> * Verklaring hoe de schulden zijn ontstaan<br /> <br /> Wij willen u vragen de bovenstaande opgevraagde stukken uiterlijk binnen 5 werkdagen na dagtekening aan te leveren. Wanneer u de gevraagde stukken later inlevert dan hier boven genoemd, zal u dossier vertraging oplopen.</span></div>
-<div>&nbsp;</div>
-<div><span style="font-family: trebuchet ms;">Met vriendelijke groet,</span></div>
-<div><span style="font-family: trebuchet ms;">Team EU-Bewindvoering</span></div>
-<div><span style="font-family: trebuchet ms;">&nbsp;</span></div>
+<p>De Bilt,<!--date_format(created_at)--></p>
+<p>Geachte <!--gender--> <!--firstname--> <!--lastname-->,</p>
+<p>Graag wil ik u vragen de volgende stukken aan uw zaakbehandelaar te sturen:</p> 
+<ul>
+  <li>Vaste lasten lijst incl. Instantie / Kenmerk / Rekeningnummer</li>
+  <li>Bankafschriften van de afgelopen 3 maanden</li>
+  <li>Inkomen specificatie van de afgelopen 3 maanden</li>
+  <li>Digi-D - gebruikersnaam en wachtwoord</li>
+  <li>Verklaring hoe de schulden zijn ontstaan</li>
+</ul>
+<p>Wij willen u vragen de bovenstaande opgevraagde stukken uiterlijk binnen 5 werkdagen na dagtekening aan te leveren. Wanneer u de gevraagde stukken later inlevert dan hier boven genoemd, zal u dossier vertraging oplopen.</p>
+<br />
+<p>Met vriendelijke groet,</p>
+<p>Team EU-Bewindvoering</p>
+<br />
 <div><span style="font-family: trebuchet ms;"><a href="http://eu-bewindvoering.nl/"><img class="fr-fic fr-dii" style="border: 0px solid;" src="http://eu-bewindvoering.nl/wp-content/uploads/2017/06/SmallLogo.png" alt="" width="215" height="130" /></a></span></div>
 <div><span style="font-family: trebuchet ms;"><span style="font-size: 14px;">Dorpsstraat vo Steenstraat 12<br />3732 HJ De Bilt</span></span></div>
 <div><span style="font-family: trebuchet ms;"><span style="font-size: 14px;">Tel: 085-0514029&nbsp;</span></span></div>

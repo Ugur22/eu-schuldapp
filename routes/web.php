@@ -22,12 +22,15 @@ $router->get('/locations','GeneralController@getLocations');
 $router->get('/income-types','GeneralController@getIncomeTypes');
 $router->get('/outcome-types','GeneralController@getOutcomeTypes');
 $router->get('/client/status','GeneralController@getClientStatus');
+$router->get('/debt/statusses','GeneralController@getDebtStatusses');
 $router->get('/company-types','GeneralController@getCompanyTypes');
+$router->get('/upload-options','GeneralController@getUploadOptions');
+
 $router->post('/login','AuthController@postLogin');
+$router->post('/consultant/sign-up','AuthController@consultantRegistration');
 
 $router->group(['middleware' => 'auth:api'], function($router)
 {
-    $router->get('/appointment-dates','CalendarController@appointments');
     /* client */
     $router->post('/token','AuthController@updateToken');
     /* get data */
@@ -53,6 +56,22 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->post('/client/sign','ClientController@postSign');
 
     /* consultant */
+    /* calendar */
+    /* get */
+    $router->get('/appointment-dates','CalendarController@appointments');
+    $router->get('/consultant/appointments','CalendarController@list');
+    $router->get('/consultant/appointment','CalendarController@read');
+    $router->get('/consultant/appointment/{id}','CalendarController@show');
+    $router->get('/consultant/appointment/delete/{id}','CalendarController@destroy');
+    /* post */
+    $router->post('/consultant/make-appointment','CalendarController@create');
+    $router->post('/consultant/appointment/update/{id}','CalendarController@update');
+    
+    /* outbox */
+    /* get */
+    $router->get('/consultant/outboxes','OutboxController@outboxes');
+    $router->get('/consultant/outbox','OutboxController@show');
+
     /* get data */
     $router->get('/consultant/company','ConsultantController@getCompany');
     $router->get('/consultant/employers','ConsultantController@employerList');
@@ -67,8 +86,6 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->get('/consultant/client/debt/details','ConsultantController@clientDebt');
     $router->get('/consultant/client/debts/search','ConsultantController@searchClientDebts');
 
-    $router->get('/consultant/appointments','ConsultantController@appointmentList');
-    $router->get('/consultant/appointment','ConsultantController@appointment');
     $router->get('/consultant/doc/forms','ConsultantController@clientFormList');
     $router->get('/consultant/doc/form','ConsultantController@clientFormDetails');
     $router->get('/consultant/doc/debtors','ConsultantController@clientDeptorDocs');
@@ -96,12 +113,11 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->post('/consultant/company-type/manage','ConsultantController@manageCompanyType');
     $router->post('/consultant/place/manage','ConsultantController@managePlace');
     $router->post('/consultant/places/add','ConsultantController@addPlaces');
-    $router->post('/consultant/doc/add','ConsultantController@addDocument');
+    $router->post('/consultant/doc/add','ConsultantController@uploadOtherDoc');
     $router->post('/consultant/client/create','ConsultantController@createClient');
     $router->post('/consultant/client/create-complete','ConsultantController@createCompleteClient');
     $router->post('/consultant/client/debt/create','ConsultantController@createClientDebt');
     $router->post('/consultant/client/debt/update','ConsultantController@updateClientDebt');
-    $router->post('/consultant/make-appointment','ConsultantController@makeAppointment');
     $router->post('/consultant/company/manage','ConsultantController@manageCompany');
     $router->post('/consultant/client/next-step','ConsultantController@nextClientStatus');
     $router->post('/consultant/client/income/update','IncomesController@updateClientIncomes');

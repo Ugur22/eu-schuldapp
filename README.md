@@ -1,6 +1,6 @@
 ## GET
 
-###no tokens
+### no tokens
 
 `/locations`
 **get locations/place name**
@@ -11,14 +11,17 @@
 `/company-types`
 **get company types: debt collector, employer, enz**
 
-##POST
+`/upload-options`
+**get other document upload options**
+
+## POST
 
 `/login`
 email, password
 
-##With token
-###client
-##GET
+## With token
+### client
+## GET
 
 `/client`
 **get account**
@@ -70,13 +73,13 @@ email, password
 *request: search*
 **search other document list**
 
-##POST
+## POST
 `/client/sign`
 *request: document_id, author, signature (image file)*
 **upload signature**
 
-###consultant
-##GET
+### consultant
+## GET
 `/consultant/company`
 *request: id*
 **get company details**
@@ -149,10 +152,10 @@ email, password
 *request: client_id, type (form, debtor, other)*
 **get template list of specific document type**
 
-##POST
+## POST
 `/consultant/doc/add`
-*request: client_id, debt_id, title, template_id (only for form or debtor doc), file (for upload)*
-**add new document form/debtor/other**
+*request: client_id, debt_id, title, option , file, 
+**upload other document**
 
 `/consultant/client/create`
 *request: email, password, confirm_password, gender, initial, firstname, lastname, card_id, birth_date, phonenumber, address, place_id*
@@ -194,8 +197,8 @@ email, password
 *request: document_id, client_id, author, signature (image file)*
 **upload signature**
 
-###download
-##GET
+### download
+## GET
 `/document/file-download`
 *request: document_id, client_id (for consultant)*
 **File download**

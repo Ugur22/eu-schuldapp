@@ -1,26 +1,17 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<div style="font-family: trebuchet ms; font-size: 11px; ">
-De Bilt, <!--date_format(created_at)--><br/>
+<p>De Bilt, <!--date_format(created_at)--></p>
 <br/>
-Kenmerk:  <!--reference_id--><br/>
+<p>Kenmerk:  <!--reference_id--><br/>
 Betreft: Tweede voorstel / <!--firstname--> <!--lastname--><br/>
-Aan: <!--debt_collector--><br/>
+Aan: <!--debt_collector--></p>
 <br/>
-Geachte heer/mevrouw,<br/>
+<p>Geachte heer/mevrouw,</p>
+<p>Bedankt voor uw e-mail van <!--sent_at-->. Wij begrijpen dat u regels heeft die nagekomen moeten worden. Echter is het niet mogelijk om uw regels na te leven, omdat de regeling onbetaalbaar hoog wordt. Daarom stellen wij u een goed onderbouwd voorstel voor dat wel betaalbaar is. Graag wil ik uw nogmaals verzoeken om binnen 5 werkdagen ons voorstel te accepteren, zodat wij tot een minnelijke regeling kunnen komen.</p>
+<p>Mocht dit niet het geval zijn, dan zijn wij genoodzaakt over te gaan tot een éénzijdige overeenkomst.</p>
+<p>Vertrouwende u hierbij voldoende te hebben geïnformeerd.</p>
 <br/>
-Bedankt voor uw e-mail van <!--sent_at-->.<br/>
-<br/>
-Wij begrijpen dat u regels heeft die nagekomen moeten worden. Echter is het niet mogelijk om uw regels na te leven, omdat de regeling onbetaalbaar hoog wordt. Daarom stellen wij u een goed onderbouwd voorstel voor dat wel betaalbaar is.<br/>
-<br/>
-Graag wil ik uw nogmaals verzoeken om binnen 5 werkdagen ons voorstel te accepteren, zodat wij tot een minnelijke regeling kunnen komen.<br/>
-<br/>
-Mocht dit niet het geval zijn, dan zijn wij genoodzaakt over te gaan tot een éénzijdige overeenkomst.<br/>
-<br/>
-Vertrouwende u hierbij voldoende te hebben geïnformeerd.<br/>
-<br/>
-Met vriendelijke groet,<br/>
-Team EU-Bewindvoering, afdeling Schuldhulp<br/>
-<br/>
+<p>Met vriendelijke groet,</p>
+<p>Team EU-Bewindvoering, afdeling Schuldhulp</p>
+
 <img src="http://api.arsus.nl/images/logo.jpg" width="150"><br/>
 <br/>
 Dorpsstraat vo Steenstraat 12<br/>

@@ -8,6 +8,7 @@ use App\Models\Income;
 use App\Models\Outcome;
 use App\Models\Template;
 use App\Models\Client;
+use App\Models\DocOther;
 use App\Models\CompanyType;
 use App\Models\Appointment;
 use App\Models\ClientStatus;
@@ -47,6 +48,16 @@ class GeneralController extends Controller
         }
     }
 
+    public function getUploadOptions()
+    {
+        $items = DocOther::all();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no option']);
+        }
+    }
+
     public function getClientStatus()
     {
         $items = ClientStatus::all();
@@ -54,6 +65,16 @@ class GeneralController extends Controller
             return response()->json(['success' => true, 'results' => $items]);
         }else{
             return response()->json(['success' => false, 'message' => 'no_location']);
+        }
+    }
+
+    public function getDebtStatusses()
+    {
+        $items = ClientDebtStatus::all();
+        if($items->count()){
+            return response()->json(['success' => true, 'results' => $items]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'no statusses']);
         }
     }
 

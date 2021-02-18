@@ -2,6 +2,8 @@
 namespace App\Helpers;
 use Illuminate\Support\Facades\File;
 use App\Models\DocHtml;
+use App\Models\Template;
+use App\Models\Document;
 use App\Helpers\ControllerHelpers;
 
 class TemplateHelpers
@@ -14,8 +16,12 @@ class TemplateHelpers
       foreach ($modified as $key => $value) {
         $object[$key] = \Carbon\Carbon::parse($value)->format($format);
       }
-      if($object[$output]){
+      if(!is_null($object) && $object[$output]){
         $datetime = $object[$output] ? \Carbon\Carbon::parse($object[$output])->format($format): $object[$output];
+        $replaced = str_replace($outputs[0][$k], $datetime, $string);
+        $string = $replaced;
+      }else{
+        $datetime = \Carbon\Carbon::now()->format($format);
         $replaced = str_replace($outputs[0][$k], $datetime, $string);
         $string = $replaced;
       }
@@ -146,6 +152,51 @@ class TemplateHelpers
     }else{
       return false;
     }
+  }
+
+  public function generateFormClientStatus($client, $status)
+  {
+    $templates = Template::where('client_status_id', $status)->whereNull('client_debt_status_id')->get();
+    foreach ($templates as $key => $template) {
+      $html = $this->templateToDoc($template->slug, $client, null, $template->html);
+      $document = new Document;
+      $document->client_id = $client->id;
+      $document->client_status_id = $status;
+      $document->title = $template->filename;
+      $document->main = $template->main;
+      $document->template_id = $template->id;
+      if ($document->save()) {
+        $file = new DocHtml;
+        $file->html = $html;
+        $file->doc_id = $document->id;
+        $file->save();
+      }
+    }
+
+    return true;
+  }
+
+  public function generateFormDebtStatus($client, $status, $debt_id)
+  {
+    $template = Template::where('client_debt_status_id', $status)->whereNull('client_status_id')->first();
+    
+    $document = new Document;
+    $document->client_id = $client->id;
+    $document->client_debt_id = $debt_id;
+    $document->title = $template->filename;
+    $document->main = $template->main;
+    $document->template_id = $template->id;
+    if ($document->save()) {
+      $doc = Document::find($document->id);
+      $html = $this->templateToDoc($template->slug, $client, $doc, $template->html);
+      $file = new DocHtml;
+      $file->html = $html;
+      $file->doc_id = $doc->id;
+      $file->save();
+    }
+    
+
+    return true;
   }
 
   public function templateToDoc($slug, $user, $doc, $html)

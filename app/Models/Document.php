@@ -37,4 +37,9 @@ class Document extends Model
    {
        return $this->hasOne('App\Models\DocHtml', 'doc_id');
    }
+
+   public function outboxes()
+   {
+      return $this->belongsToMany('App\Models\Outbox', 'outbox_documents', 'document_id', 'outbox_id');
+   }
 }

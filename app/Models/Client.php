@@ -43,6 +43,11 @@ class Client extends Model
        return $this->belongsTo('App\Models\Company', 'employer_id');
    }
 
+   public function outboxes()
+   {
+       return $this->hasMany('App\Models\Outbox', 'client_id');
+   }
+
    public function children()
    {
        return $this->hasMany('App\Models\Child', 'client_id');

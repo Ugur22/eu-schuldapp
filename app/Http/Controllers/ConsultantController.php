@@ -9,6 +9,7 @@ use App\Models\Debt;
 use App\Models\Form;
 use App\Models\Place;
 use App\Models\Child;
+use App\Models\Outbox;
 use App\Models\Client;
 use App\Models\Income;
 use App\Models\Outcome;
@@ -19,12 +20,11 @@ use App\Models\Template;
 use App\Models\Document;
 use App\Models\Consultant;
 use App\Models\CompanyType;
-use App\Models\Appointment;
 use App\Models\ClientStatus;
+use App\Helpers\OutboxHelpers;
 use App\Models\ClientDebtStatus;
 use App\Helpers\TemplateHelpers;
 use App\Helpers\ControllerHelpers;
-use App\Mail\Appointments;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -46,13 +46,33 @@ class ConsultantController extends Controller
     public function clientList(Request $request)
     {
         $results = [];
-        foreach ($this->jwt->user()->consultant->clients as $key => $client) {
+        $search = $request->search;
+        $status_id = $request->status_id;
+        if($search && $status_id){
+            $clients = $this->jwt->user()->consultant->clients()->where(function($query) use($search) {
+                $query->orWhere('firstname', 'LIKE', '%'.$search.'%');
+                $query->orWhere('lastname', 'LIKE', '%'.$search.'%');
+                $query->orWhere('social_security_id', 'LIKE', '%'.$search.'%');
+            })->where('client_status_id', $status_id)->get();
+        }elseif($search && !$status_id){
+            $clients = $this->jwt->user()->consultant->clients()->where(function($query) use($search) {
+                $query->orWhere('firstname', 'LIKE', '%'.$search.'%');
+                $query->orWhere('lastname', 'LIKE', '%'.$search.'%');
+                $query->orWhere('social_security_id', 'LIKE', '%'.$search.'%');
+            })->get();
+        }elseif(!$search && $status_id){
+            $clients = $this->jwt->user()->consultant->clients()->where('client_status_id', $status_id)->get();
+        }else{
+            $clients = $this->jwt->user()->consultant->clients;
+        }
+        foreach ($clients as $key => $client) {
           $results[$key]['id'] = $client->id;
           $results[$key]['social_security_id'] = $client->social_security_id;
           $results[$key]['firstname'] = $client->firstname;
           $results[$key]['lastname'] = $client->lastname;
           $results[$key]['login'] = $client->user;
           $results[$key]['status'] = $client->status;
+          $results[$key]['outboxes'] = $client->outboxes->count();
         }
         
         if(!$results){
@@ -97,6 +117,7 @@ class ConsultantController extends Controller
         $user = new User;
         $user->email = $input['email'];
         $user->password = Hash::make($input['password']);
+        $user->role_id = 1;
 
         if($user->save()){
             $client = new Client;
@@ -131,6 +152,7 @@ class ConsultantController extends Controller
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
+            'social_security_id' => 'required|unique:clients',
             'birth_date' => 'required',
             'birth_place' => 'required',
             'nationality' => 'required',
@@ -525,57 +547,6 @@ class ConsultantController extends Controller
         }
     }
 
-    public function appointmentList(Request $request)
-    {
-        $items = $this->jwt->user()->consultant->appointments()->orderBy('event_date', 'desc')->get();
-        if($items->count()){
-            return response()->json(['success' => true, 'results' => $items]);
-        }else{
-            return response()->json(['success' => false, 'message' => 'no_appointment']);
-        }
-    }
-
-    public function appointment(Request $request)
-    {
-        $input = $request->all();
-        $item = Appointment::with('location')->with('client');
-        if(isset($input['id'])){
-            $item = $item->whereId($input['id'])->first();
-        }else{
-            if(isset($input['event_date'])){
-                $item = $item->where('event_date', '>=', \Carbon\Carbon::parse($input['event_date'])->format('Y-m-d 00:00:00'))->where('event_date', '<=', \Carbon\Carbon::parse($input['event_date'])->format('Y-m-d 23:59:59'));
-            }elseif(isset($input['event_from']) && isset($input['event_to'])){
-                $item = $item->where('event_date', '>=', \Carbon\Carbon::parse($input['event_from'])->format('Y-m-d 00:00:00'))->where('event_date', '<=', \Carbon\Carbon::parse($input['event_to'])->format('Y-m-d 23:59:59'));
-            }
-            $item = $item->where('consultant_id', $this->jwt->user()->id)->get();
-        }
-        if($item){
-            return response()->json(['success' => true, 'results' => $item]);
-        }else{
-            return response()->json(['success' => false, 'message' => 'not_found']);
-        }
-    }
-
-    public function makeAppointment(Request $request)
-    {
-
-        $input = $request->all();
-        $item = new Appointment;
-        $item->event_date = \Carbon\Carbon::parse($input['date'].' '.$input['time']);
-        $item->client_id = $input['client_id'];
-        $item->location_id = $input['location_id'];
-        $item->consultant_id = $this->jwt->user()->id;
-        $item->notes = $input['notes'];
-        $item->status = 'pending';
-
-        if($item->save()){
-            Mail::to($item->client->user->email)->send(new Appointments($item));
-            return response()->json(['success' => true, 'results' => $item]);
-        }else{
-            return response()->json(['success' => false, 'message' => 'add_failed']);
-        }
-    }
-
     public function clientDebts(Request $request, ControllerHelpers $helper)
     {
         $input = $request->all();
@@ -584,6 +555,24 @@ class ConsultantController extends Controller
         }
         $items=[];
         $debts = Debt::with('status');
+        if (isset($input['status_id'])) {
+            $debts = $debts->where('status_id', $input['status_id']);
+        }
+        if (isset($input['debtor_id'])) {
+            $debts = $debts->where('debtor_id', $input['debtor_id']);
+        }
+        if (isset($input['search'])) {
+            $search = $input['search'];
+            $client_ids = Client::where(function($query) use($search) {
+                $query->orWhere('firstname', 'LIKE', '%'.$search.'%');
+                $query->orWhere('lastname', 'LIKE', '%'.$search.'%');
+            })->pluck('id')->toArray();
+            $debts = $debts->where(function($query) use($search, $client_ids) {
+                $query->orWhere('reference_id', 'LIKE', '%'.$search.'%');
+                $query->orWhere('notes', 'LIKE', '%'.$search.'%');
+                $query->orWhereIn('client_id', $client_ids);
+            });
+        }
         if($input['client_id']){
             $debts = $debts->where('client_id', $input['client_id'])->get();
         }else{
@@ -592,10 +581,15 @@ class ConsultantController extends Controller
         }
         foreach ($debts as $key => $debt) {
             $items[$key]['id'] = $debt->id;
-            $items[$key]['reference_id'] = $debt->reference_id;
             $items[$key]['client'] = $debt->client;
+            $items[$key]['reference_id'] = $debt->reference_id;
             $items[$key]['status'] = $debt->status;
+            $items[$key]['terms'] = $debt->terms;
+            $items[$key]['percentage'] = $debt->percentage;
             $items[$key]['debt_amount'] = $debt->debt_amount;
+            $items[$key]['total_redeemed'] = $debt->total_redeemed;
+            $items[$key]['redeem_per_month'] = $debt->redeem_per_month;
+            $items[$key]['total_redemption'] = $debt->total_redemption;
             $items[$key]['debtor'] = $debt->debtor;
             $items[$key]['docs'] = $debt->documents;
         }
@@ -632,7 +626,8 @@ class ConsultantController extends Controller
         }
 
         $this->validate($request, [
-            'due_date'    => 'required'
+            'due_date'    => 'required',
+            'debt_amount' => 'required'
         ]);
 
         $item = new Debt;
@@ -643,11 +638,11 @@ class ConsultantController extends Controller
         $item->due_date = $input['due_date'];
         $item->preference = $input['preference'];
         $item->terms = $input['terms'];
-        $item->percentage = $input['percentage'];
+        $item->percentage = $input['percentage'] ? $input['percentage']: 0;
         $item->debt_amount = $input['debt_amount'];
-        $item->total_redeemed = $input['total_redeemed'];
-        $item->redeem_per_month = $input['redeem_per_month'];
-        $item->total_redemption = $input['total_redemption'];
+        $item->total_redeemed = $input['total_redeemed'] ? $input['total_redeemed']: 0;
+        $item->redeem_per_month = $input['redeem_per_month'] ? $input['redeem_per_month']: 0;
+        $item->total_redemption = $input['total_redemption'] ? $input['total_redemption']: 0;
         $item->notes = $input['notes'];
 
         if($item->save()){
@@ -676,12 +671,12 @@ class ConsultantController extends Controller
         $item->status_id = $input['status_id'];
         $item->due_date = $input['due_date'];
         $item->preference = $input['preference'];
-        $item->percentage = $input['percentage'];
+        $item->percentage = $input['percentage'] ? $input['percentage']: 0;
         $item->terms = $input['terms'];
         $item->debt_amount = $input['debt_amount'];
-        $item->total_redeemed = $input['total_redeemed'];
-        $item->redeem_per_month = $input['redeem_per_month'];
-        $item->total_redemption = $input['total_redemption'];
+        $item->total_redeemed = $input['total_redeemed'] ? $input['total_redeemed']: 0;
+        $item->redeem_per_month = $input['redeem_per_month'] ? $input['redeem_per_month']: 0;
+        $item->total_redemption = $input['total_redemption'] ? $input['total_redemption']: 0;
         $item->notes = $input['notes'];
 
         if($item->save()){
@@ -732,7 +727,7 @@ class ConsultantController extends Controller
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
         
-        $items = Document::where('client_id', $input['client_id'])->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('created_at', 'desc');
+        $items = Document::where('client_id', $input['client_id'])->whereNotNull('template_id')->whereNull('client_debt_id')->orderBy('template_id');
         if(isset($input['search']) && strlen($input['search']) > 2){
             $items = $items->where('title', 'LIKE', '%'. trim($input['search']) .'%');
         }
@@ -959,12 +954,27 @@ class ConsultantController extends Controller
             return response()->json(['success' => false, 'message' => 'not_client']);
         }
 
+        $templateHelper = new TemplateHelpers;
         $client = Client::find($input['client_id']);
+
+        $previousDocs = Document::where('client_id', $client->id)->where('client_status_id', $client->client_status_id)->get();
+        if ($previousDocs->count()) {
+            foreach ($previousDocs as $key => $doc) {
+                if ($templateHelper->signatureRequired($doc->html->html)) {
+                    return response()->json(['success' => false, 'message' => 'signature is not complete']);
+                }
+            }
+        }
+
         $client_status = $client->status->sort;
         $next_status = ClientStatus::where('sort', $client_status + 1)->first();
+
         if($next_status) {
+            $outboxHelper = new OutboxHelpers;
             $client->client_status_id = $next_status->id;
             if($client->save()){
+                $templateHelper->generateFormClientStatus($client, $next_status->id);
+                $outboxHelper->createOutboxClient($client->id, $next_status->id);
                 return response()->json(['success' => true, 'results' => $client->status->status]);
             }else{
                 return response()->json(['success' => false, 'message' => 'next_status_failed']);
@@ -982,6 +992,10 @@ class ConsultantController extends Controller
         $debt = Debt::find($input['debt_id']);
         $debt->status_id = $input['status_id'];
         if($debt->save()){
+            $templateHelper = new TemplateHelpers;
+            $outboxHelper = new OutboxHelpers;
+            $templateHelper->generateFormDebtStatus($debt->client, $input['status_id'], $debt->id);
+            $outboxHelper->createOutboxClient($debt->client_id, null, $input['status_id']);
             return response()->json(['success' => true, 'results' => $debt]);
         }else{
             return response()->json(['success' => false, 'message' => 'change status failed']);
@@ -1025,6 +1039,48 @@ class ConsultantController extends Controller
             return response()->json(['success' => true, 'results' => $debt]);
         }else{
             return response()->json(['success' => false, 'message' => 'next_status_failed']);
+        }
+    }
+
+    public function uploadOtherDoc(Request $request, ControllerHelpers $helper)
+    {
+        $input = $request->all();
+        $client_id = $input['client_id'];
+        $client = Client::find($client_id);
+        if(!$helper->myClient($this->jwt->user(), $client_id)) {
+            return response()->json(['success' => false, 'message' => 'not_client']);
+        }
+        
+        $item = new Document;
+        $item->client_id = $client_id;
+        $item->client_debt_id = isset($input['debt_id']) ? $input['debt_id']: null;
+        if(!isset($input['debt_id'])){
+            $item->client_status_id = $client->client_status_id;
+        }
+        $item->title = $input['title'];
+        if($item->save()){
+            if($request->hasFile('file')) {
+                $file = new DocFile;
+                $file->doc_id = $item->id;
+                $filename = $request->file('file')->getClientOriginalName();
+                $filetype = $request->file('file')->extension();
+                $file->filename = $filename;
+                $file->filetype = $filetype;
+                $file->fileoption = $input['option'];
+                if($request->file('file')->move(storage_path('app/documents/'.str_pad($client_id, 4, '0', STR_PAD_LEFT)), $filename)){
+                    $file->save();
+                }
+                $outboxHelper = new OutboxHelpers;
+                $outboxHelper->fileToOutbox($item->id, $client_id, $input['option'], (isset($input['debt_id']) ? $input['debt_id']: null));
+            }else{
+                return response()->json(['success' => false, 'message' => 'no file']);
+            }
+        }
+
+        if($item->save()){
+            return response()->json(['success' => true, 'results' => $item]);
+        }else{
+            return response()->json(['success' => false, 'message' => 'add_doc_failed']);
         }
     }
 

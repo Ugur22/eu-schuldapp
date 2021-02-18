@@ -23,8 +23,13 @@ class Debt extends Model
        return $this->belongsTo('App\Models\Company', 'debtor_id');
    }
 
+   public function outboxes()
+   {
+       return $this->belongsTo('App\Models\Outbox', 'client_debt_id');
+   }
+
    public function documents()
    {
-       return $this->hasMany('App\Models\Document', 'client_debt_id');
+       return $this->hasMany('App\Models\Document', 'client_debt_id')->with('file')->with('html');
    }
 }
