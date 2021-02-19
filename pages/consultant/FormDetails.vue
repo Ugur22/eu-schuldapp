@@ -66,14 +66,10 @@ export default {
 			that.singatureStatus = val.signature;
 			that.Amountsignatures = val.need_signature_by;
 			that.dataIsReady = true;
-			console.log(val);
 			});
 	},
 	components: {SignatureScreen,Header },
   	methods: {
-		toggleSignature: function () {
-      		this.enableSignature = !this.enableSignature;
-		},
 		handleSignature: async function(signature,author) {
 			this.signature = signature;
 			this.author = author;
@@ -82,7 +78,7 @@ export default {
 			try {
 
 				let data = new FormData();
-
+				
 				data.append('signature', this.signature);
 				data.append('document_id', this.navigation.getParam('docID'));
 				data.append('client_id', this.navigation.getParam('ClientID'));

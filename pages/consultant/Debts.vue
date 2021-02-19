@@ -85,9 +85,11 @@ export default {
 			let that = this;
 			this.dataIsReady = true;
 			this.clientDebts = val
-			this.clientDebts.map(function(debt){
-						that.totalDebts += parseFloat(debt.debt_amount);
-					})
+			if(this.clientDebts > 0){
+				this.clientDebts.map(function(debt){
+							that.totalDebts += parseFloat(debt.debt_amount);
+						})
+					}
 		;});
   },
   methods: {

@@ -28,16 +28,51 @@ export async function fetchData(url,usertoken,datatype='') {
 				responseJson = await response.json();
 
 			}
-      if (responseJson.success ? responseJson.success : responseJson) {
+			
+      if (responseJson.success ? responseJson.success : responseJson > 0) {
 
         return responseJson.results ?  responseJson.results : responseJson;
       } else {
-        console.log(responseJson);
+				return {};
       }
     } catch (error) {
       console.error(error);
     }
 }
+
+export async function fetchContent(url,usertoken) {
+
+	let responseJson;
+	let value = '';
+	try {
+		value = await usertoken;
+
+	} catch (error) {
+		// Error retrieving data
+		console.log(error.message);
+	}
+
+	try {
+		let response = await fetch(`http://api.arsus.nl/${url}`, {
+			method: 'GET',
+			headers: {
+				accept: 'application/json',
+				'Content-Type': 'application/json',
+				 'Authorization': `Bearer ${usertoken}`
+			},
+		});
+	
+		responseJson = await response.text();
+		if (responseJson) {
+			return responseJson.results ?  responseJson.results : responseJson;
+		} else {
+			return {};
+		}
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 
 export async function PostData(url,usertoken) {
 	let value = '';

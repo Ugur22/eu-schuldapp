@@ -13,7 +13,7 @@
   </nb-container>
 </template>
 <script>
-import {fetchData} from "../utils/fetch";
+import {fetchContent} from "../utils/fetch";
 import Header from '../../included/Header';
 
 export default {
@@ -33,7 +33,7 @@ export default {
   created() {
 	},
 	mounted() {
-		fetchData(`document/file-download?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token,'file').then(val => {
+		fetchContent(`document/file-download?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
 			let that = this;
 			this.dataIsReady = true;
       that.otherDoc = val;

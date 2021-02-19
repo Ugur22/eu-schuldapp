@@ -25,10 +25,13 @@
             <nb-text :style="{ fontWeight: 'bold' }" class="text">{{ $root.lang.t('currency') }}{{totalDebts}}</nb-text>
           </nb-body>
           <nb-right>
-            <!-- <nb-icon class="text" name="arrow-forward" /> -->
+            <nb-icon class="text" name="arrow-forward" />
           </nb-right>
         </nb-list-item>
       </nb-list>
+			<!-- <nb-text v-if="dataIsReady && clientDebts.success == false">
+				Er zijn nog geen schulden
+			</nb-text> -->
       <nb-spinner color="#0078ae" v-else />
     </nb-content>
     <nb-footer>
@@ -84,10 +87,12 @@ export default {
 		fetchData(`client/docs/debts`,this.$root.user.token).then(val => {
 			let that = this;
 			this.dataIsReady = true;
-			this.clientDebts = val
-			this.clientDebts.map(function(debt){
-						that.totalDebts += parseFloat(debt.debt_amount);
-					})
+			this.clientDebts = val;
+			if(this.clientDebts > 0){
+				this.clientDebts.map(function(debt){
+							that.totalDebts += parseFloat(debt.debt_amount);
+						})
+				}
 			});
 	},
   methods: {

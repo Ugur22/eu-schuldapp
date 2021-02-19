@@ -6,17 +6,6 @@
 				<nb-card-item >
           <nb-picker :style="{width: Platform.OS === 'android' ? width-60 : width-40}"
             mode="dialog"
-            placeholder="Kies een document type"
-            :selectedValue="selectedfileType"
-            :iosIcon="getIosIcon()"
-            :onValueChange="onfileTypeChange"
-            >
-            <item v-for="filetype in FileTypes" :key="filetype.value" :label="filetype.label" :value="filetype.value" />
-          </nb-picker>
-        </nb-card-item>
-				<nb-card-item v-if="selectedfileType != 'others'" >
-          <nb-picker :style="{width: Platform.OS === 'android' ? width-60 : width-40}"
-            mode="dialog"
             placeholder="Kies een document"
             :selectedValue="selectedDoc"
             :iosIcon="getIosIcon()"
@@ -25,7 +14,7 @@
             <item v-for="selection in selections" :key="selection.id" :label="selection.slug" :value="selection.id" />
           </nb-picker >
         </nb-card-item>
-        <nb-card-item v-if="selectedfileType == 'others'">
+        <nb-card-item >
           <nb-body
             :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }"
           >
@@ -48,7 +37,7 @@
             <nb-thumbnail :source="photo" />
           </nb-button>
         </nb-card-item>
-        <nb-card-item v-if="selectedfileType == 'others'"
+        <nb-card-item 
           :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
           <nb-badge :style="{ height: 'auto' }">
             <nb-text :style="{ fontSize: 14, padding: 5 }">{{
@@ -241,58 +230,24 @@ export default {
 			file: {},
 			signature:'',
 			selectedDocName:'',
-			selectedfileType:'forms',
-			FileTypes: [
-				{label:"formulieren", value:"forms"} ,
-				{label:"schulden formulieren", value:"debtor"},
-				{label:"overige documenten", value:"others"},
-			],
 			selections:{}
 		};
   },
   created() {
 	},
 	mounted() {
-		fetchData(`consultant/client?id=${this.navigation.getParam(
-					'clientID')}`,this.$root.user.token).then(val => {
-		this.dataIsReady = true; this.Client = val;});
-		fetchData(`consultant/client/templates?client_id=${this.navigation.getParam(
-            'clientID')}&type=${this.selectedfileType}`,this.$root.user.token).then(val => {
-		this.dataIsReady = true; this.selections = val;});
+		fetchData(`consultant/client?id=${this.navigation.getParam('clientID')}`,this.$root.user.token).then(val => {
+			this.dataIsReady = true; this.Client = val;});
+		fetchData(`upload-options`,this.$root.user.token).then(val => {
+			this.dataIsReady = true; 
+			this.selections = val;
+		});
   },
   components: { FooterNav, Camera, Item: Picker.Item ,Header},
   methods: {
    getIosIcon: function() {
       return <Icon name="arrow-down" />;
     },
-		clientTemplates:  async function(){
-
-      try {			
-        let response = await fetch(
-          `http://api.arsus.nl/consultant/client/templates?client_id=${this.navigation.getParam(
-            'clientID'
-          )}&type=${this.selectedfileType}`,
-          {
-            method: 'GET',
-            headers: {
-              accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.$root.user.token}`,
-            },
-          }
-        );
-
-        let responseJson = await response.json();
-        if (responseJson.success) {
-					this.selections = responseJson.results;
-					this.dataIsReady = true;
-        } else {
-          console.log(responseJson.results);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-		},
     createFormData: function (file, body) {
       let data = new FormData();
 
@@ -302,7 +257,7 @@ export default {
             ? file.uri
             : file.uri.replace('file://', ''),
         type: 'image/jpeg',
-        name: this.title, 
+        name: this.selectedDocName, 
       });
 
       Object.keys(body).forEach((key) => {
@@ -311,7 +266,6 @@ export default {
       return data;
     },
     uploadImage: async function () {
-
 			try {
 				let response = await fetch('http://api.arsus.nl/consultant/doc/add', {
 					method: 'POST',
@@ -321,9 +275,9 @@ export default {
 						Authorization: `Bearer ${this.$root.user.token}`,
 					},
 					body: this.createFormData(this.finalPic, {
-						title: this.title,
+						title: this.selectedDocName,
 						client_id: this.navigation.getParam('clientID'),
-						template_id: 0,
+						option:this.selectedDocName
 					}),
 				});
 
@@ -335,36 +289,6 @@ export default {
 					});
 					this.photo.uri = '';
 					this.title ='';
-				} else {
-					console.log(responseJson);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		},
-		uploadDoc: async function () {
-
-			try {
-				let response = await fetch('http://api.arsus.nl/consultant/doc/add', {
-					method: 'POST',
-					headers: {
-						Accept: 'application/json',
-						'Content-type': 'application/json',
-						Authorization: `Bearer ${this.$root.user.token}`,
-					},
-					body: JSON.stringify({
-						title: this.title ? this.title : this.selectedDocName,
-						client_id: this.navigation.getParam('clientID'),
-						template_id:this.selectedDoc
-					}),
-				});
-
-				let responseJson = await response.json();
-
-				if (responseJson.success) {
-				Toast.show({
-					text: 'file uploaded',
-				});
 				} else {
 					console.log(responseJson);
 				}
@@ -394,14 +318,7 @@ export default {
       }else {
          this.selectedDocName = this.selections[index-1].slug;
       }
-     
 		},
-		onfileTypeChange: function (value) {
-			this.selectedfileType = value;
-      this.clientTemplates();
-      
-			
-    },
     getCamera: function () {
       Permissions.askAsync(Permissions.CAMERA)
         .then((status) => {
@@ -444,13 +361,11 @@ export default {
       this.displayLarge = false;
     },
     sendFile: function () {
-			if (this.selectedfileType != 'others') {
-				this.uploadDoc();
-			} else if(this.selectedfileType == 'others') {
+			if (this.finalPic !== null) {
 				this.uploadImage();
 			}else {
 				Toast.show({
-					text: 'kies een document',
+					text: 'U moet een bijlage toevoegen',
 					buttonText: 'ok',
 				});
 			}
