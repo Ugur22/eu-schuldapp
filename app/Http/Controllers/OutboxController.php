@@ -47,6 +47,9 @@ class OutboxController extends Controller
       
       $input = $request->all();
       $outboxes = Outbox::with('documents')->with('client')->with('status')->with('debt')->orderBy('created_at');
+      if (isset($input['debt_id'])) {
+        $outboxes = $outboxes->where('client_debt_id', $input['debt_id']);
+      }
       if ($input['client_id']) {
         $outboxes = $outboxes->where('client_id', $input['client_id']); 
       }

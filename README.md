@@ -154,7 +154,7 @@ email, password
 
 ## POST
 `/consultant/doc/add`
-*request: client_id, debt_id, title, option , file, 
+*request: client_id, debt_id, title, option ('slug'), file, 
 **upload other document**
 
 `/consultant/client/create`
