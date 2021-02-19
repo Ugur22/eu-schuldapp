@@ -11,8 +11,11 @@
             <nb-text class="text">{{formatDate(form.created_at)}}</nb-text>
           </nb-body>
             <nb-right>
-							<nb-button iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">
+							<nb-button v-if="!form.main" iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">
               	<nb-icon  class="text" name="create" />
+							</nb-button>
+							<nb-button v-else iconRight transparent >
+              	<nb-icon  class="text" name="mail" />
 							</nb-button>
             </nb-right>
         </nb-list-item>
@@ -62,7 +65,10 @@ export default {
   },
  	mounted() {
 		fetchData(`consultant/doc/forms?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
-			this.dataIsReady = true; this.clientForms = val;});
+			this.dataIsReady = true;
+			this.clientForms = val;
+			console.log(this.clientForms);
+			});
   },
   components: { FooterNav,Header},
   methods: {
