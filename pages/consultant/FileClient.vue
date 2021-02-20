@@ -57,8 +57,8 @@
       <nb-grid :style="{ marginTop: 10 }">
         <nb-col>
           <nb-button
-            full
-            class="btns"
+            full :style="{backgroundColor:Client.client_status_id >= 5 ? '#0078ae' : 'grey'}"
+            class="btns" :disabled="Client.client_status_id >= 5 ? false : true"
             :on-press="() => detailPage(Client.id, 'Debts')"
           >
             <nb-text>{{ $root.lang.t('debts') }}</nb-text>
@@ -237,7 +237,9 @@ export default {
 	},
 	mounted() {
 		fetchData(`consultant/client?id=${this.navigation.getParam('clientID')}`,this.$root.user.token).then(val => {
-			this.dataIsReady = true; this.Client = val;});
+			this.dataIsReady = true;
+			this.Client = val;
+			});
 		fetchData(`upload-options`,this.$root.user.token).then(val => {
 			this.dataIsReady = true; 
 			this.selections = val;
