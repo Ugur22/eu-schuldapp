@@ -6,7 +6,7 @@
 		<nb-input placeholder="zoek overige documenten" />
 	  </nb-item>
 	  <nb-list v-if="dataIsReady">
-		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id)">
+		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
 		  <nb-left>
 			<nb-text class="text">{{ docs.title }}</nb-text>
 		  </nb-left>
@@ -38,38 +38,85 @@ import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
+import * as Print from 'expo-print';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default {
   props: {
 		navigation: {
 			type: Object,
-		}
+		},
+		user: {},
   },
   data() {
 		return {
 			selectedDoc: '0',
 			clientDocs: {},
 			dataIsReady: false,
-			formatDate
+			formatDate,
+			buttonOff: false
 		};
   },
   created() {
 	},
 	mounted() {
 		fetchData(`consultant/doc/others?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
-			this.dataIsReady = true; this.clientDocs = val;});
+			this.dataIsReady = true; this.clientDocs = val;
+			});
   },
   components: { FooterNav,Header },
   methods: {
 	goBack: function () {
 	  this.navigation.goBack();
 	},
-	detailOther: function (id,clientID) {
-	  this.navigation.navigate('OtherDocsDetails', {
-		docID: id,
-		ClientID:clientID
-	  });
-	},
+	showPDF: async function (id,clientID) {
+			this.buttonOff = true;
+			 setTimeout(() => this.buttonOff = false, 2000);
+
+			let that = this;
+			let value = '';
+			try {
+			value = await AsyncStorage.getItem('login');
+			this.user = JSON.parse(value); 
+			} catch (error) {
+			// Error retrieving data
+			console.log(error.message);
+			}
+
+			try {
+				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${clientID}
+				&document_id=${id}`, {
+					method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.user.token}`
+          },
+				});
+
+				let responseJson = await response.text();
+				if (responseJson) {
+					this.dataIsReady = true;
+					Print.printAsync({uri:responseJson});
+				} else {
+					console.log(responseJson);
+				}
+			} catch (error) {
+			console.log(error);
+			console.error(error);
+			}
+		},
+	detailOther: function (id,clientID,docType) {
+			if(docType === 'jpg'){
+				this.navigation.navigate('OtherDocsDetails', {
+					docID: id,
+					ClientID:clientID,
+					docType:docType
+				});
+			}else {
+				this.showPDF(id,clientID);
+			}
+		}
   },
 };
 </script>

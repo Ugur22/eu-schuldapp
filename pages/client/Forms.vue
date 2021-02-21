@@ -7,8 +7,16 @@
           <nb-left>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
-          <nb-right>
+					<nb-body>
             <nb-text class="text">{{formatDate(form.created_at)}}</nb-text>
+					</nb-body>
+					<nb-right>
+						<nb-button v-if="!form.main" iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">
+							<nb-icon  class="text" name="create" />
+						</nb-button>
+						<nb-button v-else iconRight transparent >
+							<nb-icon  class="text" name="mail" />
+						</nb-button>
           </nb-right>
         </nb-list-item>
       </nb-list>
@@ -26,7 +34,6 @@
 <style>
 .text {
     color: #0078ae;
-     font-size: 14;
 }
 </style>
 <script>

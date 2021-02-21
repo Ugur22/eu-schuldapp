@@ -13,6 +13,9 @@
           <nb-body>
             <!-- <nb-text class="text">{{formatDate(collector.doc_date_time)}}</nb-text> -->
           </nb-body>
+					<nb-right>
+						<nb-icon class="text" name="arrow-forward" />
+					</nb-right>
         </nb-list-item>
       </nb-list>
       <nb-spinner color="#0078ae" v-else /> 
@@ -66,9 +69,9 @@ export default {
     created() {
 	},
 	mounted() {
-		fetchData(`consultant/doc/debtor-list?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
+		fetchData(`consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
-			this.clientCollectors = val
+			this.clientCollectors = val;
 			;});
   },
   components: { FooterNav, Header },
