@@ -97,8 +97,6 @@ export default {
 			clientStatus: ''
 		};
   },
-  created() {
-	},
 	mounted() {
 		fetchData(`consultant/clients`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
@@ -107,25 +105,38 @@ export default {
 	},
   methods: {
 		confirmNextStep: function(clientID){
-					Alert.alert(
-						'Weet u het zeker?',
-						'bevestig volgende stap',
-						[
-							{
-								text: 'Nee',
-								style: 'cancel'
-							},
-							{ text: 'Ja', onPress: () => 
-									PostData(`consultant/client/next-step?client_id=${clientID}`,this.$root.user.token).then(val => {
-										fetchData(`consultant/clients`,this.$root.user.token).then(val => {
-											this.dataIsReady = true;
-											this.Clients = val;
-									});
-								})
-							}
-						],
-						{ cancelable: false }
-					);
+			Alert.alert(
+				'Weet u het zeker?',
+				'bevestig volgende stap',
+				[
+					{
+						text: 'Nee',
+						style: 'cancel'
+					},
+					{ text: 'Ja', onPress: () => 
+							PostData(`consultant/client/next-step?client_id=${clientID}`,this.$root.user.token).then(val => {
+								if(val.message === "no debt"){
+									Alert.alert(
+										'U mist een aantal gegevens',
+										'U kunt niet verder naar de volgende stap zonder dat er schulden, uitgaven en inkomsten zijn ingevuld.',
+										[
+											{
+												text: 'ok',
+												style: 'cancel'
+											}
+										],
+										{ cancelable: false }
+									);
+								} 
+								fetchData(`consultant/clients`,this.$root.user.token).then(val => {
+									this.dataIsReady = true;
+									this.Clients = val;
+							});
+						})
+					}
+				],
+				{ cancelable: false }
+			);
 		},
 	goBack: function () {
 	  this.navigation.goBack();

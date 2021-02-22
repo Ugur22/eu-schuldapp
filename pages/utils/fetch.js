@@ -28,7 +28,7 @@ export async function fetchData(url,usertoken,datatype='') {
 				responseJson = await response.json();
 
 			}
-			
+
       if (responseJson.success ? responseJson.success : responseJson > 0) {
 
         return responseJson.results ?  responseJson.results : responseJson;
@@ -94,12 +94,11 @@ export async function PostData(url,usertoken) {
 		});
 		let responseJson = await response.json();
 		if (responseJson.success) {
-			return responseJson
+			return responseJson;
 		} else {
-			console.log(responseJson);
+			return responseJson;
 			}
 	} catch (error) {
-		console.log(error);
 		console.error(error);
 	}
 }

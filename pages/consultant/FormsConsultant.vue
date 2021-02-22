@@ -39,17 +39,15 @@
 <script>
 import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate} from "../utils/dates";
 import * as Print from 'expo-print';
-import {fetchData} from "../utils/fetch";
+import {fetchData,fetchContent} from "../utils/fetch";
 
 export default {
   props: {
     navigation: {
       type: Object,
-    },
-    user: {},
+    }
   },
   data() {
     return {
@@ -78,38 +76,11 @@ export default {
 			this.buttonOff = true;
 			 setTimeout(() => this.buttonOff = false, 2000);
 
-			let that = this;
-			let value = '';
-			try {
-			value = await AsyncStorage.getItem('login');
-			this.user = JSON.parse(value); 
-			} catch (error) {
-			// Error retrieving data
-			console.log(error.message);
-			}
-
-			try {
-				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${clientID}
-				&document_id=${id}`, {
-					method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          },
-				});
-
-				let responseJson = await response.text();
-				if (responseJson) {
-					this.dataIsReady = true;
-					Print.printAsync({uri:responseJson});
-				} else {
-					console.log(responseJson);
-				}
-			} catch (error) {
-			console.log(error);
-			console.error(error);
-			}
+			fetchContent(`document/pdf-download?client_id=${clientID}
+				&document_id=${id}`,this.$root.user.token).then(val => {
+				Print.printAsync({uri:val});
+				this.dataIsReady = true;
+			});
 		},
 		signature: function (id,clientID) {
 			this.navigation.navigate('FormDetails', {

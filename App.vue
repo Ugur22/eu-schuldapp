@@ -62,6 +62,7 @@
 	import FormDetailsScreen from "./pages/consultant/FormDetails";
 	import DebtClientDetailScreen from "./pages/consultant/DebtDetailsClient";
 	import DebtClientScreen from "./pages/consultant/Debts";
+	import CollectorDocsConsultantScreen from "./pages/consultant/CollectorDocs";
 
   const StackNavigator = createStackNavigator(
     {
@@ -88,6 +89,9 @@
       },
       DocsCollector: {
         screen: CollectorDocsScreen
+      },
+			CollectorDocs: {
+        screen: CollectorDocsConsultantScreen
       },
       DocsOthers: {
         screen: OtherDocsScreen
