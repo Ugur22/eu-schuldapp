@@ -6,13 +6,13 @@
         <nb-input placeholder="zoek schuldeiser documenten" />
       </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="collector in clientCollectors" :key="collector.id">
+        <nb-list-item v-for="collector in clientCollectors" :key="collector.id" :on-press="() => detailCollector(collector.id )">
           <nb-left>
-            <nb-text class="text">{{collector.title}}</nb-text>
+            <nb-text class="text">{{collector.debtor}}</nb-text>
           </nb-left>
-          <nb-right>
-            <nb-text class="text">{{formatDate(collector.doc_date_time)}}</nb-text>
-          </nb-right>
+					<nb-right>
+						<nb-icon class="text" name="arrow-forward" />
+					</nb-right>
         </nb-list-item>
       </nb-list>
       <nb-spinner color="#0078ae" v-else />
@@ -38,7 +38,6 @@
 }
 .text {
   color: #0078ae;
-  font-size: 14;
 }
 
 </style>
@@ -58,14 +57,13 @@ export default {
 	},
 	mounted() {
 		fetchData(`client/docs/debtors`,this.$root.user.token).then(val => {
-		this.dataIsReady = true;
+			this.dataIsReady = true;
 			this.clientCollectors = val;
-			});
-	},
+		});
+  },
   components: { FooterNav,Header },
   data() {
     return {
-      selectedDoc: '0',
        clientCollectors: {},
        dataIsReady: false,
        formatDate
@@ -75,6 +73,12 @@ export default {
     goBack: function () {
       this.navigation.goBack();
     },
+		detailCollector: function (debtorID) {
+      this.navigation.navigate('CollectorDocsClient', {
+        id: this.navigation.getParam('id'),
+				debtorid:debtorID
+      });
+    }
   },
 };
 </script>

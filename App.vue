@@ -48,6 +48,7 @@
   import CollectorDocsScreen from "./pages/client/Collector.vue";
   import OtherDocsScreen from "./pages/client/OtherDocs.vue";
 	import AppointmentClientScreen from "./pages/client/AppointmentClient"
+	import CollectorDocsClientClientScreen from "./pages/client/CollectorDocsClient"
 	
 	// Consultant components
   import DateScreen from "./pages/consultant/MakeAppointment";
@@ -89,6 +90,9 @@
       },
       DocsCollector: {
         screen: CollectorDocsScreen
+      },
+			CollectorDocsClient: {
+        screen: CollectorDocsClientClientScreen
       },
 			CollectorDocs: {
         screen: CollectorDocsConsultantScreen

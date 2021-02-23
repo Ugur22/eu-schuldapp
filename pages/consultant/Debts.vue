@@ -84,8 +84,8 @@ export default {
 		fetchData(`consultant/client/debts?client_id=${ this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 			let that = this;
 			this.dataIsReady = true;
-			this.clientDebts = val
-			if(this.clientDebts > 0){
+			this.clientDebts = val;
+			if(this.clientDebts.length > 0){
 				this.clientDebts.map(function(debt){
 							that.totalDebts += parseFloat(debt.debt_amount);
 						})

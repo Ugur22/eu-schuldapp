@@ -4,13 +4,14 @@
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
 	  </nb-item>
+		<!-- <nb-text>{{collectorDocs[0]}}</nb-text> -->
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="docs in collectorDocs" :key="docs.id" :on-press="() => showPDF(docs.id)">
           <nb-left>
             <nb-text class="text">{{docs.title}}</nb-text>
           </nb-left>
           <nb-body>
-						<nb-text class="text"> {{formatDate(docs.updated_at)}}</nb-text>
+							<nb-text class="text"> {{formatDate(docs.updated_at)}}</nb-text>
           </nb-body>
 					<nb-right>
 						<nb-icon class="text" name="arrow-forward" />
@@ -56,11 +57,11 @@ export default {
 		};
   },
 	mounted() {
-		fetchData(`consultant/doc/debtors?client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
+		fetchData(`client/docs/debt-list`,this.$root.user.token).then(val => {
 			this.dataIsReady = true;
 			this.collectorDocs = val;
 			this.collectorDocs  = this.collectorDocs.filter(debtor => (debtor.client_debt.debtor.id === this.navigation.getParam('debtorid')));
-	});
+		});
   },
   components: { FooterNav,Header },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <nb-container>
 	<header :pageTitle="$root.lang.t('file')" :method="goBack" />
-    <nb-content padder>
+    <nb-content padder >
       <!-- <nb-card>
         <nb-card-item>
           <nb-picker
@@ -43,8 +43,8 @@
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
       </nb-card> -->
-      <nb-grid :style="{ marginTop: 20}">
-        <nb-col>
+      <nb-grid :style="{ marginTop: 20}" v-if="clientStatus >= 5 && dataIsReady">
+        <nb-col v-if="clientStatus >= 5">
           <nb-button full class="btns" :on-press="() => goToPage('DebtList')">
             <nb-text>{{ $root.lang.t('debts') }}</nb-text>
           </nb-button>
@@ -107,15 +107,17 @@
 import Header from '../../included/Header';
   import * as Permissions from 'expo-permissions';
   import { Camera } from 'expo-camera';
+	import {fetchData} from "../utils/fetch";
 
   export default {
     props: {
       navigation: {
         type: Object
-      }
+      },
     },
     data() {
       return {
+				clientData: {},
         selectedDoc: '0',
         hasCameraPermission: false,
         type: Camera.Constants.Type.back,
@@ -124,9 +126,18 @@ import Header from '../../included/Header';
         displayCam: false,
         displayThumbnail: false,
         finalPic: null,
-        displayLarge: false
+        displayLarge: false,
+				clientStatus:0,
+				dataIsReady: false,
       };
     },
+		mounted() {
+			fetchData(`client`,this.$root.user.token).then(val => {
+				this.dataIsReady = true;
+				this.clientData = val;
+				this.clientStatus = this.clientData.status.id;
+			});
+		},
     components: { FooterNav, Camera, Item: Picker.Item,Header },
     methods: {
       goBack: function () {

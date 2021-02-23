@@ -9,21 +9,18 @@
             placeholder="Kies een document"
             :selectedValue="selectedDoc"
             :iosIcon="getIosIcon()"
-            :onValueChange="onDocChange"
-          >
+            :onValueChange="onDocChange">
             <item v-for="selection in selections" :key="selection.id" :label="selection.slug" :value="selection.id" />
           </nb-picker >
         </nb-card-item>
         <nb-card-item >
           <nb-body
-            :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }"
-          >
+            :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
             <nb-button
               rounded
               info
               :style="{ alignSelf: 'center', backgroundColor: '#0078ae' }"
-              :on-press="getCamera"
-            >
+              :on-press="getCamera">
               <nb-icon active name="ios-add" />
             </nb-button>
             <nb-text>{{ $root.lang.t('upload') }}</nb-text>
@@ -55,12 +52,10 @@
         </nb-button>
       </nb-card>
       <nb-grid :style="{ marginTop: 10 }">
-        <nb-col>
+        <nb-col v-if="Client.client_status_id >= 5 ? true : false">
           <nb-button
-            full :style="{backgroundColor:Client.client_status_id >= 5 ? '#0078ae' : 'grey'}"
-            class="btns" :disabled="Client.client_status_id >= 5 ? false : true"
-            :on-press="() => detailPage(Client.id, 'Debts')"
-          >
+            full class="btns" 
+            :on-press="() => detailPage(Client.id, 'Debts')">
             <nb-text>{{ $root.lang.t('debts') }}</nb-text>
           </nb-button>
         </nb-col>
@@ -68,8 +63,7 @@
           <nb-button
             full
             class="btns"
-            :on-press="() => detailPage(Client.id, 'FormsConsultant')"
-          >
+            :on-press="() => detailPage(Client.id, 'FormsConsultant')">
             <nb-text>{{ $root.lang.t('forms') }}</nb-text>
           </nb-button>
         </nb-col>
@@ -78,8 +72,7 @@
         <nb-button
           full
           class="btns"
-          :on-press="() => detailPage(Client.id, 'OtherDocsConsultant')"
-        >
+          :on-press="() => detailPage(Client.id, 'OtherDocsConsultant')">
           <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
         </nb-button>
       </nb-col>
@@ -87,8 +80,7 @@
         <nb-button
           full
           class="btns"
-          :on-press="() => detailPage(Client.id, 'CollectorConsultant')"
-        >
+          :on-press="() => detailPage(Client.id, 'CollectorConsultant')">
           <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
         </nb-button>
       </nb-col>
@@ -99,8 +91,7 @@
         v-if="!displayPreview"
         :type="this.type"
         ref="useCamera"
-        :style="{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }"
-      >
+        :style="{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }">
         <nb-button
           info
           rounded
@@ -110,8 +101,7 @@
             alignSelf: 'center',
             width: 80,
             height: 80,
-          }"
-        >
+          }">
           <nb-icon name="camera" />
         </nb-button>
         <nb-button
@@ -123,8 +113,7 @@
             alignSelf: 'flex-end',
             marginBottom: 20,
             marginRight: 20,
-          }"
-        >
+          }">
           <nb-icon name="close" />
         </nb-button>
       </camera>
@@ -137,23 +126,20 @@
           backgroundColor: 'transparent',
           justifyContent: 'flex-end',
           alignItems: 'center',
-        }"
-      >
+        }">
         <view :style="{ flexDirection: 'row', marginBottom: 10 }">
           <nb-button
             success
             rounded
             :on-press="confirmPhoto"
-            :style="{ marginRight: 5 }"
-          >
+            :style="{ marginRight: 5 }">
             <nb-icon name="checkmark" />
           </nb-button>
           <nb-button
             danger
             rounded
             :on-press="cancelPreview"
-            :style="{ marginLeft: 5 }"
-          >
+            :style="{ marginLeft: 5 }">
             <nb-icon name="close" />
           </nb-button>
         </view>
@@ -168,15 +154,13 @@
           backgroundColor: 'transparent',
           justifyContent: 'flex-end',
           alignItems: 'center',
-        }"
-      >
+        }">
         <view :style="{ marginBottom: 10 }">
           <nb-button
             danger
             rounded
             :on-press="removeLargerImage"
-            :style="{ justifyContent: 'center', alignSelf: 'center' }"
-          >
+            :style="{ justifyContent: 'center', alignSelf: 'center' }">
             <nb-icon name="close" />
           </nb-button>
         </view>
