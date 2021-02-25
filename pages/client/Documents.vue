@@ -43,28 +43,31 @@
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
       </nb-card> -->
-      <nb-grid :style="{ marginTop: 20}" v-if="clientStatus >= 5 && dataIsReady">
-        <nb-col v-if="clientStatus >= 5">
-          <nb-button full class="btns" :on-press="() => goToPage('DebtList')">
-            <nb-text>{{ $root.lang.t('debts') }}</nb-text>
-          </nb-button>
-        </nb-col>
-        <nb-col>
-          <nb-button full class="btns" :on-press="() => goToPage('FormList')">
-            <nb-text>{{ $root.lang.t('forms') }}</nb-text>
-          </nb-button>
-        </nb-col>
-      </nb-grid>
-      <nb-col>
-        <nb-button full class="btns" :on-press="() => goToPage('DocsCollector')">
-          <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
-        </nb-button>
-      </nb-col>
-      <nb-col>
-        <nb-button full class="btns" :on-press="() => goToPage('DocsOthers')">
-          <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
-        </nb-button>
-      </nb-col>
+			<nb-content v-if="dataIsReady">
+				<nb-grid :style="{ marginTop: 20}" v-if="clientStatus >= 5 && dataIsReady">
+					<nb-col v-if="clientStatus >= 5">
+						<nb-button full class="btns" :on-press="() => goToPage('DebtList')">
+							<nb-text>{{ $root.lang.t('debts') }}</nb-text>
+						</nb-button>
+					</nb-col>
+					<nb-col>
+						<nb-button full class="btns" :on-press="() => goToPage('FormList')">
+							<nb-text>{{ $root.lang.t('forms') }}</nb-text>
+						</nb-button>
+					</nb-col>
+				</nb-grid>
+				<nb-col>
+					<nb-button full class="btns" :on-press="() => goToPage('DocsCollector')">
+						<nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
+					</nb-button>
+				</nb-col>
+				<nb-col>
+					<nb-button full class="btns" :on-press="() => goToPage('DocsOthers')">
+						<nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
+					</nb-button>
+				</nb-col>
+			</nb-content>
+			<nb-spinner color="#0078ae" v-else /> 
     </nb-content>
     <nb-footer>
       <footer-nav :style="{backgroundColor:'#0078ae'}" activeBtn="docs"></footer-nav>
