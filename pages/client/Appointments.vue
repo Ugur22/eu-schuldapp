@@ -4,7 +4,7 @@
      <nb-content padder >
       <nb-card v-if="dataIsReady">
         <nb-card-item header bordered>
-          <nb-text class="text">Alle afspraken</nb-text>
+          <nb-text class="text">{{$root.lang.t('appointments')}}</nb-text>
         </nb-card-item>
         <nb-list v-if="appointments">
           <nb-list-item  v-for="appointment in appointments"

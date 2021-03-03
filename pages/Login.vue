@@ -99,8 +99,8 @@ export default {
 
         } else {
 					Alert.alert(
-						'login mislukt',
-						'De combinatie van het e-mailadres en het wachtwoord is niet bij ons bekend',
+						`${this.$root.lang.t('login_failed')}`,
+						`${this.$root.lang.t('login_failed_message')}`,
 						[
 							{
 								text: 'ok',

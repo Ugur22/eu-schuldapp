@@ -3,15 +3,15 @@
 	    <header :pageTitle="$root.lang.t('clients')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
-		<nb-input placeholder="Search" />
+		<nb-input :placeholder="$root.lang.t('search')" />
 	  </nb-item>
 	  <nb-list v-if="dataIsReady">
 	  <nb-list-item itemDivider class="list-Header">
 		  <nb-left>
-			<nb-text  class="text header-text">naam</nb-text>
+			<nb-text  class="text header-text">{{$root.lang.t('name')}}</nb-text>
 		  </nb-left>
 		  <nb-body>
-			<nb-text  class="text header-text">status</nb-text>
+			<nb-text  class="text header-text">{{$root.lang.t('status')}}</nb-text>
 		  </nb-body>
 		  <nb-right>
 		  </nb-right>
@@ -106,19 +106,19 @@ export default {
   methods: {
 		confirmNextStep: function(clientID){
 			Alert.alert(
-				'Weet u het zeker?',
-				'bevestig volgende stap',
+				`${this.$root.lang.t('confirm_message')}`,
+				`${this.$root.lang.t('confirm_step')}`,
 				[
 					{
-						text: 'Nee',
+						text: `${this.$root.lang.t('yes')}`,
 						style: 'cancel'
 					},
 					{ text: 'Ja', onPress: () => 
 							PostData(`consultant/client/next-step?client_id=${clientID}`,this.$root.user.token).then(val => {
 								if(val.message === "no debt"){
 									Alert.alert(
-										'U mist een aantal gegevens',
-										'U kunt niet verder naar de volgende stap zonder dat er schulden, uitgaven en inkomsten zijn ingevuld.',
+										`${this.$root.lang.t('missing_info')}`,
+											`${this.$root.lang.t('missing_info_detail')}`,
 										[
 											{
 												text: 'ok',

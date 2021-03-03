@@ -29,12 +29,12 @@
     <nb-content padder>
       <nb-card transparent> 
         <nb-card-item header>
-          <nb-text>Afspraak maken met {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} op {{formatDate(date)}} om {{selectedTime}} </nb-text>
+          <nb-text>	{{$root.lang.t('client_appoinment')}} {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} op {{formatDate(date)}} om {{selectedTime}} </nb-text>
         </nb-card-item>
         <nb-card-item>
           <nb-body>
 						  <nb-card-item floatingLabel>
-					<nb-label>tijd</nb-label>
+					<nb-label>{{$root.lang.t('time')}}</nb-label>
             <nb-picker
               mode="dialog"
               placeholder="tijd"
@@ -49,18 +49,18 @@
             </nb-picker>
 						  </nb-card-item>
             <nb-item :error="(!title.required)" floatingLabel>
-              <nb-label>Title</nb-label>
+              <nb-label>{{$root.lang.t('title')}}</nb-label>
               <nb-input v-model="title" />
             </nb-item>
             <nb-item floatingLabel :style="{  marginTop:10 }">
-              <nb-label>Notes</nb-label>
+              <nb-label>{{$root.lang.t('note')}}</nb-label>
               <nb-input v-model="notes" />
             </nb-item>
             <nb-card-item floatingLabel>
           <nb-label>{{ $root.lang.t('Township') }}:</nb-label>
             <nb-picker
               mode="dialog"
-              placeholder="gemeente"
+              :placeholder="$root.lang.t('Township')"
               :selectedValue="selectedLocation"
               :iosIcon="getIosIcon()"
               :onValueChange="onLocationChange">
@@ -172,7 +172,7 @@ import Header from '../../included/Header';
 			renderEmptyData: function() {
 				return (
 					 <View style={styleAppointments.emptyDate}>
-						<Text>Er zijn geen afspraken op deze datum</Text>
+						<Text>{this.$root.lang.t('no_appointments')}</Text>
 					</View>
 				);
 			},
@@ -242,7 +242,7 @@ import Header from '../../included/Header';
         }
       }else {
           Toast.show({
-          text: 'vul een titel in!',
+          text: `${$root.lang.t('missing_title')}`,
           buttonText: 'ok'
         })
       }

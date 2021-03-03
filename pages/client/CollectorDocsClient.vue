@@ -1,10 +1,9 @@
 <template>
   <nb-container>
-	<header pageTitle="Documenten" :method="goBack" />
+	<header :pageTitle="$root.lang.t('file')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
 	  </nb-item>
-		<!-- <nb-text>{{collectorDocs[0]}}</nb-text> -->
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="docs in collectorDocs" :key="docs.id" :on-press="() => showPDF(docs.id)">
           <nb-left>

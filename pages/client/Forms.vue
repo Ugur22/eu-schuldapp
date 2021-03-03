@@ -11,8 +11,8 @@
             <nb-text class="text">{{formatDate(form.created_at)}}</nb-text>
 					</nb-body>
 					<nb-right>
-						<nb-button v-if="!form.main" iconRight transparent :on-press="() => signature(form.id,form.client_id,form.title)">
-							<nb-icon  class="text" name="create" />
+						<nb-button v-if="!form.main" iconRight transparent>
+							<nb-icon  class="text" name="document" />
 						</nb-button>
 						<nb-button v-else iconRight transparent >
 							<nb-icon  class="text" name="mail" />

@@ -47,7 +47,7 @@
             </nb-grid>
             <nb-grid class="marginBottom">
               <nb-col>
-                <nb-text class="headerText">notes</nb-text>
+                <nb-text class="headerText">{{ $root.lang.t('note') }}</nb-text>
                 <nb-text class="detailText">{{ Debt.notes }}</nb-text>
               </nb-col>
             </nb-grid>

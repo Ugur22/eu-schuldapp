@@ -7,7 +7,7 @@
         </nb-button>
       </nb-left>
       <nb-body :style="{flex:1}">
-      	<nb-title :style="{color:'#fff'}">details</nb-title>
+      	<nb-title :style="{color:'#fff'}">{{$root.lang.t('details')}}</nb-title>
       </nb-body>
       <nb-right :style="{flex:1}">
         <nb-button transparent>

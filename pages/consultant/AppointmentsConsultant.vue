@@ -4,7 +4,7 @@
     <nb-content padder >
       <nb-card :style="{ marginTop: 10 }" v-if="addAppointment"  >
         <nb-card-item header bordered>
-          <nb-text class="text">Kies een client om afspraak te maken</nb-text>
+          <nb-text class="text">{{$root.lang.t('choose_client')}}</nb-text>
         </nb-card-item>
         <nb-card-item bordered v-for="client in Clients" :key="client.id">
           <nb-body>
@@ -19,7 +19,7 @@
       </nb-card>
       <nb-card :style="{ marginTop: addAppointment ? 10 : 50 }" v-if="dataIsReady">
         <nb-card-item header bordered>
-          <nb-text class="text">Alle afspraken</nb-text>
+          <nb-text class="text">{{$root.lang.t('appointments')}}</nb-text>
         </nb-card-item>
         <nb-list>
           <nb-list-item  v-for="appointment in appointments"

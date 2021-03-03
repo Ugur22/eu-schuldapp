@@ -3,24 +3,24 @@
 	<header :pageTitle="$root.lang.t('your_appointment')" :method="goBack" />
     <nb-content padder>
       <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-        <nb-h1>Uw afspraak is gemaak</nb-h1>
+        <nb-h1>{{$root.lang.t('confirmation_appoitment')}}</nb-h1>
       </view>
       <nb-card>
         <nb-card-item>
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
             <nb-icon name="checkmark" :style="{ fontSize: 150, color: 'green' }" />
             <nb-text>{{navigation.getParam('title')}}</nb-text>
-            <nb-text>client: {{navigation.getParam('clientName')}}</nb-text>
+            <nb-text>{{$root.lang.t('client')}}: {{navigation.getParam('clientName')}}</nb-text>
             <nb-card-item>
               <nb-left>
-                <nb-text>tijd: {{navigation.getParam('time')}}</nb-text>
+                <nb-text>{{$root.lang.t('time')}}: {{navigation.getParam('time')}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>datum: {{navigation.getParam('date')}}</nb-text>
+                <nb-text>{{$root.lang.t('date')}}: {{navigation.getParam('date')}}</nb-text>
               </nb-right>
           </nb-card-item>
           <nb-card-item>
-            <nb-text>opmerkingen: {{navigation.getParam('notes')}}</nb-text>
+            <nb-text>{{$root.lang.t('note')}}: {{navigation.getParam('notes')}}</nb-text>
           </nb-card-item>
           <image :source="require('../../assets/images/logo.png')" />
           </nb-body>
@@ -28,7 +28,7 @@
       </nb-card>
     <nb-button full info class="btns" :on-press="() => goToPage('AppointmentsConsultant')">
       <nb-icon name="arrow-back" :on-press="goBack" />
-      <nb-text class="text-btn">Terug naar alle afspraken</nb-text>
+      <nb-text class="text-btn">{{$root.lang.t('return_appointments')}}</nb-text>
     </nb-button>
     </nb-content>
     <nb-footer>

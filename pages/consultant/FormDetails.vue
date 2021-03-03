@@ -5,8 +5,8 @@
 			<view  v-for="authors in Amountsignatures" :key="authors"  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
 				<signature-screen
 					:descriptionText="authors"
-					clearText="opnieuw"
-					confirmText="bevestig"
+					:clearText="$root.lang.t('try_again')"
+					:confirmText="$root.lang.t('confirm')"
 					:autoClear="true" 
 					ref="useSignature"
 					:webStyle="webStyle"
@@ -16,7 +16,7 @@
 		</view>
 		<nb-spinner color="#0078ae" v-if="Amountsignatures == 0 && singatureStatus != 'completed' " /> 
 		<nb-text color="#0078ae" v-if="singatureStatus == 'completed' " >
-			singnature completed	
+			{{$root.lang.t('singature_completed')}}
 		</nb-text> 
 	</nb-container>
 </template>

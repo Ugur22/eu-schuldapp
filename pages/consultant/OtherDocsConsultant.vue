@@ -3,7 +3,7 @@
 	<header :pageTitle="$root.lang.t('other_documents')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
-		<nb-input placeholder="zoek overige documenten" />
+		<nb-input :placeholder="$root.lang.t('search')" />
 	  </nb-item>
 	  <nb-list v-if="dataIsReady">
 		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">

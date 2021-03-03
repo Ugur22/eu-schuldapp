@@ -6,7 +6,7 @@
 				<nb-card-item >
           <nb-picker :style="{width: Platform.OS === 'android' ? width-60 : width-40}"
             mode="dialog"
-            placeholder="Kies een document"
+            :placeholder="$root.lang.t('document_type')"
             :selectedValue="selectedDoc"
             :iosIcon="getIosIcon()"
             :onValueChange="onDocChange">
@@ -44,7 +44,7 @@
         </nb-card-item>
         <nb-card-item>
           <nb-item regular> 
-            <nb-input v-model="title" placeholder="Vul een titel in" />
+            <nb-input v-model="title" :placeholder="$root.lang.t('missing_title')" />
           </nb-item>
         </nb-card-item>
         <nb-button class="btns" full :on-press="sendFile">
@@ -271,7 +271,7 @@ export default {
 
 				if (responseJson.success) {
 					Toast.show({
-						text: 'file uploaded',
+						text: `${this.$root.lang.t('file_uploaded')}`,
 					});
 					this.photo.uri = '';
 					this.title ='';
@@ -284,7 +284,7 @@ export default {
 		},
 		validateTitle: function(){
 			Toast.show({
-				text: 'vul een titel in',
+				text: `${$root.lang.t('file_uploaded')}`,
 				buttonText: 'ok',
 			});
 		},
@@ -351,7 +351,7 @@ export default {
 				this.uploadImage();
 			}else {
 				Toast.show({
-					text: 'U moet een bijlage toevoegen',
+					text:  `${this.$root.lang.t('missing_upload')}`,
 					buttonText: 'ok',
 				});
 			}

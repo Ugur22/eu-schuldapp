@@ -1,6 +1,6 @@
 <template>
   <nb-container>
-	<header pageTitle="Documenten" :method="goBack" />
+	<header :pageTitle="$root.lang.t('creditors_documents')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
 	  </nb-item>

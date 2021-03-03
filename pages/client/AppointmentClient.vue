@@ -5,21 +5,21 @@
       <nb-card v-if="dataIsReady">
         <nb-card-item >
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-            <nb-text :style="{ fontSize: 24, color: 'green' }">consulent: {{Appointment.consultant.firstname}} {{Appointment.consultant.lastname}}</nb-text>
+            <nb-text :style="{ fontSize: 24, color: 'green' }"> {{$root.lang.t('consultant')}}: {{Appointment.consultant.firstname}} {{Appointment.consultant.lastname}}</nb-text>
             <nb-text :style="{ fontSize: 20, color: 'green' }">{{Appointment.title}}</nb-text>
             <nb-card-item>
               <nb-left>
-                <nb-text>tijd: {{formatDate(Appointment.event_date)}}</nb-text>
+                <nb-text>{{$root.lang.t('time')}}: {{formatDate(Appointment.event_date)}}</nb-text>
               </nb-left>            
               <nb-right>
-                <nb-text>datum: {{FormatTime(Appointment.event_date)}}</nb-text>
+                <nb-text>{{$root.lang.t('date')}}: {{FormatTime(Appointment.event_date)}}</nb-text>
               </nb-right>
           </nb-card-item>
           <nb-card-item>
-              <nb-text :style="{ fontSize: 20, color: '#000' }">locatie: {{Appointment.location.name}}</nb-text>
+              <nb-text :style="{ fontSize: 20, color: '#000' }">{{$root.lang.t('location')}}: {{Appointment.location.name}}</nb-text>
           </nb-card-item>
           <nb-card-item v-if="Appointment.notes">
-              <nb-text :style="{ fontSize: 16, color: '#000' }">opmerkingen: {{Appointment.notes}}</nb-text>
+              <nb-text :style="{ fontSize: 16, color: '#000' }">{{$root.lang.t('note')}}: {{Appointment.notes}}</nb-text>
           </nb-card-item>
           </nb-body>
         </nb-card-item>

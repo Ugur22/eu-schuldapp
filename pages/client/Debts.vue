@@ -19,7 +19,7 @@
         </nb-list-item>
 				<nb-list-item>
           <nb-left>
-            <nb-text  class="text" :style="{ fontWeight: 'bold' }">Totale schuld:</nb-text>
+            <nb-text  class="text" :style="{ fontWeight: 'bold' }">{{$root.lang.t('total_debt')}}:</nb-text>
           </nb-left>
           <nb-body>
             <nb-text :style="{ fontWeight: 'bold' }" class="text">{{ $root.lang.t('currency') }}{{totalDebts}}</nb-text>
