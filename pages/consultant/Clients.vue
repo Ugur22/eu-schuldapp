@@ -23,7 +23,7 @@
 			<nb-text  class="text">{{client.firstname}} {{client.lastname}}</nb-text>
 		  </nb-left>
 		  <nb-body >
-				<nb-button :disabled="client.status.status == 'Compleet' ? true : false" iconRight transparent :on-press="() => confirmNextStep(client.id)" >
+				<nb-button :disabled="client.status.status == 'Compleet' ? true : false" iconRight transparent :on-press="() => confirmNextStep(client.id,client.status.sort+1, client.status.status)" >
 					<nb-text  :class="client.status.status == 'Compleet' ? 'disabled': 'text'">{{client.status.status}}</nb-text>
 					<nb-icon v-if="client.status.status !== 'Compleet'" name="arrow-dropright" :style="{ fontSize: 28, color: '#0078ae'}" />
 				</nb-button>
@@ -94,7 +94,8 @@ export default {
 			isModalVisible: false,
 			Clients: {},
 			dataIsReady: false,
-			clientStatus: ''
+			clientStatus: '',
+			nextStep: '',
 		};
   },
 	mounted() {
@@ -104,16 +105,24 @@ export default {
 		});
 	},
   methods: {
-		confirmNextStep: function(clientID){
-			Alert.alert(
+		confirmNextStep: function(clientID,clientStatus,currentStatus){
+			fetchData(`client/status`,this.$root.user.token).then(val => {
+					let that = this;
+				val.map(function(status){
+					if(status.sort === clientStatus){
+						that.nextStep = status.status;
+					}
+				})
+				Alert.alert(
 				`${this.$root.lang.t('confirm_message')}`,
-				`${this.$root.lang.t('confirm_step')}`,
+				`huidige stap: ${currentStatus}
+volgende stap: ${that.nextStep}`,
 				[
 					{
-						text: `${this.$root.lang.t('yes')}`,
+						text: `${this.$root.lang.t('no')}`,
 						style: 'cancel'
 					},
-					{ text: 'Ja', onPress: () => 
+					{ text: `${this.$root.lang.t('yes')}`, onPress: () => 
 							PostData(`consultant/client/next-step?client_id=${clientID}`,this.$root.user.token).then(val => {
 								if(val.message === "no debt"){
 									Alert.alert(
@@ -137,6 +146,9 @@ export default {
 				],
 				{ cancelable: false }
 			);
+			});
+			
+
 		},
 	goBack: function () {
 	  this.navigation.goBack();

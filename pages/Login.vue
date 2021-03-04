@@ -66,8 +66,8 @@ export default {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            email: this.email,
-						password: this.password,
+            email: this.email.replace(/\s/g, ''),
+						password: this.password.replace(/\s/g, ''),
           }),
         });
 
