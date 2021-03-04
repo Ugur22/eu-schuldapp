@@ -3,8 +3,16 @@
     <header :pageTitle="$root.lang.t('debts')" :method="goBack" />
     <nb-content>
       <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input :placeholder="$root.lang.t('search')" />
+        <nb-input v-model="searchDebt" :placeholder="$root.lang.t('search')" />
       </nb-item>
+			<nb-item>
+				 <nb-text :style="{ display: 'none' }"  class="text">{{getInput}}</nb-text>
+			</nb-item>
+			<nb-item v-if="clientDebts.length === undefined" >
+					<nb-text class="text">
+						no debts found
+					</nb-text>
+			</nb-item>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id,debt.client.id )">
           <nb-left>
@@ -17,11 +25,11 @@
             <nb-icon class="text" name="arrow-forward" />
           </nb-right>
         </nb-list-item>
-				<nb-list-item>
+				<nb-list-item v-if="clientDebts.length !== undefined" >
           <nb-left>
             <nb-text  class="text" :style="{ fontWeight: 'bold' }">{{$root.lang.t('total_debt')}}:</nb-text>
           </nb-left>
-          <nb-body>
+          <nb-body >
             <nb-text :style="{ fontWeight: 'bold' }" class="text">{{ $root.lang.t('currency') }}{{totalDebts}}</nb-text>
           </nb-body>
           <nb-right>
@@ -75,22 +83,29 @@ export default {
 			dataIsReady: false,
 			userType: '',
 			clientid:0,
-			url:''
+			url:'',
+			searchDebt:'',
+
     };
   },
+	computed: {
+		getInput: function(){
+			fetchData(`consultant/client/debts/search?search=${this.searchDebt}&client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
+				this.dataIsReady = true;
+				let that = this;
+				that.clientDebts = val;
+					that.totalDebts = 0;
+				if(that.clientDebts.length > 0){
+					that.clientDebts.map(function(debt){
+								that.totalDebts += parseFloat(debt.debt_amount);
+							})
+					}
+			});
+		},
+	},
   created() {
 	},
 	mounted() {
-		fetchData(`consultant/client/debts?client_id=${ this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
-			let that = this;
-			this.dataIsReady = true;
-			this.clientDebts = val;
-			if(this.clientDebts.length > 0){
-				this.clientDebts.map(function(debt){
-							that.totalDebts += parseFloat(debt.debt_amount);
-						})
-					}
-		;});
   },
   methods: {
     goBack: function () {

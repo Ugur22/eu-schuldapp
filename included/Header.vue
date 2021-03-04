@@ -9,9 +9,9 @@
         <nb-title :style="styles.textHeader">{{pageTitle}}</nb-title>
       </nb-body>
       <nb-right :style="styles.position">
-        <nb-button transparent>
+        <!-- <nb-button transparent>
           <nb-icon :style="styles.icon" name="information-circle"/> 
-        </nb-button>
+        </nb-button> -->
       </nb-right>
     </nb-header>
 </template>
