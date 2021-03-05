@@ -18,9 +18,9 @@
 		<nb-text color="#0078ae" v-if="singatureStatus == 'completed' " >
 			{{$root.lang.t('singature_completed')}}
 		</nb-text> 
-		<pdf-reader :style="{ padding: 0,margin:0 }" v-if="formLoaded" :withPinchZoom="true" :withScroll="true"
+		<!-- <pdf-reader :style="{ padding: 0,margin:0 }" v-if="formLoaded" :withPinchZoom="true" :withScroll="true"
 			:source="{base64:formPDF}"
-	/>
+	/> -->
 	</nb-container>
 </template>
 
@@ -30,7 +30,6 @@ import Header from '../../included/Header';
 import axios from "axios";
 import {fetchData,fetchContent} from "../utils/fetch";
 import PDFReader from 'rn-pdf-reader-js';
-import React from 'react';
 
 
 export default {
@@ -73,7 +72,7 @@ export default {
 			that.dataIsReady = true;
 			});
 
-			this.getForm();
+			// this.getForm();
 	},
 	components: {SignatureScreen,Header,PDFReader },
   	methods: {
