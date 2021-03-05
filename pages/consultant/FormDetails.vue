@@ -18,6 +18,9 @@
 		<nb-text color="#0078ae" v-if="singatureStatus == 'completed' " >
 			{{$root.lang.t('singature_completed')}}
 		</nb-text> 
+		<pdf-reader :style="{ padding: 0,margin:0 }" v-if="formLoaded" :withPinchZoom="true" :withScroll="true"
+			:source="{base64:formPDF}"
+	/>
 	</nb-container>
 </template>
 
@@ -25,7 +28,9 @@
 import SignatureScreen from 'react-native-signature-canvas';
 import Header from '../../included/Header';
 import axios from "axios";
-import {fetchData} from "../utils/fetch";
+import {fetchData,fetchContent} from "../utils/fetch";
+import PDFReader from 'rn-pdf-reader-js';
+import React from 'react';
 
 
 export default {
@@ -44,6 +49,8 @@ export default {
 			author:'',
 			singatureStatus:'',
 			Amountsignatures:0,
+			formLoaded: false,
+			formPDF:'',
 			webStyle: `
 				.m-signature-pad--footer .save {
 							font-size: 16px;
@@ -58,8 +65,6 @@ export default {
 				}`	
 		};
 	},
-  created() {	
-	},
 	mounted() {
 		fetchData(`document/signatures?document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
 			let that = this;
@@ -67,9 +72,17 @@ export default {
 			that.Amountsignatures = val.need_signature_by;
 			that.dataIsReady = true;
 			});
+
+			this.getForm();
 	},
-	components: {SignatureScreen,Header },
+	components: {SignatureScreen,Header,PDFReader },
   	methods: {
+		getForm: async function() {
+			fetchContent(`document/pdf-download?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
+				this.formPDF = val;
+				this.formLoaded = true;
+			});
+		},
 		handleSignature: async function(signature,author) {
 			this.signature = signature;
 			this.author = author;

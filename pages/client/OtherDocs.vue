@@ -3,8 +3,16 @@
     	<header :pageTitle="$root.lang.t('other_documents')" :method="goBack" />
     <nb-content  >
       <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input :placeholder="$root.lang.t('search')" />
+        <nb-input v-model="searchDocs" :placeholder="$root.lang.t('search')" />
       </nb-item>
+			<nb-item>
+				 <nb-text :style="{ display: 'none' }"  class="text">{{getInput}}</nb-text>
+			</nb-item>
+			<nb-item v-if="clientDocs.length === undefined && dataIsReady" >
+					<nb-text class="text">
+						geen resultaten gevonden
+					</nb-text>
+			</nb-item>
       <nb-list v-if="dataIsReady">
 				<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
           <nb-left>
@@ -41,6 +49,7 @@ import {fetchData} from "../utils/fetch";
 import * as Print from 'expo-print';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 export default {
   props: {
     navigation: {
@@ -48,24 +57,25 @@ export default {
     },
 		user: {},
   },
+	components: { FooterNav,Header },
   data() {
     return {
       selectedDoc: '0',
       clientDocs: {},
        dataIsReady: false,
        formatDate,
-			 buttonOff: false
+			 buttonOff: false,
+			 searchDocs:''
     };
   },
-  created() {
-	},
-	mounted() {
-		fetchData(`client/docs/others`,this.$root.user.token).then(val => {
-			this.dataIsReady = true;
-			this.clientDocs = val;
+	computed: {
+		getInput: function(){
+			fetchData(`client/docs/others/search?search=${this.searchDocs}`,this.$root.user.token).then(val => {
+				this.dataIsReady = true;
+				this.clientDocs = val;
 			});
+		}
 	},
-  components: { FooterNav,Header },
   methods: {
     goBack: function () {
       this.navigation.goBack();

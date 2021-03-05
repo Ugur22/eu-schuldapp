@@ -8,9 +8,9 @@
 			<nb-item>
 				 <nb-text :style="{ display: 'none' }"  class="text">{{getInput}}</nb-text>
 			</nb-item>
-			<nb-item v-if="clientDebts.length === undefined" >
+			<nb-item v-if="clientDebts.length === undefined && dataIsReady" >
 					<nb-text class="text">
-						no debts found
+						geen resultaten gevonden
 					</nb-text>
 			</nb-item>
       <nb-list v-if="dataIsReady">
@@ -85,7 +85,6 @@ export default {
 			clientid:0,
 			url:'',
 			searchDebt:'',
-
     };
   },
 	computed: {
@@ -94,19 +93,15 @@ export default {
 				this.dataIsReady = true;
 				let that = this;
 				that.clientDebts = val;
-					that.totalDebts = 0;
+				that.totalDebts = 0;
 				if(that.clientDebts.length > 0){
 					that.clientDebts.map(function(debt){
 								that.totalDebts += parseFloat(debt.debt_amount);
 							})
 					}
 			});
-		},
+		}
 	},
-  created() {
-	},
-	mounted() {
-  },
   methods: {
     goBack: function () {
       this.navigation.goBack();

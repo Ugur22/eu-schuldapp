@@ -3,8 +3,16 @@
     	<header :pageTitle="$root.lang.t('debts')" :method="goBack" />
     <nb-content>
       <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input placeholder="zoeken" />
+      	<nb-input v-model="searchDebt" :placeholder="$root.lang.t('search')" />
       </nb-item>
+			<nb-item>
+				 <nb-text :style="{ display: 'none' }"  class="text">{{getInput}}</nb-text>
+			</nb-item>
+			<nb-item v-if="clientDebts.length === undefined && dataIsReady" >
+				<nb-text class="text">
+					geen resultaten gevonden
+				</nb-text>
+			</nb-item>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="debt in clientDebts" :key="debt.id" :on-press="() => detailDebt(debt.id)">
           <nb-left>
@@ -79,21 +87,23 @@ export default {
 			clientDebts: {},
 			totalDebts:0,
       dataIsReady: false,
+			searchDebt:'',
     };
   },
-  created() {
-	},
-	mounted() {
-		fetchData(`client/docs/debts`,this.$root.user.token).then(val => {
-			let that = this;
-			this.dataIsReady = true;
-			this.clientDebts = val;
-			if(this.clientDebts.length > 0){
-				this.clientDebts.map(function(debt){
-							that.totalDebts += parseFloat(debt.debt_amount);
-						})
-				}
+	computed: {
+		getInput: function(){
+			fetchData(`client/docs/debts/search?search=${this.searchDebt}`,this.$root.user.token).then(val => {
+				this.dataIsReady = true;
+				let that = this;
+				that.clientDebts = val;
+				that.totalDebts = 0;
+				if(that.clientDebts.length > 0){
+					that.clientDebts.map(function(debt){
+								that.totalDebts += parseFloat(debt.debt_amount);
+							})
+					}
 			});
+		},
 	},
   methods: {
     goBack: function () {

@@ -3,8 +3,16 @@
 	    <header :pageTitle="$root.lang.t('clients')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
-		<nb-input :placeholder="$root.lang.t('search')" />
+		<nb-input v-model="search" :placeholder="$root.lang.t('search')" />
 	  </nb-item>
+		<nb-item>
+				 <nb-text :style="{ display: 'none' }"  class="text">{{getInput}}</nb-text>
+			</nb-item>
+			<nb-item v-if="Clients.length === undefined && dataIsReady" >
+					<nb-text class="text">
+						geen resultaten gevonden
+					</nb-text>
+			</nb-item>
 	  <nb-list v-if="dataIsReady">
 	  <nb-list-item itemDivider class="list-Header">
 		  <nb-left>
@@ -96,13 +104,16 @@ export default {
 			dataIsReady: false,
 			clientStatus: '',
 			nextStep: '',
+			search:''
 		};
   },
-	mounted() {
-		fetchData(`consultant/clients`,this.$root.user.token).then(val => {
-			this.dataIsReady = true;
-			this.Clients = val;
-		});
+	computed: {
+		getInput: function(){
+			fetchData(`consultant/clients?search=${this.search}`,this.$root.user.token).then(val => {
+				this.dataIsReady = true;
+				this.Clients = val;
+			});
+		}
 	},
   methods: {
 		confirmNextStep: function(clientID,clientStatus,currentStatus){
