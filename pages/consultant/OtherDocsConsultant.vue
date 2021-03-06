@@ -14,7 +14,7 @@
 					</nb-text>
 			</nb-item>
 	  <nb-list v-if="dataIsReady">
-		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
+		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
 		  <nb-left>
 			<nb-text class="text">{{ docs.title }}</nb-text>
 		  </nb-left>
@@ -66,10 +66,12 @@ export default {
   },
 	computed: {
 		getInput: function(){
-			fetchData(`consultant/doc/other-search?search=${this.searchDocs}&client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
-				this.dataIsReady = true;
-				this.clientDocs = val;
-			});
+			if(this.searchDocs.length >= 3 ||  this.searchDocs.length  === 0 ){
+				fetchData(`consultant/doc/other-search?search=${this.searchDocs}&client_id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
+					this.dataIsReady = true;
+					this.clientDocs = val;
+				});
+			}
 		}
 	},
   components: { FooterNav,Header },

@@ -14,7 +14,7 @@
 					</nb-text>
 			</nb-item>
       <nb-list v-if="dataIsReady">
-				<nb-list-item v-for="docs in clientDocs" :key="docs.id" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
+				<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
           <nb-left>
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>

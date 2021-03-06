@@ -107,12 +107,20 @@ export default {
 			search:''
 		};
   },
+	mounted() {
+		fetchData(`consultant/clients`,this.$root.user.token).then(val => {
+			this.dataIsReady = true;
+			this.Clients = val;
+		});
+  },
 	computed: {
 		getInput: function(){
-			fetchData(`consultant/clients?search=${this.search}`,this.$root.user.token).then(val => {
-				this.dataIsReady = true;
-				this.Clients = val;
-			});
+			if(this.search.length >= 3 ||  this.search.length  === 0 ){
+				fetchData(`consultant/clients?search=${this.search}`,this.$root.user.token).then(val => {
+					this.dataIsReady = true;
+					this.Clients = val;
+				});
+			}
 		}
 	},
   methods: {
