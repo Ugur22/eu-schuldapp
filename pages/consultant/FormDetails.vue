@@ -30,7 +30,6 @@ import Header from '../../included/Header';
 import axios from "axios";
 import {fetchData,fetchContent} from "../utils/fetch";
 import PDFReader from 'rn-pdf-reader-js';
-import * as React from 'react'
 
 export default {
   props: {

@@ -102,6 +102,7 @@ import Header from '../../included/Header';
 	import { Agenda,LocaleConfig} from 'react-native-calendars';
 	import React from 'react'
 	import {styleAppointments,styles} from '../styling/style';
+	import i18n from 'i18n-js';
 
   export default {
     props: {
@@ -142,7 +143,25 @@ import Header from '../../included/Header';
 				today: 'vandaag'
 			};
 
-			LocaleConfig.defaultLocale = 'nl';
+			LocaleConfig.locales['tr'] = {
+				monthNames: ['ocak','şubat','mart','nisan','mayıs','hazīran','temmuz','ağustos','eylül','ekim','kasım','aralık'],
+				monthNamesShort: ['oc','şu','ma','ni','may','haz','tem','ağu','ey','eki','kas','ar'],
+				dayNames: ['pazartesi','salı','çarşamba','perşembe','cumā','cumartesi','pazar'],
+				dayNamesShort: ['pa','sa','ça','pe','cu','cu','pa'],
+				today: 'bugün'
+			};
+
+			LocaleConfig.locales.en = LocaleConfig.locales[''];
+
+			if(i18n.locale === 'nl'){
+					LocaleConfig.defaultLocale = 'nl';
+			}
+			else if(i18n.locale === 'tr'){
+						LocaleConfig.defaultLocale = 'tr';
+			}else {
+					LocaleConfig.locales.en;
+			}
+		
 			
 			fetchData(`locations`,this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.locations = val;
@@ -179,8 +198,7 @@ import Header from '../../included/Header';
 			renderItems: function(item) {
 				return (
       	<TouchableOpacity 
-					style={[styleAppointments.item, {height: item.height}]}
-					onPress={() => Alert.alert(item.client)}>
+					style={[styleAppointments.item, {height: item.height}]}>
 						<View>
 							<Text style={{color:'#fff'}}>{item.client}</Text>
 							<Text style={{color:'#fff'}}>{item.time}</Text>

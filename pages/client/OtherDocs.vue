@@ -70,10 +70,12 @@ export default {
   },
 	computed: {
 		getInput: function(){
-			fetchData(`client/docs/others/search?search=${this.searchDocs}`,this.$root.user.token).then(val => {
-				this.dataIsReady = true;
-				this.clientDocs = val;
-			});
+				if(this.searchDocs.length >= 3 ||  this.searchDocs.length  === 0 ){
+				fetchData(`client/docs/others/search?search=${this.searchDocs}`,this.$root.user.token).then(val => {
+					this.dataIsReady = true;
+					this.clientDocs = val;
+				});
+			}
 		}
 	},
   methods: {

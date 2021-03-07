@@ -91,19 +91,21 @@ export default {
     };
   },
 	computed: {
-		getInput: function(){
-			fetchData(`client/docs/debts/search?search=${this.searchDebt}`,this.$root.user.token).then(val => {
-				this.dataIsReady = true;
-				let that = this;
-				that.clientDebts = val;
-				that.totalDebts = 0;
-				if(that.clientDebts.length > 0){
-					that.clientDebts.map(function(debt){
-								that.totalDebts += parseFloat(debt.debt_amount);
-							})
-					}
-			});
-		},
+			getInput: function(){
+				if(this.searchDebt.length >= 3 ||  this.searchDebt.length  === 0 ){
+				fetchData(`client/docs/debts/search?search=${this.searchDebt}`,this.$root.user.token).then(val => {
+					this.dataIsReady = true;
+					let that = this;
+					that.clientDebts = val;
+					that.totalDebts = 0;
+					if(that.clientDebts.length > 0){
+						that.clientDebts.map(function(debt){
+									that.totalDebts += parseFloat(debt.debt_amount);
+								})
+						}
+				});
+			}
+		}
 	},
   methods: {
     goBack: function () {

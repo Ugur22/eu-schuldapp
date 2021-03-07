@@ -2,9 +2,6 @@
   <nb-container>
     	<header :pageTitle="$root.lang.t('name_creditor')" :method="goBack" />
     <nb-content>
-      <nb-item :style="{ borderColor: '#62B1F6' }">
-        <nb-input :placeholder="$root.lang.t('search')" />
-      </nb-item>
       <nb-list v-if="dataIsReady">
         <nb-list-item v-for="collector in clientCollectors" :key="collector.id" :on-press="() => detailCollector(collector.id )">
           <nb-left>
