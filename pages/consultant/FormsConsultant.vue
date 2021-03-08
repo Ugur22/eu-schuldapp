@@ -38,6 +38,7 @@
 </style>
 <script>
 import FooterNav from '../../included/Footer';
+import {Dimensions,Platform} from 'react-native';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
 import * as Print from 'expo-print';
@@ -76,7 +77,9 @@ export default {
 		},
 		printToPdf: async function(htmlFile){
 		let that = this;
-		const response = await Print.printToFileAsync({html:htmlFile,width:480,height:500});
+		let width = Platform.OS === 'android' ? 480 : 612;
+		let height = Platform.OS === 'android' ? 500 : 792;
+		const response = await Print.printToFileAsync({html:htmlFile,width:width,height:height});
 		that.formPDF = response.uri;
 			that.formLoaded = true;
 			if(that.formLoaded){

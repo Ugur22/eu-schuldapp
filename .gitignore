@@ -134,3 +134,4 @@ docs/pages/versions/*/react-native/*.diff
 /packages/**/*.spec.json
 /packages/**/Info-generated.plist
 .expo/packager-info.json
+.expo/settings.json
