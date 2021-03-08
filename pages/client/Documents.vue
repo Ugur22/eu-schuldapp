@@ -57,13 +57,13 @@
 					</nb-col>
 				</nb-grid>
 				<nb-col>
-					<nb-button full class="btns" :on-press="() => goToPage('DocsCollector')">
-						<nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
+					<nb-button full class="btns" :on-press="() => goToPage('DocsOthers')">
+						<nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
 					</nb-button>
 				</nb-col>
 				<nb-col>
-					<nb-button full class="btns" :on-press="() => goToPage('DocsOthers')">
-						<nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
+					<nb-button full class="btns" :on-press="() => goToPage('DocsCollector')">
+						<nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
 					</nb-button>
 				</nb-col>
 			</nb-content>

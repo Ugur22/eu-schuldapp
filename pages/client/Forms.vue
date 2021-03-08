@@ -41,7 +41,7 @@ import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
 import * as Print from 'expo-print';
-import {fetchData} from "../utils/fetch";
+import {fetchData,fetchContent} from "../utils/fetch";
 
 export default {
   props: {
@@ -56,7 +56,10 @@ export default {
       clientForms: {},
       dataIsReady: false,
 			formatDate,
-			buttonOff: false
+			buttonOff: false,
+			formHTML:'',
+			formPDF:'',
+			formLoaded:false
     };
   },
   created() {
@@ -69,33 +72,23 @@ export default {
 	},
   components: { FooterNav,Header},
   methods: {
+	printToPdf: async function(htmlFile){
+		let that = this;
+		const response = await Print.printToFileAsync({html:htmlFile,width:480,height:500});
+		that.formPDF = response.uri;
+			that.formLoaded = true;
+			if(that.formLoaded){
+				Print.printAsync({uri:this.formPDF});
+			}
+		},
 		showPDF: async function (id,clientID) {
-			this.isModalVisible = true;
 			this.buttonOff = true;
 			 setTimeout(() => this.buttonOff = false, 2000);
 
-			try {
-				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${clientID}
-				&document_id=${id}`,{
-					method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.$root.user.token}`
-          },
-				});
-
-				let responseJson = await response.text();
-				if (responseJson) {
-					this.dataIsReady = true;
-					Print.printAsync({uri:responseJson});
-				} else {
-					console.log(responseJson);
-				}
-			} catch (error) {
-			console.log(error);
-			console.error(error);
-			}
+			fetchContent(`document/html-preview?client_id=${clientID}&document_id=${id}`,this.$root.user.token).then(val => {
+				this.formHTML = val;
+				this.printToPdf(this.formHTML);
+			});
 		},
     goBack: function () {
       this.navigation.goBack();

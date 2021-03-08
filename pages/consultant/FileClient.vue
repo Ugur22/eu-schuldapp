@@ -1,6 +1,6 @@
 <template>
-  <nb-container v-if="dataIsReady">
-    	<header :pageTitle="`${Client.firstname} ${Client.lastname} `" :method="goBack" />
+  <nb-container v-if="dataIsReady && ClientReady">
+    	<header :pageTitle="`${Client.firstname} ${Client.lastname} `"  :method="goBack" />
     <nb-content padder>
       <nb-card>
 				<nb-card-item >
@@ -51,39 +51,41 @@
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
       </nb-card>
-      <nb-grid :style="{ marginTop: 10 }">
-        <nb-col v-if="Client.client_status_id >= 5 ? true : false">
-          <nb-button
-            full class="btns" 
-            :on-press="() => detailPage(Client.id, 'Debts')">
-            <nb-text>{{ $root.lang.t('debts') }}</nb-text>
-          </nb-button>
-        </nb-col>
-        <nb-col>
-          <nb-button
-            full
-            class="btns"
-            :on-press="() => detailPage(Client.id, 'FormsConsultant')">
-            <nb-text>{{ $root.lang.t('forms') }}</nb-text>
-          </nb-button>
-        </nb-col>
-      </nb-grid>
-      <nb-col>
-        <nb-button
-          full
-          class="btns"
-          :on-press="() => detailPage(Client.id, 'OtherDocsConsultant')">
-          <nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
-        </nb-button>
-      </nb-col>
-      <nb-col>
-        <nb-button
-          full
-          class="btns"
-          :on-press="() => detailPage(Client.id, 'CollectorConsultant')">
-          <nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
-        </nb-button>
-      </nb-col>
+			<nb-content v-if="Client.client_status_id >= 5 && dataIsReady">
+				<nb-grid :style="{ marginTop: 10 }">
+					<nb-col>
+						<nb-button
+							full class="btns" 
+							:on-press="() => detailPage(Client.id, 'Debts')">
+							<nb-text>{{ $root.lang.t('debts') }}</nb-text>
+						</nb-button>
+					</nb-col>
+					<nb-col>
+						<nb-button
+							full
+							class="btns"
+							:on-press="() => detailPage(Client.id, 'FormsConsultant')">
+							<nb-text>{{ $root.lang.t('forms') }}</nb-text>
+						</nb-button>
+					</nb-col>
+				</nb-grid>
+				<nb-col>
+					<nb-button
+						full
+						class="btns"
+						:on-press="() => detailPage(Client.id, 'OtherDocsConsultant')">
+						<nb-text>{{ $root.lang.t('other_documents') }}</nb-text>
+					</nb-button>
+				</nb-col>
+				<nb-col>
+					<nb-button
+						full
+						class="btns"
+						:on-press="() => detailPage(Client.id, 'CollectorConsultant')">
+						<nb-text>{{ $root.lang.t('creditors_documents') }}</nb-text>
+					</nb-button>
+				</nb-col>
+			</nb-content>
     </nb-content>
     <modal v-if="displayCam">
       <camera
@@ -208,6 +210,7 @@ export default {
       displayLarge: false,
       Client: {},
       dataIsReady: false,
+      ClientReady: false,
       width: Dimensions.get('window').width,
       title: '', 
       Platform,
@@ -221,12 +224,12 @@ export default {
 	},
 	mounted() {
 		fetchData(`consultant/client?id=${this.navigation.getParam('clientID')}`,this.$root.user.token).then(val => {
-			this.dataIsReady = true;
 			this.Client = val;
+			this.ClientReady = true;
 			});
 		fetchData(`upload-options`,this.$root.user.token).then(val => {
-			this.dataIsReady = true; 
 			this.selections = val;
+			this.dataIsReady = true; 
 		});
   },
   components: { FooterNav, Camera, Item: Picker.Item ,Header},

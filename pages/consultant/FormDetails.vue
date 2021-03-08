@@ -1,5 +1,7 @@
 <template>
   <nb-container>
+				<!-- <web-view v-if="formLoaded" :allowFileAccess="true"  :allowUniversalAccessFromFileURLs="true" :source="{uri:formPDF}"
+		:style="{marginTop: 0}" /> -->
      <header :pageTitle="$root.lang.t('details')" :method="goBack" />
 		<view v-if="Amountsignatures">
 			<view  v-for="authors in Amountsignatures" :key="authors"  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
@@ -19,7 +21,7 @@
 			{{$root.lang.t('singature_completed')}}
 		</nb-text> 
 		<!-- <pdf-reader v-if="formLoaded" :withPinchZoom="true" :withScroll="true"
-			:source="{base64:formPDF}"
+			:source="{uri:formPDF}"
 	/> -->
 	</nb-container>
 </template>
@@ -30,6 +32,8 @@ import Header from '../../included/Header';
 import axios from "axios";
 import {fetchData,fetchContent} from "../utils/fetch";
 import PDFReader from 'rn-pdf-reader-js';
+import * as Print from 'expo-print';
+import { WebView } from 'react-native-webview';
 
 export default {
   props: {
@@ -42,13 +46,13 @@ export default {
 		return {
 			dataIsReady: false,
 			token:'',
+			formHTML:'',
 			formPDF:'',
 			signature:'',
 			author:'',
 			singatureStatus:'',
 			Amountsignatures:0,
 			formLoaded: false,
-			formPDF:'',
 			webStyle: `
 				.m-signature-pad--footer .save {
 							font-size: 16px;
@@ -71,16 +75,25 @@ export default {
 			that.dataIsReady = true;
 			});
 
-			this.getForm();
+			// this.getForm();
 	},
-	components: {SignatureScreen,Header,PDFReader },
+	components: {SignatureScreen,Header,PDFReader,WebView },
   	methods: {
-		getForm: async function() {
-			fetchContent(`document/pdf-download?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
-				this.formPDF = val;
-				this.formLoaded = true;
-			});
-		},
+		// printToPdf: async function(htmlFile){
+		// 	let that = this;
+		// 	const response = await Print.printToFileAsync({html:htmlFile,width:480,height:500});
+		// 	that.formPDF = response.uri;
+		// 		that.formLoaded = true;
+		// 		// if(that.formLoaded){
+		// 		// 	Print.printAsync({uri:this.formPDF});
+		// 		// }
+		// },
+		// getForm: async function() {
+		// 	fetchContent(`document/html-preview?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
+		// 		this.formHTML = val;
+		// 		this.printToPdf(this.formHTML);
+		// 	});
+		// },
 		handleSignature: async function(signature,author) {
 			this.signature = signature;
 			this.author = author;

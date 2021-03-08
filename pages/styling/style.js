@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
 		color:'#fff'
 	},
 	position: {
-		flex:1
+		flex:1,
 	}
 });
 

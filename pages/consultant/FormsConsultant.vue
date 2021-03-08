@@ -51,12 +51,14 @@ export default {
   },
   data() {
     return {
-      selectedDoc: '0',
       clientForms: {},
       clientDocs: {},
       dataIsReady: false,
+      formLoaded: false,
 			formatDate,
-			buttonOff: false
+			buttonOff: false,
+			formHTML:'',
+			formPDF:'',
     };
   },
   created() {
@@ -71,15 +73,23 @@ export default {
   methods: {
     goBack: function () {
       this.navigation.goBack();
-	},
+		},
+		printToPdf: async function(htmlFile){
+		let that = this;
+		const response = await Print.printToFileAsync({html:htmlFile,width:480,height:500});
+		that.formPDF = response.uri;
+			that.formLoaded = true;
+			if(that.formLoaded){
+				Print.printAsync({uri:this.formPDF});
+			}
+		},
 		showPDF: async function (id,clientID) {
 			this.buttonOff = true;
 			 setTimeout(() => this.buttonOff = false, 2000);
 
-			fetchContent(`document/pdf-download?client_id=${clientID}
-				&document_id=${id}`,this.$root.user.token).then(val => {
-				Print.printAsync({uri:val});
-				this.dataIsReady = true;
+			fetchContent(`document/html-preview?client_id=${clientID}&document_id=${id}`,this.$root.user.token).then(val => {
+				this.formHTML = val;
+				this.printToPdf(this.formHTML);
 			});
 		},
 		signature: function (id,clientID) {
