@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Expo
 .expo
 __generated__
@@ -136,3 +137,11 @@ docs/pages/versions/*/react-native/*.diff
 .expo/packager-info.json
 .expo/settings.json
 .expo/packager-info.json
+=======
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+.env
+.phpunit.result.cache
+>>>>>>> b2422b1730d83b34630fcb3f9bc9f80604a774e3
