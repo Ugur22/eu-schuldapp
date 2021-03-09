@@ -43,6 +43,11 @@ import {formatDate} from "../utils/dates";
 import * as Print from 'expo-print';
 import {Dimensions,Platform} from 'react-native';
 import {fetchData,fetchContent} from "../utils/fetch";
+import * as FileSystem from 'expo-file-system';
+import * as IntentLauncher from 'expo-intent-launcher';
+import * as Permissions from 'expo-permissions';
+import * as MediaLibrary from 'expo-media-library';
+import { Toast } from 'native-base';
 
 export default {
   props: {
@@ -74,11 +79,38 @@ export default {
   components: { FooterNav,Header},
   methods: {
 	printToPdf: async function(htmlFile){
+		const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		let that = this;
 		let width = Platform.OS === 'android' ? 480 : 612;
 		let height = Platform.OS === 'android' ? 500 : 792;
 		const response = await Print.printToFileAsync({html:htmlFile,width:width,height:height});
 		that.formPDF = response.uri;
+		// 	let options = {			
+		// 			headers: {
+		// 				accept: 'application/json',
+		// 				'Content-Type': 'application/json',
+		// 				'Authorization': `Bearer ${this.$root.user.token}`
+		// 	}}
+
+		//  if (status === "granted") {
+		// 			FileSystem.downloadAsync(`http://www.pdf995.com/samples/pdf.pdf`,
+		// 			FileSystem.documentDirectory + 'test.pdf',options
+		// 	).then(async({ uri,status }) => {
+		// 			console.log(status);
+		// 			FileSystem.getContentUriAsync(uri).then(cUri => {
+		// 				console.log(cUri);
+		// 				IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+		// 					data: cUri,
+		// 					flags: 1,
+		// 				});
+		// 			});
+		// 			// await MediaLibrary.createAssetAsync(uri);
+		// 		 	Toast.show({
+		// 				text: `Het document is gedownload`,
+		// 				buttonText: 'ok',
+		// 			});
+		// 	});
+		//  }
 			that.formLoaded = true;
 			if(that.formLoaded){
 				Print.printAsync({uri:this.formPDF});

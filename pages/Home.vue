@@ -18,7 +18,7 @@
           <nb-text :style="styles.btnText">{{ $root.lang.t('appointments') }}</nb-text>
         </nb-button>
         <nb-button full info :style="styles.btn" :on-press="() => goToPage('Documents')">
-          <nb-text :style="styles.btnText">{{ $root.lang.t('check_documents') }}</nb-text>
+          <nb-text :style="styles.btnText">{{ $root.lang.t('file') }}</nb-text>
         </nb-button>
     </view>
     <view v-else :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center', padding: 20,zIndex:-1, marginTop:-110  }">

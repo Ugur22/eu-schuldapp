@@ -10,7 +10,7 @@
 	</nb-button>
 	<nb-button :style="activeBtn !== 'appointments' ?  styles.button : ''" :active="activeBtn == 'appointments'" :on-press="() => goToPage('Appointments')">
 	  <nb-icon :style="activeBtn !== 'appointments' ?  styles.icon : ''" :active="activeBtn == 'appointments'" name="calendar" />
-	  <nb-text :style="activeBtn !== 'appointments' ?  styles.icon : ''">calendar</nb-text>
+	  <nb-text :style="activeBtn !== 'appointments' ?  styles.icon : ''">{{ $root.lang.t('appointments') }}</nb-text>
 	</nb-button>
 	<nb-button  :style="activeBtn !== 'docs' ?  styles.button : ''" :active="activeBtn == 'docs'" :on-press="() => goToPage('Documents')">
 	  <nb-icon :style="activeBtn !== 'docs' ?  styles.icon : ''" :active="activeBtn == 'docs'" name="folder-open" />
@@ -28,7 +28,7 @@
 	</nb-button>
 	<nb-button :style="activeBtn !== 'appointments' ?  styles.button : ''" :active="activeBtn == 'appointments'" :on-press="() => goToPage('AppointmentsConsultant')">
 	  <nb-icon :style="activeBtn !== 'appointments' ?  styles.icon : ''" :active="activeBtn == 'appointments'" name="calendar" />
-	  <nb-text :style="activeBtn !== 'appointments' ?  styles.icon : ''">calendar</nb-text>
+	  <nb-text :style="activeBtn !== 'appointments' ?  styles.icon : ''">{{ $root.lang.t('appointments') }}</nb-text>
 	</nb-button>
   </nb-footer-tab>
 </template>
