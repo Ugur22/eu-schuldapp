@@ -3,7 +3,7 @@
 	<header :pageTitle="$root.lang.t('forms')" :method="goBack" />
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id" :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id)">
+        <nb-list-item v-for="form in clientForms" :key="form.id" :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)">
           <nb-left>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
@@ -78,52 +78,38 @@ export default {
 	},
   components: { FooterNav,Header},
   methods: {
-	printToPdf: async function(htmlFile){
+	showPDF: async function(id,clientID,title){
+		this.buttonOff = true;
+		setTimeout(() => this.buttonOff = false, 2000);
 		const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		let that = this;
-		let width = Platform.OS === 'android' ? 480 : 612;
-		let height = Platform.OS === 'android' ? 500 : 792;
-		const response = await Print.printToFileAsync({html:htmlFile,width:width,height:height});
-		that.formPDF = response.uri;
-		// 	let options = {			
-		// 			headers: {
-		// 				accept: 'application/json',
-		// 				'Content-Type': 'application/json',
-		// 				'Authorization': `Bearer ${this.$root.user.token}`
-		// 	}}
+			let options = {			
+					headers: {
+						accept: 'application/json',
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${this.$root.user.token}`
+			}}
 
-		//  if (status === "granted") {
-		// 			FileSystem.downloadAsync(`http://www.pdf995.com/samples/pdf.pdf`,
-		// 			FileSystem.documentDirectory + 'test.pdf',options
-		// 	).then(async({ uri,status }) => {
-		// 			console.log(status);
-		// 			FileSystem.getContentUriAsync(uri).then(cUri => {
-		// 				console.log(cUri);
-		// 				IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-		// 					data: cUri,
-		// 					flags: 1,
-		// 				});
-		// 			});
-		// 			// await MediaLibrary.createAssetAsync(uri);
-		// 		 	Toast.show({
-		// 				text: `Het document is gedownload`,
-		// 				buttonText: 'ok',
-		// 			});
-		// 	});
-		//  }
-			that.formLoaded = true;
-			if(that.formLoaded){
-				Print.printAsync({uri:this.formPDF});
-			}
-		},
-		showPDF: async function (id,clientID) {
-			this.buttonOff = true;
-			 setTimeout(() => this.buttonOff = false, 2000);
-
-			fetchContent(`document/html-preview?client_id=${clientID}&document_id=${id}`,this.$root.user.token).then(val => {
-				this.formHTML = val;
-				this.printToPdf(this.formHTML);
+		 if (status === "granted") {
+					FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+					FileSystem.documentDirectory + title,options
+			).then(async({ uri,status }) => {
+					console.log(status);
+					FileSystem.getContentUriAsync(uri).then(cUri => {
+						console.log(cUri);
+						IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+							data: cUri,
+							flags: 1,
+						});
+					});
+					await MediaLibrary.createAssetAsync(uri);
+				 	Toast.show({
+						text: `Het document is gedownload`,
+						buttonText: 'ok',
+					});
 			});
+		 }
+			that.formLoaded = true;
 		},
     goBack: function () {
       this.navigation.goBack();

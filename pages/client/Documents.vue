@@ -44,7 +44,7 @@
         </nb-button>
       </nb-card> -->
 			<nb-content v-if="dataIsReady">
-				<nb-grid :style="{ marginTop: 20}" v-if="clientStatus >= 5 && dataIsReady">
+				<nb-grid :style="{ marginTop: 20}" v-if="dataIsReady">
 					<nb-col v-if="clientStatus >= 5">
 						<nb-button full class="btns" :on-press="() => goToPage('DebtList')">
 							<nb-text>{{ $root.lang.t('debts') }}</nb-text>

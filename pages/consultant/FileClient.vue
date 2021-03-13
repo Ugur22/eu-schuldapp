@@ -51,9 +51,9 @@
           <nb-text>{{ $root.lang.t('send') }}</nb-text>
         </nb-button>
       </nb-card>
-			<nb-content v-if="Client.client_status_id >= 5 && dataIsReady">
+			<nb-content v-if="dataIsReady">
 				<nb-grid :style="{ marginTop: 10 }">
-					<nb-col>
+					<nb-col  v-if="Client.client_status_id >= 5 && dataIsReady">
 						<nb-button
 							full class="btns" 
 							:on-press="() => detailPage(Client.id, 'Debts')">
