@@ -54,6 +54,7 @@ import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from 'expo-media-library';
 import { Toast } from 'native-base';
 import {Platform} from 'react-native';
+import * as Sharing from 'expo-sharing';
 
 export default {
   props: {
@@ -130,6 +131,7 @@ export default {
 						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
 						FileSystem.documentDirectory + `${titleDoc}.pdf`,options
 				).then(async({ uri,status }) => {
+					if(this.Platform.OS === 'android'){
 						const asset = await MediaLibrary.createAssetAsync(uri);
       			await MediaLibrary.createAlbumAsync("Download", asset, false);
 						Toast.show({
@@ -139,6 +141,9 @@ export default {
 							duration: 3000,
 							type: "success", 
 						});
+					}else {
+						Sharing.shareAsync(uri);
+					}
 				});
 			}
 				that.formLoaded = true;

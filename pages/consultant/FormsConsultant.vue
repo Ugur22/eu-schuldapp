@@ -13,7 +13,7 @@
 							</nb-button>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
-            <nb-right :style="{flexDirection:'row'}">
+            <nb-right :style="{flexDirection:Platform.OS === 'android' ? 'row': 'column'}">
 							<nb-button iconRight transparent :disabled="buttonOff" :on-press="() => downloadPDF(form.id,form.client_id,form.title)" >
 							<nb-icon  class="text" name="download" />
 						</nb-button>

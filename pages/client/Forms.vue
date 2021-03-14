@@ -50,6 +50,7 @@ import * as IntentLauncher from 'expo-intent-launcher';
 import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from 'expo-media-library';
 import { Toast } from 'native-base';
+import * as Sharing from 'expo-sharing';
 
 export default {
   props: {
@@ -90,18 +91,27 @@ export default {
 						'Authorization': `Bearer ${this.$root.user.token}`
 			}}
 
-		 if (status === "granted") {
-					FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
-					FileSystem.documentDirectory + `${title}.pdf`,options
-			).then(async({ uri,status }) => {
-					FileSystem.getContentUriAsync(uri).then(cUri => {
-						IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-							data: cUri,
-							flags: 1,
-						});
-					});
-			});
-		 }
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+						FileSystem.documentDirectory + `${title}.pdf`,options
+				).then(async({ uri,status }) => {
+
+						if(this.Platform.OS === 'android'){
+							const asset = await MediaLibrary.createAssetAsync(uri);
+							await MediaLibrary.createAlbumAsync("Download", asset, false);
+							Toast.show({
+								text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
+								buttonText: 'ok',
+								position: "center",
+								duration: 3000,
+								type: "success", 
+							});
+						}else {
+							Sharing.shareAsync(uri);
+						}
+					
+				});
+			}
 			that.formLoaded = true;
 		},
 	downloadPDF: async function(id,clientID,title){
