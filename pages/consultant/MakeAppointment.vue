@@ -244,6 +244,14 @@ import Header from '../../included/Header';
           });
 
           let responseJson = await response.json();
+					if(responseJson.message === 'appointment existed'){
+					Toast.show({
+						text: `Er bestaat al een afspraak op deze datum en tijd`,
+						position: "center",
+						type: "danger",
+						duration: 3000, 
+        })
+					}
           if (responseJson.success) {
             	this.navigation.navigate('AppointmentConfirmation', {
               title: this.title,
@@ -261,7 +269,9 @@ import Header from '../../included/Header';
       }else {
           Toast.show({
           text: `${$root.lang.t('missing_title')}`,
-          buttonText: 'ok'
+					position: "center",
+					type: "danger",
+					duration: 3000, 
         })
       }
         

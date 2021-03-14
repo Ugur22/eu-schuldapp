@@ -276,6 +276,7 @@ export default {
 					Toast.show({
 						text: `${this.$root.lang.t('file_uploaded')}`,
 						position: "center",
+						type: "success",
 						duration: 3000, 
 					});
 					this.photo.uri = '';
@@ -291,6 +292,9 @@ export default {
 			Toast.show({
 				text: `${$root.lang.t('file_uploaded')}`,
 				buttonText: 'ok',
+				position: "center",
+				type: "success",
+				duration: 3000, 
 			});
 		},
 		showInfo: function(){
@@ -358,6 +362,9 @@ export default {
 				Toast.show({
 					text:  `${this.$root.lang.t('missing_upload')}`,
 					buttonText: 'ok',
+					position: "center",
+					type: "danger",
+					duration: 3000, 
 				});
 			}
     },

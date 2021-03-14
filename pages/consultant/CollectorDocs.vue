@@ -121,6 +121,7 @@ export default {
 							buttonText: 'ok',
 							position: "center",
 							duration: 3000, 
+							type: "success",
 						});
 				});
 			}

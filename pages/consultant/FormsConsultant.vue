@@ -127,7 +127,8 @@ export default {
 							text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
 							buttonText: 'ok',
 							position: "center",
-							duration: 3000, 
+							duration: 3000,
+							type: "success", 
 						});
 				});
 			}

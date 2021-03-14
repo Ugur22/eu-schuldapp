@@ -3,7 +3,7 @@
 	<header :pageTitle="$root.lang.t('your_appointment')" :method="goBack" />
     <nb-content padder>
       <view :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
-        <nb-h1>{{$root.lang.t('confirmation_appoitment')}}</nb-h1>
+        <nb-h1>{{$root.lang.t('confirmation_appointment')}}</nb-h1>
       </view>
       <nb-card>
         <nb-card-item>
