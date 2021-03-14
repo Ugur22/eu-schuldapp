@@ -14,7 +14,7 @@
 					</nb-text>
 			</nb-item>
       <nb-list v-if="dataIsReady">
-				<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
+				<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype,docs.title)">
           <nb-left>
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
@@ -46,8 +46,9 @@ import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
 import {fetchData} from "../utils/fetch";
-import * as Print from 'expo-print';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
+import * as IntentLauncher from 'expo-intent-launcher';
+import * as Permissions from 'expo-permissions';
 
 
 export default {
@@ -82,44 +83,33 @@ export default {
     goBack: function () {
       this.navigation.goBack();
 		},
-		showPDF: async function (id,clientID) {
+		showPDF: async function(id,clientID,titleDoc){
 			this.buttonOff = true;
-			 setTimeout(() => this.buttonOff = false, 2000);
-
+			setTimeout(() => this.buttonOff = false, 2000);
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 			let that = this;
-			let value = '';
-			try {
-			value = await AsyncStorage.getItem('login');
-			this.user = JSON.parse(value); 
-			} catch (error) {
-			// Error retrieving data
-			console.log(error.message);
-			}
+				let options = {			
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${this.$root.user.token}`
+				}}
 
-			try {
-				let response = await fetch(`http://api.arsus.nl/document/pdf-download?client_id=${clientID}
-				&document_id=${id}`, {
-					method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.user.token}`
-          },
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+						FileSystem.documentDirectory + `${titleDoc}.pdf`,options
+				).then(async({ uri,status }) => {
+						FileSystem.getContentUriAsync(uri).then(cUri => {
+							IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+								data: cUri,
+								flags: 1,
+							});
+						});
 				});
-
-				let responseJson = await response.text();
-				if (responseJson) {
-					this.dataIsReady = true;
-					Print.printAsync({uri:responseJson});
-				} else {
-					console.log(responseJson);
-				}
-			} catch (error) {
-			console.log(error);
-			console.error(error);
 			}
+				that.formLoaded = true;
 		},
-	detailOther: function (id,clientID,docType) {
+	detailOther: function (id,clientID,docType,titleDoc) {
 			if(docType === 'jpg'){
 				this.navigation.navigate('OtherDocsDetails', {
 					docID: id,
@@ -127,7 +117,7 @@ export default {
 					docType:docType
 				});
 			}else {
-				this.showPDF(id,clientID);
+				this.showPDF(id,clientID,titleDoc);
 			}
 		}
   },

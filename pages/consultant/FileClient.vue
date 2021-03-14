@@ -275,6 +275,8 @@ export default {
 				if (responseJson.success) {
 					Toast.show({
 						text: `${this.$root.lang.t('file_uploaded')}`,
+						position: "center",
+						duration: 3000, 
 					});
 					this.photo.uri = '';
 					this.title ='';

@@ -5,7 +5,7 @@
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
 	  </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="docs in collectorDocs" :key="docs.id" :on-press="() => showPDF(docs.id)">
+        <nb-list-item v-for="docs in collectorDocs" :key="docs.id" :on-press="() => showPDF(docs.id,docs.title)">
           <nb-left>
             <nb-text class="text">{{docs.title}}</nb-text>
           </nb-left>
@@ -36,8 +36,10 @@
 import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
-import {fetchData,fetchContent} from "../utils/fetch";
-import * as Print from 'expo-print';
+import {fetchData} from "../utils/fetch";
+import * as FileSystem from 'expo-file-system';
+import * as IntentLauncher from 'expo-intent-launcher';
+import * as Permissions from 'expo-permissions';
 
 export default {
   props: {
@@ -67,14 +69,31 @@ export default {
 	goBack: function () {
 	  this.navigation.goBack();
 	},
-	showPDF: async function (documentID) {
+		showPDF: async function(id,title){
 			this.buttonOff = true;
-			 setTimeout(() => this.buttonOff = false, 2000);
+			setTimeout(() => this.buttonOff = false, 2000);
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+			let that = this;
+				let options = {			
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${this.$root.user.token}`
+				}}
 
-			fetchContent(`document/pdf-download?client_id=${this.navigation.getParam('id')}&document_id=${documentID}`,this.$root.user.token).then(val => {
-				Print.printAsync({uri:val});
-				this.dataIsReady = true;
-			});
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${this.navigation.getParam('id')}&document_id=${id}`,
+						FileSystem.documentDirectory + `${title}.pdf`,options
+				).then(async({ uri,status }) => {
+						FileSystem.getContentUriAsync(uri).then(cUri => {
+							IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+								data: cUri,
+								flags: 1,
+							});
+						});
+				});
+			}
+				that.formLoaded = true;
 		},
   },
 };

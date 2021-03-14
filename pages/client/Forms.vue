@@ -3,19 +3,22 @@
 	<header :pageTitle="$root.lang.t('forms')" :method="goBack" />
     <nb-content>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="form in clientForms" :key="form.id" :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)">
+        <nb-list-item v-for="form in clientForms" :key="form.id">
           <nb-left>
-            <nb-text class="text">{{form.title}}</nb-text>
-          </nb-left>
-					<nb-body>
-            <nb-text class="text">{{formatDate(form.created_at)}}</nb-text>
-					</nb-body>
-					<nb-right>
 						<nb-button v-if="!form.main" iconRight transparent>
 							<nb-icon  class="text" name="document" />
 						</nb-button>
 						<nb-button v-else iconRight transparent >
 							<nb-icon  class="text" name="mail" />
+						</nb-button>
+            <nb-text class="text">{{form.title}}</nb-text>
+          </nb-left>
+					<nb-right :style="{flexDirection:'row'}">
+						<nb-button iconRight transparent :disabled="buttonOff" :on-press="() => downloadPDF(form.id,form.client_id,form.title)" >
+							<nb-icon  class="text" name="download" />
+						</nb-button>
+						<nb-button v-if="Platform.OS === 'android'" iconLeft transparent :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)" >
+							<nb-icon  class="text" name="eye" />
 						</nb-button>
           </nb-right>
         </nb-list-item>
@@ -40,9 +43,8 @@
 import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
-import * as Print from 'expo-print';
-import {Dimensions,Platform} from 'react-native';
-import {fetchData,fetchContent} from "../utils/fetch";
+import {Platform} from 'react-native';
+import {fetchData} from "../utils/fetch";
 import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Permissions from 'expo-permissions';
@@ -58,14 +60,12 @@ export default {
   },
   data() {
     return {
-      selectedDoc: '0',
       clientForms: {},
       dataIsReady: false,
 			formatDate,
 			buttonOff: false,
-			formHTML:'',
-			formPDF:'',
-			formLoaded:false
+			formLoaded:false,
+			Platform
     };
   },
   created() {
@@ -92,20 +92,40 @@ export default {
 
 		 if (status === "granted") {
 					FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
-					FileSystem.documentDirectory + title,options
+					FileSystem.documentDirectory + `${title}.pdf`,options
 			).then(async({ uri,status }) => {
-					console.log(status);
 					FileSystem.getContentUriAsync(uri).then(cUri => {
-						console.log(cUri);
 						IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
 							data: cUri,
 							flags: 1,
 						});
 					});
+			});
+		 }
+			that.formLoaded = true;
+		},
+	downloadPDF: async function(id,clientID,title){
+		this.buttonOff = true;
+		setTimeout(() => this.buttonOff = false, 2000);
+		const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		let that = this;
+			let options = {			
+					headers: {
+						accept: 'application/json',
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${this.$root.user.token}`
+			}}
+
+		 if (status === "granted") {
+					FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+					FileSystem.documentDirectory + `${title}.pdf`,options
+			).then(async({ uri,status }) => {
 					await MediaLibrary.createAssetAsync(uri);
 				 	Toast.show({
-						text: `Het document is gedownload`,
+						text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
 						buttonText: 'ok',
+						position: "center",
+						duration: 3000, 
 					});
 			});
 		 }

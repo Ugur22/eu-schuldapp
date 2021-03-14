@@ -14,7 +14,7 @@
 					</nb-text>
 			</nb-item>
 	  <nb-list v-if="dataIsReady">
-		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype)">
+		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype,docs.title)">
 		  <nb-left>
 			<nb-text class="text">{{ docs.title }}</nb-text>
 		  </nb-left>
@@ -45,8 +45,11 @@
 import FooterNav from '../../included/Footer';
 import Header from '../../included/Header';
 import {formatDate} from "../utils/dates";
-import {fetchData,fetchContent} from "../utils/fetch";
-import * as Print from 'expo-print';
+import {fetchData} from "../utils/fetch";
+import * as FileSystem from 'expo-file-system';
+import * as IntentLauncher from 'expo-intent-launcher';
+import * as Permissions from 'expo-permissions';
+import {Platform} from 'react-native';
 
 export default {
   props: {
@@ -61,7 +64,8 @@ export default {
 			dataIsReady: false,
 			formatDate,
 			buttonOff: false,
-			searchDocs:''
+			searchDocs:'',
+			Platform
 		};
   },
 	computed: {
@@ -76,29 +80,45 @@ export default {
 	},
   components: { FooterNav,Header },
   methods: {
-	goBack: function () {
-	  this.navigation.goBack();
-	},
-	showPDF: async function (id,clientID) {
-			this.buttonOff = true;
-			 setTimeout(() => this.buttonOff = false, 2000);
-
-			fetchContent(`document/pdf-download?client_id=${clientID}
-				&document_id=${id}`,this.$root.user.token).then(val => {
-				Print.printAsync({uri:val});
-				this.dataIsReady = true;
-			});
+		goBack: function () {
+			this.navigation.goBack();
 		},
-	detailOther: function (id,clientID,docType) {
-			if(docType === 'jpg'){
-				this.navigation.navigate('OtherDocsDetails', {
-					docID: id,
-					ClientID:clientID,
-					docType:docType
+		showPDF: async function(id,clientID,titleDoc){
+			this.buttonOff = true;
+			setTimeout(() => this.buttonOff = false, 2000);
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+			let that = this;
+				let options = {			
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${this.$root.user.token}`
+				}}
+
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+						FileSystem.documentDirectory + `${titleDoc}.pdf`,options
+				).then(async({ uri,status }) => {
+						FileSystem.getContentUriAsync(uri).then(cUri => {
+							IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+								data: cUri,
+								flags: 1,
+							});
+						});
 				});
-			}else {
-				this.showPDF(id,clientID);
 			}
+				that.formLoaded = true;
+		},
+		detailOther: function (id,clientID,docType,titleDoc) {
+				if(docType === 'jpg'){
+					this.navigation.navigate('OtherDocsDetails', {
+						docID: id,
+						ClientID:clientID,
+						docType:docType
+					});
+				}else {
+					this.showPDF(id,clientID,titleDoc);
+				}
 		}
   },
 };
