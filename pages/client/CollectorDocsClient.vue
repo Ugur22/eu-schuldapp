@@ -115,7 +115,8 @@ export default {
 						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${this.navigation.getParam('id')}&document_id=${id}`,
 						FileSystem.documentDirectory + `${title}.pdf`,options
 				).then(async({ uri,status }) => {
-						await MediaLibrary.createAssetAsync(uri);
+						const asset = await MediaLibrary.createAssetAsync(uri);
+      			await MediaLibrary.createAlbumAsync("Download", asset, false);
 						Toast.show({
 							text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
 							buttonText: 'ok',
