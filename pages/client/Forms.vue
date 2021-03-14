@@ -13,7 +13,7 @@
 						</nb-button>
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
-					<nb-right :style="{flexDirection:'row'}">
+					<nb-right :style="{flexDirection:Platform.OS === 'android' ? 'row' : 'column'}">
 						<nb-button iconRight transparent :disabled="buttonOff" :on-press="() => downloadPDF(form.id,form.client_id,form.title)" >
 							<nb-icon  class="text" name="download" />
 						</nb-button>
@@ -92,26 +92,17 @@ export default {
 			}}
 
 			if (status === "granted") {
-						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
-						FileSystem.documentDirectory + `${title}.pdf`,options
-				).then(async({ uri,status }) => {
-
-						if(this.Platform.OS === 'android'){
-							const asset = await MediaLibrary.createAssetAsync(uri);
-							await MediaLibrary.createAlbumAsync("Download", asset, false);
-							Toast.show({
-								text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
-								buttonText: 'ok',
-								position: "center",
-								duration: 3000,
-								type: "success", 
+							FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+							FileSystem.documentDirectory + `${title}.pdf`,options
+					).then(async({ uri,status }) => {
+							FileSystem.getContentUriAsync(uri).then(cUri => {
+								IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+									data: cUri,
+									flags: 1,
+								});
 							});
-						}else {
-							Sharing.shareAsync(uri);
-						}
-					
-				});
-			}
+					});
+				}
 			that.formLoaded = true;
 		},
 	downloadPDF: async function(id,clientID,title){
@@ -128,8 +119,9 @@ export default {
 
 		 if (status === "granted") {
 					FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
-					FileSystem.documentDirectory + `${title}.pdf`,options
+					FileSystem.documentDirectory + `${title.replace(/\s/g, '')}.pdf`,options
 			).then(async({ uri,status }) => {
+				if(this.Platform.OS === 'android'){
 						const asset = await MediaLibrary.createAssetAsync(uri);
       			await MediaLibrary.createAlbumAsync("Download", asset, false);
 				 	Toast.show({
@@ -139,6 +131,9 @@ export default {
 						duration: 3000,
 						type: "success", 
 					});
+				}else {
+					Sharing.shareAsync(uri);
+				}
 			});
 		 }
 			that.formLoaded = true;

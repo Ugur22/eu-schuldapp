@@ -10,11 +10,11 @@
             <nb-text class="text">{{docs.title}}</nb-text>
           </nb-left>
           <nb-body>
-						<nb-text class="text"> {{formatDate(docs.updated_at)}}</nb-text>
+			<nb-text class="text"> {{formatDate(docs.updated_at)}}</nb-text>
           </nb-body>
-					<nb-right>
-						<nb-icon class="text" :name="Platform.OS === 'android' ? 'eye' : 'download'" />
-					</nb-right>
+			<nb-right>
+				<nb-icon class="text" :name="Platform.OS === 'android' ? 'eye' : 'download'" />
+			</nb-right>
         </nb-list-item>
       </nb-list>
 	<nb-spinner color="#0078ae" v-else /> 
@@ -114,11 +114,11 @@ export default {
 
 			if (status === "granted") {
 						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${this.navigation.getParam('id')}&document_id=${id}`,
-						FileSystem.documentDirectory + `${title}.pdf`,options
+						FileSystem.documentDirectory + `${title.replace(/\s/g, '')}.pdf`,options
 				).then(async({ uri,status }) => {
 					if(this.Platform.OS === 'android'){
 						const asset = await MediaLibrary.createAssetAsync(uri);
-      			await MediaLibrary.createAlbumAsync("Download", asset, false);
+      					await MediaLibrary.createAlbumAsync("Download", asset, false);
 						Toast.show({
 							text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
 							buttonText: 'ok',

@@ -126,9 +126,8 @@ export default {
 
 			if (status === "granted") {
 						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
-						FileSystem.documentDirectory + `${titleDoc}.pdf`,options
+						FileSystem.documentDirectory + `${titleDoc.replace(/\s/g, '')}.pdf`,options
 				).then(async({ uri,status }) => {
-
 					if(this.Platform.OS === 'android'){
 						const asset = await MediaLibrary.createAssetAsync(uri);
       			await MediaLibrary.createAlbumAsync("Download", asset, false);
