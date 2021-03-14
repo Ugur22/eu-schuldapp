@@ -1,11 +1,11 @@
 <template>
   <nb-container>
-	<header :pageTitle="$root.lang.t('file')" :method="goBack" />
+	<header :pageTitle="$root.lang.t('creditors_documents')" :method="goBack" />
 	<nb-content >
 	  <nb-item :style="{ borderColor: '#62B1F6' }">
 	  </nb-item>
       <nb-list v-if="dataIsReady">
-        <nb-list-item v-for="docs in collectorDocs" :key="docs.id" :on-press="() => showPDF(docs.id,docs.title)">
+        <nb-list-item v-for="docs in collectorDocs" :key="docs.id" :on-press="() =>  Platform.OS === 'android' ? showPDF(docs.id,docs.title) : downloadPDF(docs.id,docs.title)">
           <nb-left>
             <nb-text class="text">{{docs.title}}</nb-text>
           </nb-left>
@@ -13,7 +13,7 @@
 							<nb-text class="text"> {{formatDate(docs.updated_at)}}</nb-text>
           </nb-body>
 					<nb-right>
-						<nb-icon class="text" name="arrow-forward" />
+						<nb-icon class="text" :name="Platform.OS === 'android' ? 'eye' : 'download'" />
 					</nb-right>
         </nb-list-item>
       </nb-list>
@@ -28,9 +28,9 @@
   </nb-container>
 </template>
 <style> 
-.text { 
-	color: #0078ae;
-}
+	.text { 
+		color: #0078ae;
+	}
 </style>
 <script>
 import FooterNav from '../../included/Footer';
@@ -40,6 +40,9 @@ import {fetchData} from "../utils/fetch";
 import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Permissions from 'expo-permissions';
+import * as MediaLibrary from 'expo-media-library';
+import { Toast } from 'native-base';
+import {Platform} from 'react-native';
 
 export default {
   props: {
@@ -54,7 +57,8 @@ export default {
 			collectorDocs: {},
 			dataIsReady: false,
 			formatDate,
-			buttonOff: false
+			buttonOff: false,
+			Platform
 		};
   },
 	mounted() {
@@ -90,6 +94,33 @@ export default {
 								data: cUri,
 								flags: 1,
 							});
+						});
+				});
+			}
+				that.formLoaded = true;
+		},
+		downloadPDF: async function(id,title){
+			this.buttonOff = true;
+			setTimeout(() => this.buttonOff = false, 2000);
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+			let that = this;
+				let options = {			
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${this.$root.user.token}`
+				}}
+
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${this.navigation.getParam('id')}&document_id=${id}`,
+						FileSystem.documentDirectory + `${title}.pdf`,options
+				).then(async({ uri,status }) => {
+						await MediaLibrary.createAssetAsync(uri);
+						Toast.show({
+							text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
+							buttonText: 'ok',
+							position: "center",
+							duration: 3000, 
 						});
 				});
 			}

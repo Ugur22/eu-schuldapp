@@ -6,7 +6,7 @@
         <nb-input v-model="searchDocs" :placeholder="$root.lang.t('search')" />
       </nb-item>
 			<nb-item>
-				 <nb-text :style="{ display: 'none' }"  class="text">{{getInput}}</nb-text>
+				 <nb-text :style="{ display: 'none' }" class="text">{{getInput}}</nb-text>
 			</nb-item>
 			<nb-item v-if="clientDocs.length === undefined && dataIsReady" >
 					<nb-text class="text">
@@ -18,9 +18,12 @@
           <nb-left>
             <nb-text class="text">{{ docs.title }}</nb-text>
           </nb-left>
-          <nb-right>
-            <nb-text class="text">{{ formatDate(docs.created_at) }}</nb-text>
-          </nb-right>
+					<nb-body>
+						<nb-text class="text">{{ formatDate(docs.created_at) }}</nb-text>
+					</nb-body>
+					<nb-right>
+						<nb-icon class="text" :name="Platform.OS === 'android' ? 'eye' : 'download'" />
+					</nb-right>
         </nb-list-item>
       </nb-list>
       <nb-spinner color="#0078ae" v-else />
@@ -36,7 +39,6 @@
 <style>
 .text {
     color: #0078ae;
-    font-size:14;
 }
 
 
@@ -49,7 +51,9 @@ import {fetchData} from "../utils/fetch";
 import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Permissions from 'expo-permissions';
-
+import * as MediaLibrary from 'expo-media-library';
+import { Toast } from 'native-base';
+import {Platform} from 'react-native';
 
 export default {
   props: {
@@ -66,7 +70,8 @@ export default {
        dataIsReady: false,
        formatDate,
 			 buttonOff: false,
-			 searchDocs:''
+			 searchDocs:'',
+			 Platform
     };
   },
 	computed: {
@@ -109,6 +114,33 @@ export default {
 			}
 				that.formLoaded = true;
 		},
+		downloadPDF: async function(id,clientID,titleDoc){
+			this.buttonOff = true;
+			setTimeout(() => this.buttonOff = false, 2000);
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+			let that = this;
+				let options = {			
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${this.$root.user.token}`
+				}}
+
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+						FileSystem.documentDirectory + `${titleDoc}.pdf`,options
+				).then(async({ uri,status }) => {
+						await MediaLibrary.createAssetAsync(uri);
+						Toast.show({
+							text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
+							buttonText: 'ok',
+							position: "center",
+							duration: 3000, 
+						});
+				});
+			}
+				that.formLoaded = true;
+		},
 	detailOther: function (id,clientID,docType,titleDoc) {
 			if(docType === 'jpg'){
 				this.navigation.navigate('OtherDocsDetails', {
@@ -117,7 +149,12 @@ export default {
 					docType:docType
 				});
 			}else {
-				this.showPDF(id,clientID,titleDoc);
+				if(this.Platform.OS === 'android'){
+					this.showPDF(id,clientID,titleDoc);
+				}else {
+					this.downloadPDF(id,clientID,titleDoc);
+				}
+			
 			}
 		}
   },

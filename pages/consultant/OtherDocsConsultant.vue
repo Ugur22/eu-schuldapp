@@ -16,13 +16,13 @@
 	  <nb-list v-if="dataIsReady">
 		<nb-list-item v-for="docs in clientDocs" :key="docs.id" :disabled="buttonOff" :on-press="() => detailOther(docs.id,docs.client_id,docs.file.filetype,docs.title)">
 		  <nb-left>
-			<nb-text class="text">{{ docs.title }}</nb-text>
+				<nb-text class="text">{{ docs.title }}</nb-text>
 		  </nb-left>
 		  <nb-body>
-			<nb-text class="text">{{ formatDate(docs.created_at) }}</nb-text>
+				<nb-text class="text">{{ formatDate(docs.created_at) }}</nb-text>
 		  </nb-body>
 		  <nb-right>
-			<nb-icon class="text" name="arrow-forward" />
+				<nb-icon class="text" :name="Platform.OS === 'android' ? 'eye' : 'download'" />
 		  </nb-right>
 		</nb-list-item>
 	  </nb-list>
@@ -50,6 +50,8 @@ import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Permissions from 'expo-permissions';
 import {Platform} from 'react-native';
+import * as MediaLibrary from 'expo-media-library';
+import { Toast } from 'native-base';
 
 export default {
   props: {
@@ -109,6 +111,33 @@ export default {
 			}
 				that.formLoaded = true;
 		},
+		downloadPDF: async function(id,clientID,titleDoc){
+			this.buttonOff = true;
+			setTimeout(() => this.buttonOff = false, 2000);
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+			let that = this;
+				let options = {			
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${this.$root.user.token}`
+				}}
+
+			if (status === "granted") {
+						FileSystem.downloadAsync(`http://api.arsus.nl/document/pdf-file?client_id=${clientID}&document_id=${id}`,
+						FileSystem.documentDirectory + `${titleDoc}.pdf`,options
+				).then(async({ uri,status }) => {
+						await MediaLibrary.createAssetAsync(uri);
+						Toast.show({
+							text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
+							buttonText: 'ok',
+							position: "center",
+							duration: 3000, 
+						});
+				});
+			}
+				that.formLoaded = true;
+		},
 		detailOther: function (id,clientID,docType,titleDoc) {
 				if(docType === 'jpg'){
 					this.navigation.navigate('OtherDocsDetails', {
@@ -117,7 +146,11 @@ export default {
 						docType:docType
 					});
 				}else {
-					this.showPDF(id,clientID,titleDoc);
+					if(this.Platform.OS === 'android'){
+						this.showPDF(id,clientID,titleDoc);
+					}else {
+						this.downloadPDF(id,clientID,titleDoc);
+					}
 				}
 		}
   },
