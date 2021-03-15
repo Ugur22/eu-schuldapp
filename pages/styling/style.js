@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
 		color:'#fff'
 	},
 	textHeader: {
-		color:'#fff'
+		color:'#fff',
 	},
 	position: {
 		flex:1,
