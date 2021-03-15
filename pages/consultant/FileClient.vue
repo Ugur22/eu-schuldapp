@@ -291,7 +291,6 @@ export default {
 		validateTitle: function(){
 			Toast.show({
 				text: `${$root.lang.t('file_uploaded')}`,
-				buttonText: 'ok',
 				position: "center",
 				type: "success",
 				duration: 3000, 
@@ -361,7 +360,6 @@ export default {
 			}else {
 				Toast.show({
 					text:  `${this.$root.lang.t('missing_upload')}`,
-					buttonText: 'ok',
 					position: "center",
 					type: "danger",
 					duration: 3000, 

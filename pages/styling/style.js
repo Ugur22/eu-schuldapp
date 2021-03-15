@@ -63,5 +63,10 @@ export const styleAppointments = StyleSheet.create({
 	},
 	agenda: {
 		height: 350,
+		borderWidth:2,
+		borderBottomColor:'#0078ae',
+		borderLeftWidth:0,
+		borderRightWidth:0,
+		borderTopWidth:0
 	}
 });

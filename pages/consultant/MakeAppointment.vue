@@ -26,14 +26,14 @@
 				dayTextColor: '#2d4150',
   		}"
 		/>
-    <nb-content padder>
+    <nb-content >
       <nb-card transparent> 
-        <nb-card-item header>
-          <nb-text>	{{$root.lang.t('client_appoinment')}} {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} op {{formatDate(date)}} om {{selectedTime}} </nb-text>
-        </nb-card-item>
+        <nb-card-item >
+          <nb-text>	{{$root.lang.t('client_appoinment')}} {{navigation.getParam('firstname')}} {{navigation.getParam('lastname')}} op {{formatDate(date)}} om {{selectedTime}}</nb-text>
+			  </nb-card-item>
         <nb-card-item>
           <nb-body>
-						  <nb-card-item floatingLabel>
+					<nb-card-item floatingLabel>
 					<nb-label>{{$root.lang.t('time')}}</nb-label>
             <nb-picker
               mode="dialog"
@@ -48,14 +48,6 @@
                 :value="hour"/>
             </nb-picker>
 						  </nb-card-item>
-            <nb-item :error="(!title.required)" floatingLabel>
-              <nb-label>{{$root.lang.t('title')}}</nb-label>
-              <nb-input v-model="title" />
-            </nb-item>
-            <nb-item floatingLabel :style="{  marginTop:10 }">
-              <nb-label>{{$root.lang.t('note')}}</nb-label>
-              <nb-input v-model="notes" />
-            </nb-item>
             <nb-card-item floatingLabel>
           <nb-label>{{ $root.lang.t('Township') }}:</nb-label>
             <nb-picker
@@ -71,6 +63,10 @@
                 :value="location.id"/>
             </nb-picker>
         </nb-card-item>
+				<nb-item floatingLabel>
+					<nb-label>{{$root.lang.t('note')}}</nb-label>
+					<nb-input v-model="notes" />
+				</nb-item>
           </nb-body>            
         </nb-card-item>
         <nb-card-item  footer :style="styles.center">
@@ -118,7 +114,6 @@ import Header from '../../included/Header';
         mode: 'date',
         show: false,
         minimumDate: this.addDays(0), 
-        title:'',
 				notes:'',
 				dataIsReady: false,
         locations: {},
@@ -223,8 +218,6 @@ import Header from '../../included/Header';
     },
       appointmentMake: async function () {
 
-      if(this.title){
-				console.log(this.selectedTime);
         try {
           let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
             method: 'POST',
@@ -234,7 +227,7 @@ import Header from '../../included/Header';
               'Authorization': `Bearer ${this.$root.user.token}`
             },
             body: JSON.stringify({
-              title: this.title,
+              title: `Afspraak met ${this.navigation.getParam('firstname')} ${this.navigation.getParam('firstname')}`,
               notes: this.notes,
               date: this.formatDateReverse(this.date),
               time: this.selectedTime,
@@ -266,14 +259,6 @@ import Header from '../../included/Header';
         } catch (error) {
           console.error(error);
         }
-      }else {
-          Toast.show({
-						text: `${this.$root.lang.t('missing_title')}`,
-						position: "center",
-						type: "danger",
-						duration: 3000, 
-        })
-      }
         
       },
       appointmentCancel: function () {

@@ -14,10 +14,10 @@
             <nb-text class="text">{{form.title}}</nb-text>
           </nb-left>
 					<nb-right :style="{flexDirection:Platform.OS === 'android' ? 'row' : 'column'}">
-						<nb-button iconRight transparent :disabled="buttonOff" :on-press="() => downloadPDF(form.id,form.client_id,form.title)" >
+						<nb-button :style="{flex:1}" iconRight transparent :disabled="buttonOff" :on-press="() => downloadPDF(form.id,form.client_id,form.title)" >
 							<nb-icon  class="text" name="download" />
 						</nb-button>
-						<nb-button v-if="Platform.OS === 'android'" iconLeft transparent :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)" >
+						<nb-button :style="{flex:1}" v-if="Platform.OS === 'android'" iconLeft transparent :disabled="buttonOff" :on-press="() => showPDF(form.id,form.client_id,form.title)" >
 							<nb-icon  class="text" name="eye" />
 						</nb-button>
           </nb-right>
@@ -126,7 +126,6 @@ export default {
       			await MediaLibrary.createAlbumAsync("Download", asset, false);
 				 	Toast.show({
 						text: `uw document is succesvol opgeslagen. Ga naar uw bestandsbeheer/telefoonopslag voor uw download`,
-						buttonText: 'ok',
 						position: "center",
 						duration: 3000,
 						type: "success", 
