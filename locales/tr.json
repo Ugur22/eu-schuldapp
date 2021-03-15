@@ -79,5 +79,6 @@
 	"missing_title":"Başlık eksik",
 	"file_uploaded":"dosya yüklendi",
 	"missing_upload":"Yükleme bir dosya eklemeden tamamlanamaz",
-	"no_appointments":"bu tarihte randevu yok"
+	"no_appointments":"bu tarihte randevu yok",
+	"signatures":"imzalar"
 }

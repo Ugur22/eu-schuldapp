@@ -79,5 +79,6 @@
 	"missing_title":"Vul een titel in",
 	"file_uploaded":"bestand geüpload",
 	"missing_upload":"U moet een bijlage toevoegen",
-	"no_appointments":"Er zijn geen afspraken op deze datum"
+	"no_appointments":"Er zijn geen afspraken op deze datum",
+	"signatures":"handtekeningen"
 }

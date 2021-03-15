@@ -78,5 +78,6 @@
 	"missing_title":"title is missing",
 	"file_uploaded":"file uploaded",
 	"missing_upload":"upload cannot be completed without adding a file",
-	"no_appointments":"no appointments on this date"
+	"no_appointments":"no appointments on this date",
+	"signatures":"signatures"
 }

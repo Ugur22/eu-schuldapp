@@ -1,8 +1,6 @@
 <template>
   <nb-container>
-				<!-- <web-view v-if="formLoaded" :allowFileAccess="true"  :allowUniversalAccessFromFileURLs="true" :source="{uri:formPDF}"
-		:style="{marginTop: 0}" /> -->
-     <header :pageTitle="$root.lang.t('details')" :method="goBack" />
+     <header :pageTitle="$root.lang.t('signatures')" :method="goBack" />
 		<view v-if="Amountsignatures">
 			<view  v-for="authors in Amountsignatures" :key="authors"  :style="{ justifyContent: 'center', alignItems: 'center',width: null, height: 200 }">
 				<signature-screen
@@ -17,12 +15,12 @@
 			</view>
 		</view>
 		<nb-spinner color="#0078ae" v-if="Amountsignatures == 0 && singatureStatus != 'completed' " /> 
-		<nb-text color="#0078ae" v-if="singatureStatus == 'completed' " >
-			{{$root.lang.t('singature_completed')}}
-		</nb-text> 
-		<!-- <pdf-reader v-if="formLoaded" :withPinchZoom="true" :withScroll="true"
-			:source="{uri:formPDF}"
-	/> -->
+		<nb-view color="#0078ae" v-if="singatureStatus == 'completed' " >
+			<view :style="{   justifyContent: 'center', alignItems: 'center' }" >
+				<nb-icon name="checkmark" :style="{ fontSize: 150, color: 'green' }" />
+					<nb-text>{{$root.lang.t('singature_completed')}}</nb-text>
+			</view>
+		</nb-view> 
 	</nb-container>
 </template>
 
@@ -30,10 +28,7 @@
 import SignatureScreen from 'react-native-signature-canvas';
 import Header from '../../included/Header';
 import axios from "axios";
-import {fetchData,fetchContent} from "../utils/fetch";
-import PDFReader from 'rn-pdf-reader-js';
-import * as Print from 'expo-print';
-import { WebView } from 'react-native-webview';
+import {fetchData} from "../utils/fetch";
 
 export default {
   props: {
@@ -74,26 +69,9 @@ export default {
 			that.Amountsignatures = val.need_signature_by;
 			that.dataIsReady = true;
 			});
-
-			// this.getForm();
 	},
-	components: {SignatureScreen,Header,PDFReader,WebView },
+	components: {SignatureScreen,Header },
   	methods: {
-		// printToPdf: async function(htmlFile){
-		// 	let that = this;
-		// 	const response = await Print.printToFileAsync({html:htmlFile,width:480,height:500});
-		// 	that.formPDF = response.uri;
-		// 		that.formLoaded = true;
-		// 		// if(that.formLoaded){
-		// 		// 	Print.printAsync({uri:this.formPDF});
-		// 		// }
-		// },
-		// getForm: async function() {
-		// 	fetchContent(`document/html-preview?client_id=${this.navigation.getParam('ClientID')}&document_id=${this.navigation.getParam('docID')}`,this.$root.user.token).then(val => {
-		// 		this.formHTML = val;
-		// 		this.printToPdf(this.formHTML);
-		// 	});
-		// },
 		handleSignature: async function(signature,author) {
 			this.signature = signature;
 			this.author = author;
