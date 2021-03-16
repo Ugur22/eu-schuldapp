@@ -7,12 +7,13 @@
 			:renderEmptyData ="renderEmptyData"
 			:renderDay ="(day) => renderDay(day)"
 			:renderItem="(item,day) => renderItems(item,day)"
+			:hideDayNames="false"
 			:enableSwipeMonths="true"
 			:onDayPress="(day) =>  getSelectedDate(day)"
 			:onDayChange="(day) =>  getSelectedDate(day)"
 			:items="appointments"
 			:style="styleAppointments.agenda"
-			:theme="{ 
+			:theme="{
 				backgroundColor:'#fff',
 				calendarBackground:'#fff',
 				agendaDayTextColor: '#fff',
@@ -23,7 +24,7 @@
 				textSectionTitleColor:'#0078ae',
 				selectedDayBackgroundColor: '#0078ae',
 				dotColor: '#0078ae',
-				dayTextColor: '#2d4150',
+				dayTextColor: '#2d4150'
   		}"
 		/>
     <nb-content >
@@ -110,7 +111,7 @@ import Header from '../../included/Header';
     components: { FooterNav,Item: Picker.Item,Agenda,Header },
     data() {
       return {
-        date: this.addDays(0),
+        date: this.addDays(-1),
         mode: 'date',
         show: false,
         minimumDate: this.addDays(0), 
@@ -179,18 +180,20 @@ import Header from '../../included/Header';
 			renderDay: function(day) {
 				return (
 					 <View style={styleAppointments.emptyDate}>
-						<Text></Text>
+						{day !== undefined &&
+							<Text style={{color:'#0078ae',fontSize:16}}>{day.day}</Text>
+						}
 					</View>
 				);
 			},
 			renderEmptyData: function() {
 				return (
-					 <View style={styleAppointments.emptyDate}>
-						<Text>{this.$root.lang.t('no_appointments')}</Text>
+					 <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center' }}>
+						<Text style={{color:'#0078ae',textAlign: "center", fontSize:18 }}>{this.$root.lang.t('no_appointments')}</Text>
 					</View>
 				);
 			},
-			renderItems: function(item) {
+			renderItems: function(item,day) {
 				return (
       	<TouchableOpacity 
 					style={[styleAppointments.item, {height: item.height}]}>
@@ -247,7 +250,6 @@ import Header from '../../included/Header';
 					}
           if (responseJson.success) {
             	this.navigation.navigate('AppointmentConfirmation', {
-              title: this.title,
               notes: this.notes,
               clientName: `${this.navigation.getParam('firstname')} ${this.navigation.getParam('lastname')}`,
               date: this.formatDate(this.date),

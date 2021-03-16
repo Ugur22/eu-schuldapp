@@ -9,7 +9,6 @@
         <nb-card-item>
           <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
             <nb-icon name="checkmark" :style="{ fontSize: 150, color: 'green' }" />
-            <nb-text>{{navigation.getParam('title')}}</nb-text>
             <nb-text>{{$root.lang.t('client')}}: {{navigation.getParam('clientName')}}</nb-text>
             <nb-card-item>
               <nb-left>
