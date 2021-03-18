@@ -3,19 +3,19 @@
     <header :pageTitle="$root.lang.t('appointments')" :method="goBack" />
     <nb-content padder >
       <nb-card :style="{ marginTop: 10 }" v-if="addAppointment"  >
+				<nb-list>
         <nb-card-item header bordered>
           <nb-text class="text">{{$root.lang.t('choose_client')}}</nb-text>
         </nb-card-item>
-        <nb-card-item bordered v-for="client in Clients" :key="client.id">
-          <nb-body>
-            <nb-button transparent :on-press="() => makeAppointment(client.id,client.firstname,client.lastname)">
-              <nb-text class="text">{{client.firstname}} {{client.lastname}}</nb-text>
-            </nb-button>
-          </nb-body>
-          <nb-right>
-            <nb-text class="text">{{client.status.status}}</nb-text>
-          </nb-right>
-        </nb-card-item>
+				<nb-list-item v-for="client in Clients" :key="client.id" :on-press="() => makeAppointment(client.id,client.firstname,client.lastname)">
+					<nb-left>
+							<nb-text class="text">{{client.firstname}} {{client.lastname}}</nb-text>
+					</nb-left>
+					<nb-right>
+						<nb-text class="text">{{client.status.status}}</nb-text>
+					</nb-right>
+				</nb-list-item>
+				</nb-list>
       </nb-card>
       <nb-card :style="{ marginTop: addAppointment ? 10 : 50 }" v-if="dataIsReady">
         <nb-card-item header bordered>

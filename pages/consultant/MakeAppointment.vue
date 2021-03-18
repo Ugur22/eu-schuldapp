@@ -1,6 +1,6 @@
 <template>
   <nb-container>
-      <header :pageTitle="$root.lang.t('make_appointment')" :method="goBack" />
+    <header :pageTitle="$root.lang.t('make_appointment')" :method="goBack" />
 		<Agenda 
 			:minDate="formatDateReverse(minimumDate)"
 			:renderEmptyDate="renderEmptyDate"
@@ -35,34 +35,34 @@
         <nb-card-item>
           <nb-body>
 					<nb-card-item floatingLabel>
-					<nb-label>{{$root.lang.t('time')}}</nb-label>
-            <nb-picker
-              mode="dialog"
-              placeholder="tijd"
-              :selectedValue="selectedTime"
-              :iosIcon="getIosIcon()"
-              :onValueChange="onTimeChange">
-              <item
-                v-for="hour in GetHours()"
-                :key="hour"
-                :label="hour"
-                :value="hour"/>
-            </nb-picker>
-						  </nb-card-item>
+						<nb-label>{{$root.lang.t('time')}}</nb-label>
+						<nb-picker
+							mode="dialog"
+							placeholder="tijd"
+							:selectedValue="selectedTime"
+							:iosIcon="getIosIcon()"
+							:onValueChange="onTimeChange">
+							<item
+								v-for="hour in GetHours()"
+								:key="hour"
+								:label="hour"
+								:value="hour"/>
+						</nb-picker>
+						</nb-card-item>
             <nb-card-item floatingLabel>
-          <nb-label>{{ $root.lang.t('Township') }}:</nb-label>
-            <nb-picker
-              mode="dialog"
-              :placeholder="$root.lang.t('Township')"
-              :selectedValue="selectedLocation"
-              :iosIcon="getIosIcon()"
-              :onValueChange="onLocationChange">
-              <item
-                v-for="location in locations"
-                :key="location.id"
-                :label="location.name"
-                :value="location.id"/>
-            </nb-picker>
+          		<nb-label>{{ $root.lang.t('Township') }}:</nb-label>
+							<nb-picker
+								mode="dialog"
+								:placeholder="$root.lang.t('Township')"
+								:selectedValue="selectedLocation"
+								:iosIcon="getIosIcon()"
+								:onValueChange="onLocationChange">
+								<item
+									v-for="location in locations"
+									:key="location.id"
+									:label="location.name"
+									:value="location.id"/>
+							</nb-picker>
         </nb-card-item>
 				<nb-item floatingLabel>
 					<nb-label>{{$root.lang.t('note')}}</nb-label>
@@ -89,7 +89,7 @@
 </template>
 <script>
   import FooterNav from '../../included/Footer';
-import Header from '../../included/Header';
+	import Header from '../../included/Header';
   import { Platform,View,Text,TouchableOpacity,Alert} from 'react-native';
   import { Picker,Icon } from "native-base";
   import {formatDate,FormatTime,formatDay,formatDateReverse} from "../utils/dates";
@@ -111,7 +111,7 @@ import Header from '../../included/Header';
     components: { FooterNav,Item: Picker.Item,Agenda,Header },
     data() {
       return {
-        date: this.addDays(-1),
+        date: this.addDays(0),
         mode: 'date',
         show: false,
         minimumDate: this.addDays(0), 
@@ -168,7 +168,7 @@ import Header from '../../included/Header';
 		});
 	},
     methods: {
-         getIosIcon: function() {
+      getIosIcon: function() {
       return <Icon name="arrow-down" />;
     },
       goBack: function () {
@@ -215,10 +215,10 @@ import Header from '../../included/Header';
 			},
       onLocationChange: function (value) {
       this.selectedLocation = value;
-    },
+    	},
       onTimeChange: function (value) {
 			this.selectedTime = value;
-    },
+    	},
       appointmentMake: async function () {
 
         try {

@@ -264,7 +264,7 @@ export default {
 						Authorization: `Bearer ${this.$root.user.token}`,
 					},
 					body: this.createFormData(this.finalPic, {
-						title: this.selectedDocName,
+						title: this.title ? this.title : this.selectedDocName,
 						client_id: this.navigation.getParam('clientID'),
 						option:this.selectedDocName
 					}),
