@@ -96,7 +96,7 @@
 	import {styleAppointments,styles} from '../styling/style';
 	import i18n from 'i18n-js';
 	import { Toast } from 'native-base';
-	 import DateTimePicker from '@react-native-community/datetimepicker';
+	import DateTimePicker from '@react-native-community/datetimepicker';
 
   export default {
 	props: {
@@ -190,6 +190,9 @@
 	  goBack: function () {
 			this.navigation.goBack();
 	  },
+		goToPage: function (page) {
+      this.navigation.navigate(page);
+    },
     getIosIcon: function() {
       return <Icon name="arrow-down" />;
     },
@@ -224,8 +227,6 @@
 			);
 		},
 		save : async function () {
-			console.log(this.SelectedDate);
-			console.log(this.time);
 			try {
 
 				let response = await fetch(`http://api.arsus.nl/consultant/appointment/update/${this.navigation.getParam('id')}`, {
@@ -254,7 +255,8 @@
 				// 	})
 				// }
 				if (responseJson.success) {
-						console.log('success');
+					console.log('success');
+					this.goToPage('AppointmentsConsultant');
 				} else {
 					console.log(responseJson);
 				}
@@ -268,11 +270,10 @@
         return date;
 			},
 			getSelectedDate: function (day){
-				console.log(day.dateString);
 				this.SelectedDate = this.formatDate(day.dateString);
 			},
 			onLocationChange: function (value) {
-      this.selectedLocation = value;
+      	this.selectedLocation = value;
     	},
       getDateTime: function (event, selectedDate) {
         let currentDate = selectedDate;
