@@ -31,16 +31,10 @@
 		<nb-card-item >
 		  <nb-body :style="{ flex: 1,  justifyContent: 'center', alignItems: 'center' }">
 			<nb-text :style="{ fontSize: 16, color: 'green' }">client: {{firstname}} {{lastname}}</nb-text>
-			<nb-text :style="{ fontSize: 16, color: 'green' }">time: {{time}}</nb-text>
-			<nb-card-item floatingLabel>
-					<nb-label>{{$root.lang.t('time')}}:</nb-label>
-            <view :style="{ flexDirection:'row' }">
-              <nb-text :style="{ fontSize: 28 }">{{ time }}</nb-text>
-              <nb-button rounded info :on-press="showTimepicker" :style="{ justifyContent: 'center', alignSelf: 'flex-end' }">
-                <nb-icon active name="clock" />
-              </nb-button>
-            </view>
-				</nb-card-item>
+				<nb-item floatingLabel :on-press="showTimepicker" :style="{ marginBottom:10 }">
+					<nb-label>{{$root.lang.t('time')}}</nb-label>
+					<nb-input disabled v-model="time"  />
+			</nb-item>
 			<nb-item floatingLabel>
 					<nb-label>{{$root.lang.t('date')}}</nb-label>
 					<nb-input disabled v-model="SelectedDate"  />
@@ -138,6 +132,7 @@
 		appointments: {},
 		mode: 'date',
     show: false,
+		client_id:0
 	  };
 	},
 
@@ -178,7 +173,7 @@
 				this.firstname = val.client.firstname;
 				this.lastname = val.client.lastname;
 				this.SelectedDate = formatDate(val.event_date);
-				console.log(this.time);
+				this.client_id = val.client.id;
 			});
 
 			fetchData(`locations`,this.$root.user.token).then(val => {
@@ -229,9 +224,11 @@
 			);
 		},
 		save : async function () {
+			console.log(this.SelectedDate);
+			console.log(this.time);
 			try {
 
-				let response = await fetch(`http://api.arsus.nl/consultant/appointment/update/${id}`, {
+				let response = await fetch(`http://api.arsus.nl/consultant/appointment/update/${this.navigation.getParam('id')}`, {
 					method: 'POST',
 					headers: {
 						accept: 'application/json',
@@ -240,10 +237,10 @@
 					},
 					body: JSON.stringify({
 						notes: this.notes,
-						date: this.formatDateReverse(this.SelectedDate),
+						date: this.SelectedDate,
 						time: this.time,
-						client_id: 67,
-						location_id: this.location,
+						client_id: this.client_id,
+						location_id: this.selectedLocation,
 					}),
 				});
 
@@ -271,17 +268,18 @@
         return date;
 			},
 			getSelectedDate: function (day){
-				this.date = day.dateString;
+				console.log(day.dateString);
 				this.SelectedDate = this.formatDate(day.dateString);
 			},
 			onLocationChange: function (value) {
       this.selectedLocation = value;
     	},
       getDateTime: function (event, selectedDate) {
-        let currentDate = selectedDate || date;
-        this.date = currentDate;
+        let currentDate = selectedDate;
         this.show = Platform.OS === 'ios';
-				this.time = this.FormatTime(this.date);        
+				this.time = this.FormatTime(currentDate); 
+				
+				console.log(this.time);       
       },
       showMode: function (currentMode) {
         this.show = true;
