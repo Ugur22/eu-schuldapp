@@ -44,7 +44,7 @@
         </nb-card-item>
         <nb-card-item>
           <nb-item regular> 
-            <nb-input v-model="title" :placeholder="$root.lang.t('missing_title')" />
+            <nb-input v-model="title" :placeholder="$root.lang.t('title')" />
           </nb-item>
         </nb-card-item>
         <nb-button class="btns" full :on-press="sendFile">
@@ -255,6 +255,10 @@ export default {
       return data;
     },
     uploadImage: async function () {
+			if(this.selectedDocName === 'other' && this.title === ''){
+				this.validateTitle();
+				return
+			}
 			try {
 				let response = await fetch('http://api.arsus.nl/consultant/doc/add', {
 					method: 'POST',
@@ -290,9 +294,9 @@ export default {
 		},
 		validateTitle: function(){
 			Toast.show({
-				text: `${$root.lang.t('file_uploaded')}`,
+				text: `${this.$root.lang.t('missing_title')}`,
 				position: "center",
-				type: "success",
+				type: "danger",
 				duration: 3000, 
 			});
 		},

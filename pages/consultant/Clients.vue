@@ -134,8 +134,7 @@ export default {
 				})
 				Alert.alert(
 				`${this.$root.lang.t('confirm_message')}`,
-				`huidige stap: ${currentStatus}
-volgende stap: ${that.nextStep}`,
+				`huidige stap: ${currentStatus}\nvolgende stap: ${that.nextStep}`,
 				[
 					{
 						text: `${this.$root.lang.t('no')}`,

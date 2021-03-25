@@ -54,10 +54,10 @@ import Header from '../../included/Header';
     methods: {
       goBack: function () {
         this.navigation.goBack();
-        },
+    },
       goToPage: function (page) {
-      this.navigation.navigate(page);
-        },
+      	this.navigation.navigate(page);
+    },
     }
   }
 </script>
