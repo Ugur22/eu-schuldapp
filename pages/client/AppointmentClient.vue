@@ -16,7 +16,7 @@
               </nb-right>
           </nb-card-item>
           <nb-card-item>
-              <nb-text :style="{ fontSize: 20, color: '#000' }">{{$root.lang.t('location')}}: {{Appointment.location.name}}</nb-text>
+              <nb-text :style="{ fontSize: 20, color: '#000' }">{{$root.lang.t('location')}}: {{Appointment.location}}</nb-text>
           </nb-card-item>
           <nb-card-item v-if="Appointment.notes">
               <nb-text :style="{ fontSize: 16, color: '#000' }">{{$root.lang.t('note')}}: {{Appointment.notes}}</nb-text>

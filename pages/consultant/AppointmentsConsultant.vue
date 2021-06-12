@@ -32,7 +32,7 @@
             </nb-left>
             <nb-body>
                 <nb-text class="text">{{appointment.client.firstname}} {{appointment.client.lastname}} </nb-text>
-                <nb-text class="text">{{ appointment.location.name }}</nb-text>
+                <!-- <nb-text class="text">{{ appointment.location.name }}</nb-text> -->
             </nb-body>
             <nb-right>
               <nb-icon class="text" name="arrow-forward" />
@@ -104,10 +104,11 @@ export default {
   mounted() {
 		  fetchData('consultant/appointments',this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.appointments = val;
+				console.log(this.appointments)
 				});
 			fetchData('consultant/clients',this.$root.user.token).then(val => {
 				this.dataIsReady = true; this.Clients = val;});
-  },
+  }, 
    components: { FooterNav,Header},
   methods: {
     goBack: function () {

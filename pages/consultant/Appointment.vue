@@ -39,21 +39,6 @@
 					<nb-label>{{$root.lang.t('date')}}</nb-label>
 					<nb-input disabled v-model="SelectedDate"  />
 			</nb-item>
-      <nb-card-item stackedLabel>
-				<nb-label>{{ $root.lang.t('Township') }}:</nb-label>
-				<nb-picker :style="{width: Platform.OS === 'android' ? width-120 : width-130}"
-					mode="dialog" 
-					:placeholder="$root.lang.t('Township')"
-					:selectedValue="selectedLocation"
-					:iosIcon="getIosIcon()"
-					:onValueChange="onLocationChange">
-					<item
-						v-for="location in locations"
-						:key="location.id"
-						:label="location.name"
-						:value="location.id"/>
-				</nb-picker>
-      </nb-card-item>
 			      <view>
         <date-time-picker
           v-if="show"
@@ -69,6 +54,10 @@
 			<nb-item stackedLabel>
 				<nb-label>{{$root.lang.t('note')}}</nb-label>
         <nb-textarea :style="{width: Platform.OS === 'android' ? width-50 : width-40,}" v-model="notes" bordered  placeholder="notes" />
+			</nb-item>
+				<nb-item floatingLabel  :style="{ marginTop:10 }">
+				<nb-label>{{$root.lang.t('Township')}}</nb-label>
+        <nb-input v-model="location" />
 			</nb-item>
 		  </nb-body>
 		</nb-card-item>
@@ -121,8 +110,6 @@
 		SelectedDate:'',
 		date: this.addDays(0),
 		minimumDate: this.addDays(0),
-		locations: {},
-		selectedLocation: '0',
 		width: Dimensions.get('window').width,
 		Platform,
 		firstname: '',
@@ -167,17 +154,12 @@
 		  fetchData(`consultant/appointment?id=${this.navigation.getParam('id')}`,this.$root.user.token).then(val => {
 				this.Appointment = val;
 				this.notes = val.notes;
-				this.selectedLocation = val.location.id;
-				this.location = val.location.name;
+				this.location = val.location;
 				this.time = FormatTime(val.event_date);
 				this.firstname = val.client.firstname;
 				this.lastname = val.client.lastname;
 				this.SelectedDate = formatDate(val.event_date);
 				this.client_id = val.client.id;
-			});
-
-			fetchData(`locations`,this.$root.user.token).then(val => {
-				this.locations = val;
 			});
 
 			fetchData('appointment-dates',this.$root.user.token).then(val => {
@@ -241,7 +223,8 @@
 						date: this.SelectedDate,
 						time: this.time,
 						client_id: this.client_id,
-						location_id: this.selectedLocation,
+						location_id: 4,
+						location: "rotterdam",
 					}),
 				});
 

@@ -17,7 +17,7 @@
             </nb-left>
             <nb-body>
                 <nb-text v-if="appointment.consultant" class="text">{{appointment.consultant.firstname}} {{appointment.consultant.lastname}} </nb-text>
-                <nb-text v-if="appointment.location" class="text">{{ appointment.location.name }}</nb-text>
+                <!-- <nb-text v-if="appointment.location" class="text">{{ appointment.location.name }}</nb-text> -->
             </nb-body>
             <nb-right>
               <nb-icon class="text" name="arrow-forward" />

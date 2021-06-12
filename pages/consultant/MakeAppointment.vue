@@ -49,24 +49,13 @@
 								:value="hour"/>
 						</nb-picker>
 						</nb-card-item>
-            <nb-card-item floatingLabel>
-          		<nb-label>{{ $root.lang.t('Township') }}:</nb-label>
-							<nb-picker
-								mode="dialog"
-								:placeholder="$root.lang.t('Township')"
-								:selectedValue="selectedLocation"
-								:iosIcon="getIosIcon()"
-								:onValueChange="onLocationChange">
-								<item
-									v-for="location in locations"
-									:key="location.id"
-									:label="location.name"
-									:value="location.id"/>
-							</nb-picker>
-        </nb-card-item>
 				<nb-item floatingLabel>
 					<nb-label>{{$root.lang.t('note')}}</nb-label>
 					<nb-input v-model="notes" />
+				</nb-item>
+				<nb-item floatingLabel :style="{marginTop: 15}">
+					<nb-label>{{$root.lang.t('Township')}}</nb-label>
+					<nb-input v-model="location" />
 				</nb-item>
           </nb-body>            
         </nb-card-item>
@@ -116,9 +105,8 @@
         show: false,
         minimumDate: this.addDays(0), 
 				notes:'',
+				location:'',
 				dataIsReady: false,
-        locations: {},
-				selectedLocation: '4',
 				selectedTime: '12:00',
         formatDate,
         FormatTime,
@@ -158,10 +146,6 @@
 					LocaleConfig.locales.en;
 			}
 		
-			
-			fetchData(`locations`,this.$root.user.token).then(val => {
-				this.dataIsReady = true; this.locations = val;
-			});
 			fetchData('appointment-dates',this.$root.user.token).then(val => {
 				this.dataIsReady = true; 
 				this.appointments = val;
@@ -213,14 +197,13 @@
 			getSelectedDate: function (day){
 				this.date = day.dateString;
 			},
-      onLocationChange: function (value) {
-      this.selectedLocation = value;
-    	},
+
       onTimeChange: function (value) {
 			this.selectedTime = value;
     	},
       appointmentMake: async function () {
 
+			console.log(this.location);
         try {
           let response = await fetch('http://api.arsus.nl/consultant/make-appointment', {
             method: 'POST',
@@ -235,7 +218,7 @@
               date: this.formatDateReverse(this.date),
               time: this.selectedTime,
               client_id: this.navigation.getParam('ClientID'),
-              location_id: this.selectedLocation,
+              location: this.location,
             }),
           });
 
