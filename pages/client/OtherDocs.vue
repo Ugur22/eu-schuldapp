@@ -148,7 +148,7 @@ export default {
 				that.formLoaded = true;
 		},
 	detailOther: function (id,clientID,docType,titleDoc) {
-			if(docType === 'jpg'){
+			if(docType === 'jpg' || docType === 'png'){
 				this.navigation.navigate('OtherDocsDetails', {
 					docID: id,
 					ClientID:clientID,
