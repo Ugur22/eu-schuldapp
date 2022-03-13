@@ -3,7 +3,6 @@
 This app is a simplified version of [admin.eu-schuldhulp ](https://github.com/EU-IT/consulent) 
 primarily meant to be used by clients to upload files, photos and view their own account info. This app does not include the admin and most consultant features of the admin.eu-schuldhulp platform.
 
-![Logo](https://www.eu-bewindvoering.nl/wp-content/uploads/2017/06/SmallLogo.png)
 
 ## Installation 
 
